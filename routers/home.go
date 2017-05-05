@@ -9,6 +9,6 @@ const (
 )
 
 func Home(ctx *context.Context) {
-	ctx.Title("git.txt")
+	ctx.Title("Home")
 	ctx.HTML(200, HOME)
 }

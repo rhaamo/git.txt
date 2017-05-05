@@ -7,7 +7,8 @@ import (
 type Gitxt struct {
 	ID		int64	`xorm:"pk autoincr"`
 	Hash		string	`xorm:"UNIQUE NOT NULL"`
-	UserID		int64	`xorm:"INDEX NOT NULL"`
+	UserID		int64	`xorm:"INDEX"`
+	Anonymous	bool
 	Description	string	`xorm:"TEXT"`
 
 	// Permissions

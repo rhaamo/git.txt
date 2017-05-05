@@ -14,6 +14,7 @@ import (
 	"strings"
 	"github.com/go-macaron/i18n"
 	"html/template"
+	"dev.sigpipe.me/dashie/git.txt/models"
 )
 
 // Context represents context of a request.
@@ -24,16 +25,15 @@ type Context struct {
 	Flash   *session.Flash
 	Session session.Store
 
-	User	string // should be a models.User
+	User	*models.User
 
-	IsLogged    bool
-	IsBasicAuth bool
-
+	IsLogged	bool
+	IsBasicAuth	bool
 }
 
 // Title sets "Title" field in template data.
 func (c *Context) Title(locale string) {
-	c.Data["Title"] = c.Tr(locale)
+	c.Data["Title"] = c.Tr(locale) + " - " + setting.AppName
 }
 
 // HTML responses template with given status.
@@ -99,16 +99,16 @@ func Contexter() macaron.Handler {
 		// Get user from session if logined.
 		// ctx.User, ctx.IsBasicAuth = auth.SignedInUser(ctx.Context, ctx.Session)
 
-		//if ctx.User != nil {
-		//	ctx.IsLogged = true
-		//	ctx.Data["IsLogged"] = ctx.IsLogged
-		//	ctx.Data["LoggedUser"] = ctx.User
-		//	//ctx.Data["LoggedUserID"] = ctx.User.ID
-		//	//ctx.Data["LoggedUserName"] = ctx.User.Name
-		//} else {
-		//	ctx.Data["LoggedUserID"] = 0
-		//	ctx.Data["LoggedUserName"] = ""
-		//}
+		if ctx.User != nil {
+			ctx.IsLogged = true
+			ctx.Data["IsLogged"] = ctx.IsLogged
+			ctx.Data["LoggedUser"] = ctx.User
+			ctx.Data["LoggedUserID"] = ctx.User.ID
+			ctx.Data["LoggedUserName"] = ctx.User.UserName
+		} else {
+			ctx.Data["LoggedUserID"] = 0
+			ctx.Data["LoggedUserName"] = ""
+		}
 
 		ctx.Data["CSRFToken"] = x.GetToken()
 		ctx.Data["CSRFTokenHTML"] = template.HTML(`<input type="hidden" name="_csrf" value="` + x.GetToken() + `">`)

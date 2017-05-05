@@ -7,6 +7,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/context"
 	"dev.sigpipe.me/dashie/git.txt/routers"
 	"dev.sigpipe.me/dashie/git.txt/bindata"
+	"dev.sigpipe.me/dashie/git.txt/stuff/template"
 	"path"
 	"github.com/go-macaron/session"
 	"github.com/go-macaron/csrf"
@@ -46,14 +47,16 @@ func newMacaron() *macaron.Macaron {
 	}
 
 	m.Use(macaron.Static(
-		path.Join(setting.StaticRootPath, "public"),
+		path.Join(setting.StaticRootPath, "static"),
 		macaron.StaticOptions{
 			SkipLogging: setting.DisableRouterLog,
 		},
 	))
 
+	funcMap := template.NewFuncMap()
 	m.Use(macaron.Renderer(macaron.RenderOptions{
 		Directory:         path.Join(setting.StaticRootPath, "templates"),
+		Funcs:		   funcMap,
 		IndentJSON:        macaron.Env != macaron.PROD,
 	}))
 

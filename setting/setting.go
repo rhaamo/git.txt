@@ -36,6 +36,8 @@ var (
 	AppURL 		string
 	AppSubURL       string
 	AppSubURLDepth  int // Number of slashes
+	CanRegister	bool
+	AnonymousCreate	bool
 
 	// Server settings
 	Protocol		Scheme
@@ -181,6 +183,9 @@ func InitConfig() {
 	// This value is empty if site does not have sub-url.
 	AppSubURL = strings.TrimSuffix(appUrl.Path, "/")
 	AppSubURLDepth = strings.Count(AppSubURL, "/")
+
+	CanRegister = Cfg.Section("").Key("CAN_REGISTER").MustBool(true)
+	AnonymousCreate = Cfg.Section("").Key("ANONYMOUS_CREATE").MustBool(true)
 
 	Protocol = SCHEME_HTTP
 	if sec.Key("PROTOCOL").String() == "https" {

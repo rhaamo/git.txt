@@ -1,1 +1,28 @@
-footer
+{{/*
+<html>
+<body>
+<div>
+    */}}
+<hr>
+
+<footer>
+    <div class="ui container">
+        <div class="ui left">
+            © 2017 git.txt {{.i18n.Tr "version"}}: {{AppVer}} {{.i18n.Tr "page"}}: <strong>{{LoadTimes .PageStartTime}}</strong> {{.i18n.Tr "template"}}: <strong>{{call .TmplLoadTimes}}</strong>
+        </div>
+        <div class="ui right links">
+            <a target="_blank" href="https://dev.sigpipe.me/dashie/git.txt">Sources</a>
+            <span class="version">{{GoVer}}</span>
+        </div>
+    </div>
+</footer>
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{AppSubURL}}/js/jquery-3.2.1.min.js"></script>
+<script src="{{AppSubURL}}/js/bootstrap.min.js"></script>
+</body>
+</html>
