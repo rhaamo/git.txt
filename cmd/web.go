@@ -19,6 +19,7 @@ import (
 	"net"
 	"net/http/fcgi"
 	"os"
+	"dev.sigpipe.me/dashie/git.txt/models"
 )
 
 var Web = cli.Command{
@@ -110,6 +111,7 @@ func runWeb(ctx *cli.Context) error {
 	}
 
 	setting.InitConfig()
+	models.InitDb()
 
 	m := newMacaron()
 

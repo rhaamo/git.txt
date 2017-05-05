@@ -53,7 +53,8 @@ var (
 	// Database Settings
 	UseSQLite3	bool
 	UseMySQL	bool
-	usePostgreSQL	bool
+	UsePostgreSQL	bool
+	UseMSSQL	bool
 
 	// Global setting objects
 	CustomConf	string
