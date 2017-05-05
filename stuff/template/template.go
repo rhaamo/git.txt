@@ -12,6 +12,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"github.com/microcosm-cc/bluemonday"
 	"container/list"
+	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
 )
 
 func NewFuncMap() []template.FuncMap {
@@ -45,6 +46,7 @@ func NewFuncMap() []template.FuncMap {
 		},
 		"Safe":         Safe,
 		"Sanitize":     bluemonday.UGCPolicy().Sanitize,
+		"Str2html": Str2html,
 		"Add": func(a, b int) int {
 			return a + b
 		},
@@ -103,4 +105,8 @@ func Sha1(str string) string {
 
 func EscapePound(str string) string {
 	return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
+}
+
+func Str2html(raw string) template.HTML {
+	return template.HTML(markup.Sanitize(raw))
 }

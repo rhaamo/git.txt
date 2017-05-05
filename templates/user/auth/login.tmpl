@@ -1,0 +1,20 @@
+{{template "base/head" .}}
+
+
+<form class="form-signin" action="{{.Link}}" method="post">
+    {{.CSRFTokenHTML}}
+    <h2 class="form-signin-heading">{{.i18n.Tr "login.sign_in"}}</h2>
+    {{template "base/alert" .}}
+    <label for="inputEmail" class="sr-only">{{.i18n.Tr "login.email"}}</label>
+    <input type="email" id="inputEmail" class="form-control {{if .Err_UserName}}error{{end}}" placeholder='{{.i18n.Tr "login.email_placeholder"}}' required autofocus>
+    <label for="inputPassword" class="sr-only">{{.i18n.Tr "login.password"}}</label>
+    <input type="password" id="inputPassword" class="form-control {{if .Err_UserName}}error{{end}}" placeholder='{{.i18n.Tr "login.password_placeholder"}}' required>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" value="remember-me"> {{.i18n.Tr "login.remember_me"}}
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{.i18n.Tr "login.sign_in"}}</button>
+</form>
+
+{{template "base/footer" .}}

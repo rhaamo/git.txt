@@ -13,6 +13,7 @@ import (
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/i18n"
+	//"github.com/go-macaron/binding"
 	"strings"
 	"fmt"
 	log "gopkg.in/clog.v1"
@@ -21,6 +22,7 @@ import (
 	"net/http/fcgi"
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/routers/user"
 )
 
 var Web = cli.Command{
@@ -118,7 +120,16 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
+	//bindIgnErr := binding.BindIgnErr
+
 	m.Get("/", routers.Home)
+
+	m.Group("/user", func() {
+		m.Group("/login", func() {
+			m.Combo("").Get(user.Login)
+		})
+	})
+	m.Get("/register", user.Register)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {
