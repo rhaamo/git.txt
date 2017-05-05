@@ -3,15 +3,14 @@
 <body>
 <div>
     */}}
-<hr>
-
 <footer>
-    <div class="ui container">
-        <div class="ui left">
-            © 2017 git.txt {{.i18n.Tr "version"}}: {{AppVer}} {{.i18n.Tr "page"}}: <strong>{{LoadTimes .PageStartTime}}</strong> {{.i18n.Tr "template"}}: <strong>{{call .TmplLoadTimes}}</strong>
+    <div>
+        <div class="left">
+            © 2017 git.txt - {{.i18n.Tr "version"}}: {{AppVer}} - {{.i18n.Tr "page"}}: <strong>{{LoadTimes .PageStartTime}}</strong> - {{.i18n.Tr "template"}}: <strong>{{call .TmplLoadTimes}}</strong>
         </div>
-        <div class="ui right links">
+        <div class="right">
             <a target="_blank" href="https://dev.sigpipe.me/dashie/git.txt">Sources</a>
+            -
             <span class="version">{{GoVer}}</span>
         </div>
     </div>
