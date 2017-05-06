@@ -15,6 +15,7 @@ import (
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/i18n"
 	"github.com/go-macaron/binding"
+	"github.com/go-macaron/toolbox"
 	"strings"
 	"fmt"
 	log "gopkg.in/clog.v1"
@@ -96,14 +97,14 @@ func newMacaron() *macaron.Macaron {
 		CookiePath: setting.AppSubURL,
 	}))
 
-	// m.Use(toolbox.Toolboxer(m, toolbox.Options{
-	// 	HealthCheckFuncs: []*toolbox.HealthCheckFuncDesc{
-	// 		&toolbox.HealthCheckFuncDesc{
-	// 			Desc: "Database connection",
-	// 			Func: models.Ping,
-	// 		},
-	// 	},
-	// }))
+	m.Use(toolbox.Toolboxer(m, toolbox.Options{
+		HealthCheckFuncs: []*toolbox.HealthCheckFuncDesc{
+			&toolbox.HealthCheckFuncDesc{
+				Desc: "Database connection",
+				Func: models.Ping,
+			},
+		},
+	}))
 
 	m.Use(context.Contexter())
 
