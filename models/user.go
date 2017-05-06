@@ -59,7 +59,7 @@ type SshKey struct {
 }
 
 func countUsers(e Engine) int64 {
-	count, _ := e.Where("type=0").Count(new(User))
+	count, _ := x.Count(new(User))
 	return count
 }
 

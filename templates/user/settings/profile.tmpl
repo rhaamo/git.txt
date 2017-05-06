@@ -13,6 +13,9 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="content">
+                            {{if .UserIsAdmin}}
+                            You are admin. <i class="fa fa-thumbs-up" aria-hidden="true"></i><br/><br/>
+                            {{end}}
                             <div class="email form-group {{if .Err_Email}}has-error{{end}}">
                                 <label for="email" class="sr-only">{{.i18n.Tr "login.email"}}</label>
                                 <input type="email" name="email" id="email" class="form-control" value="{{.email}}" placeholder='{{.i18n.Tr "login.email_placeholder"}}' required>
