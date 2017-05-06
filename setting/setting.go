@@ -336,7 +336,7 @@ func initSession() {
 	SessionConfig.Provider = Cfg.Section("session").Key("PROVIDER").In("memory",
 		[]string{"memory", "file", "redis", "mysql"})
 	SessionConfig.ProviderConfig = strings.Trim(Cfg.Section("session").Key("PROVIDER_CONFIG").String(), "\" ")
-	SessionConfig.CookieName = Cfg.Section("session").Key("COOKIE_NAME").MustString("i_like_gogits")
+	SessionConfig.CookieName = Cfg.Section("session").Key("COOKIE_NAME").MustString("i_like_ponies")
 	SessionConfig.CookiePath = AppSubURL
 	SessionConfig.Secure = Cfg.Section("session").Key("COOKIE_SECURE").MustBool()
 	SessionConfig.Gclifetime = Cfg.Section("session").Key("GC_INTERVAL_TIME").MustInt64(3600)
