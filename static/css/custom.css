@@ -69,3 +69,72 @@ footer .right {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+/* Profile sidebar */
+div.settings_sidebar {
+    display: block;
+    background: #FFF;
+    border: 1px solid rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+    text-decoration: none;
+    text-transform: none;
+}
+
+div.settings_sidebar a {
+    text-decoration: none;
+    text-transform: none;
+}
+
+div.settings_sidebar .header.item {
+    font-size: 1.1em;
+    background: #f0f0f0;
+}
+
+div.settings_sidebar > .item:first-child {
+    border-radius: .28571429rem .28571429rem 0 0;
+}
+
+div.settings_sidebar .item:not(:first-child) {
+    border-top: 1px solid #eaeaea;
+}
+
+div.settings_sidebar .item.active {
+    background: rgba(0, 0, 0, .05);
+}
+
+div.settings_sidebar .item {
+    display: block;
+    border-top: none;
+    border-right: none;
+    padding: .5em 1em;
+    position: relative;
+    vertical-align: middle;
+    border-radius: 0;
+    box-shadow: none;
+    transition: background .1s ease, box-shadow .1s ease, color .1s ease;
+}
+
+div.settings_sidebar .item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* "Modal" type content */
+div.page_modal {
+    display: block;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+}
+
+div.page_modal .header {
+    background: #f0f0f0;
+    padding: .5em 1em;
+    margin: 0 0 1em;
+}
+
+div.page_modal .content {
+    padding: 1em;
+}

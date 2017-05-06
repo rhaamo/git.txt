@@ -38,6 +38,11 @@ func (c *Context) Title(locale string) {
 	c.Data["Title"] = c.Tr(locale) + " - " + setting.AppName
 }
 
+// PageIs sets "PageIsxxx" field in template data.
+func (c *Context) PageIs(name string) {
+	c.Data["PageIs"+name] = true
+}
+
 // HTML responses template with given status.
 func (ctx *Context) HTML(status int, name string) {
 	log.Trace("Template: %s", name)
@@ -95,6 +100,12 @@ func (ctx *Context) NotFound() {
 // ServerError renders the 500 page.
 func (c *Context) ServerError(title string, err error) {
 	c.Handle(http.StatusInternalServerError, title, err)
+}
+
+// SubURLRedirect responses redirection wtih given location and status.
+// It prepends setting.AppSubURL to the location string.
+func (c *Context) SubURLRedirect(location string, status ...int) {
+	c.Redirect(setting.AppSubURL + location)
 }
 
 // NotFoundOrServerError use error check function to determine if the error

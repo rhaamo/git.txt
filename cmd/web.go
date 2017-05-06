@@ -121,6 +121,7 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
+	reqSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: true})
 	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
 
 	bindIgnErr := binding.BindIgnErr
@@ -135,9 +136,21 @@ func runWeb(ctx *cli.Context) error {
 		m.Post("/register", bindIgnErr(form.Register{}), user.RegisterPost)
 	}, reqSignOut)
 
+	m.Group("/user/settings", func() {
+		m.Get("", user.Settings)
+		m.Post("", bindIgnErr(form.UpdateSettingsProfile{}), user.SettingsPost)
+	}, reqSignIn, func(ctx *context.Context) {
+		ctx.Data["PageIsUserSettings"] = true
+	})
+
 	m.Group("/user", func() {
 		m.Get("/logout", user.Logout)
 	})
+
+	// /<username>
+
+	// /gitxt/<sha>
+	// /gitxt/<sha>/...
 
 
 	// robots.txt
