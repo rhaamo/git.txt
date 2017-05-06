@@ -167,7 +167,6 @@ func Contexter() macaron.Handler {
 			ctx.IsLogged = true
 			ctx.Data["IsLogged"] = ctx.IsLogged
 			ctx.Data["UserIsAdmin"] = ctx.User.IsAdmin
-			log.Trace("User admin: %s", ctx.User.IsAdmin)
 			ctx.Data["LoggedUser"] = ctx.User
 			ctx.Data["LoggedUserID"] = ctx.User.ID
 			ctx.Data["LoggedUserName"] = ctx.User.UserName
