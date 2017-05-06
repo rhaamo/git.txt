@@ -6,7 +6,11 @@ init_cmds = [
 watch_all = true
 watch_dirs = [
 	"$WORKDIR/cmd",
-	"$WORKDIR/routers"
+	"$WORKDIR/routers",
+    "$WORKDIR/context",
+    "$WORKDIR/stuff",
+    "$WORKDIR/models",
+    "$WORKDIR/conf/locale",
 ]
 watch_exts = [".go"]
 ignore_files = [".+_test.go"]

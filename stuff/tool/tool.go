@@ -4,7 +4,11 @@ import (
 	"encoding/hex"
 	"crypto/sha1"
 	"crypto/md5"
+	"math/big"
+	"crypto/rand"
 )
+
+const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 // MD5Bytes encodes string to MD5 bytes.
 func MD5Bytes(str string) []byte {
@@ -31,4 +35,31 @@ func ShortSHA1(sha1 string) string {
 		return sha1[:10]
 	}
 	return sha1
+}
+
+// RandomString returns generated random string in given length of characters.
+// It also returns possible error during generation.
+func RandomString(n int) (string, error) {
+	buffer := make([]byte, n)
+	max := big.NewInt(int64(len(alphanum)))
+
+	for i := 0; i < n; i++ {
+		index, err := randomInt(max)
+		if err != nil {
+			return "", err
+		}
+
+		buffer[i] = alphanum[index]
+	}
+
+	return string(buffer), nil
+}
+
+func randomInt(max *big.Int) (int, error) {
+	rand, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(rand.Int64()), nil
 }

@@ -45,12 +45,26 @@ footer .right {
 .form-signin .form-control:focus {
     z-index: 2;
 }
-.form-signin input[type="email"] {
-    margin-bottom: -1px;
+.form-signin input[id="user_name"] {
+    margin-bottom: -15px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-.form-signin input[type="password"] {
+.form-signin input[id="email"] {
+    margin-bottom: -15px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[id="password"] {
+    margin-bottom: -15px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[id="repeat"] {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

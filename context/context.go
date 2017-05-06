@@ -15,6 +15,8 @@ import (
 	"github.com/go-macaron/i18n"
 	"html/template"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
+	"dev.sigpipe.me/dashie/git.txt/stuff/auth"
 )
 
 // Context represents context of a request.
@@ -42,6 +44,36 @@ func (ctx *Context) HTML(status int, name string) {
 	ctx.Context.HTML(status, name)
 }
 
+// Success responses template with status http.StatusOK.
+func (c *Context) Success(name string) {
+	c.HTML(http.StatusOK, name)
+}
+
+// JSONSuccess responses JSON with status http.StatusOK.
+func (c *Context) JSONSuccess(data interface{}) {
+	c.JSON(http.StatusOK, data)
+}
+
+// HasError returns true if error occurs in form validation.
+func (ctx *Context) HasError() bool {
+	hasErr, ok := ctx.Data["HasError"]
+	if !ok {
+		return false
+	}
+	ctx.Flash.ErrorMsg = ctx.Data["ErrorMsg"].(string)
+	ctx.Data["Flash"] = ctx.Flash
+	return hasErr.(bool)
+}
+
+// RenderWithErr used for page has form validation but need to prompt error to users.
+func (ctx *Context) RenderWithErr(msg, tpl string, f interface{}) {
+	if f != nil {
+		form.Assign(f, ctx.Data)
+	}
+	ctx.Flash.ErrorMsg = msg
+	ctx.Data["Flash"] = ctx.Flash
+	ctx.HTML(http.StatusOK, tpl)
+}
 
 // Handle handles and logs error by given status.
 func (ctx *Context) Handle(status int, title string, err error) {
@@ -53,6 +85,27 @@ func (ctx *Context) Handle(status int, title string, err error) {
 		log.Error(2, "%s: %v", title, err)
 	}
 	ctx.HTML(status, fmt.Sprintf("status/%d", status))
+}
+
+// NotFound renders the 404 page.
+func (ctx *Context) NotFound() {
+	ctx.Handle(http.StatusNotFound, "", nil)
+}
+
+// ServerError renders the 500 page.
+func (c *Context) ServerError(title string, err error) {
+	c.Handle(http.StatusInternalServerError, title, err)
+}
+
+// NotFoundOrServerError use error check function to determine if the error
+// is about not found. It responses with 404 status code for not found error,
+// or error context description for logging purpose of 500 server error.
+func (c *Context) NotFoundOrServerError(title string, errck func(error) bool, err error) {
+	if errck(err) {
+		c.NotFound()
+		return
+	}
+	c.ServerError(title, err)
 }
 
 func (ctx *Context) ServeContent(name string, r io.ReadSeeker, params ...interface{}) {
@@ -97,7 +150,7 @@ func Contexter() macaron.Handler {
 		ctx.Data["PageStartTime"] = time.Now()
 
 		// Get user from session if logined.
-		// ctx.User, ctx.IsBasicAuth = auth.SignedInUser(ctx.Context, ctx.Session)
+		ctx.User, ctx.IsBasicAuth = auth.SignedInUser(ctx.Context, ctx.Session)
 
 		if ctx.User != nil {
 			ctx.IsLogged = true

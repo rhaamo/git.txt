@@ -78,7 +78,14 @@ var (
 	CSRFCookieName string
 
 	// Security settings
-	SecretKey	string
+	InstallLock             bool
+	SecretKey               string
+	LoginRememberDays       int
+	CookieUserName          string
+	CookieRememberName      string
+	CookieSecure            bool
+	EnableLoginStatusCookie bool
+	LoginStatusCookieName string
 
 	// Cache settings
 	CacheAdapter  string
@@ -224,6 +231,17 @@ func InitConfig() {
 	Langs = Cfg.Section("i18n").Key("LANGS").Strings(",")
 	Names = Cfg.Section("i18n").Key("NAMES").Strings(",")
 	dateLangs = Cfg.Section("i18n.datelang").KeysHash()
+
+	sec = Cfg.Section("security")
+	InstallLock = sec.Key("INSTALL_LOCK").MustBool()
+	SecretKey = sec.Key("SECRET_KEY").String()
+	LoginRememberDays = sec.Key("LOGIN_REMEMBER_DAYS").MustInt()
+	CookieUserName = sec.Key("COOKIE_USERNAME").String()
+	CookieRememberName = sec.Key("COOKIE_REMEMBER_NAME").String()
+	CookieSecure = sec.Key("COOKIE_SECURE").MustBool(false)
+	EnableLoginStatusCookie = sec.Key("ENABLE_LOGIN_STATUS_COOKIE").MustBool(false)
+	LoginStatusCookieName = sec.Key("LOGIN_STATUS_COOKIE_NAME").MustString("login_status")
+
 
 	initLogging()
 	initSession()

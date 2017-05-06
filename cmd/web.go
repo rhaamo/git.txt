@@ -8,12 +8,13 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/routers"
 	"dev.sigpipe.me/dashie/git.txt/bindata"
 	"dev.sigpipe.me/dashie/git.txt/stuff/template"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"path"
 	"github.com/go-macaron/session"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/i18n"
-	//"github.com/go-macaron/binding"
+	"github.com/go-macaron/binding"
 	"strings"
 	"fmt"
 	log "gopkg.in/clog.v1"
@@ -120,16 +121,24 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
-	//bindIgnErr := binding.BindIgnErr
+	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
+
+	bindIgnErr := binding.BindIgnErr
 
 	m.Get("/", routers.Home)
 
 	m.Group("/user", func() {
 		m.Group("/login", func() {
-			m.Combo("").Get(user.Login)
+			m.Combo("").Get(user.Login).Post(bindIgnErr(form.Login{}), user.LoginPost)
 		})
+		m.Get("/register", user.Register)
+		m.Post("/register", bindIgnErr(form.Register{}), user.RegisterPost)
+	}, reqSignOut)
+
+	m.Group("/user", func() {
+		m.Get("/logout", user.Logout)
 	})
-	m.Get("/register", user.Register)
+
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

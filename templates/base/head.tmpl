@@ -45,10 +45,10 @@
                     <li><a href="{{AppSubURL}}/new">New git.txt</a></li>
                 {{end}}
                 {{if .IsLogged}}
-                    <li><a href="{{AppSubURL}}/logout">Logout</a></li>
+                    <li><a href="{{AppSubURL}}/user/logout">Logout</a></li>
                 {{else}}
                     {{if CanRegister}}
-                        <li><a href="{{AppSubURL}}/register">Register</a></li>
+                        <li><a href="{{AppSubURL}}/user/register">Register</a></li>
                     {{end}}
                     <li><a href="{{AppSubURL}}/user/login">Login</a></li>
                 {{end}}
@@ -58,6 +58,7 @@
 </nav>
 
 <div class="container">
+    {{template "base/alert" .}}
 {{/*
 </div>
 </body>
