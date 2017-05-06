@@ -8,6 +8,7 @@ import (
 	log "gopkg.in/clog.v1"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 	"net/url"
+	"fmt"
 )
 
 const (
@@ -25,11 +26,76 @@ func isValidRedirect(url string) bool {
 	return len(url) >= 2 && url[0] == '/' && url[1] != '/'
 }
 
+// AutoLogin reads cookie and try to auto-login.
+func AutoLogin(c *context.Context) (bool, error) {
+	if !models.HasEngine {
+		return false, nil
+	}
+
+	uname := c.GetCookie(setting.CookieUserName)
+	if len(uname) == 0 {
+		return false, nil
+	}
+
+	isSucceed := false
+	defer func() {
+		if !isSucceed {
+			log.Trace("auto-login cookie cleared: %s", uname)
+			c.SetCookie(setting.CookieUserName, "", -1, setting.AppSubURL)
+			c.SetCookie(setting.CookieRememberName, "", -1, setting.AppSubURL)
+			c.SetCookie(setting.LoginStatusCookieName, "", -1, setting.AppSubURL)
+		}
+	}()
+
+	u, err := models.GetUserByName(uname)
+	if err != nil {
+		if !errors.IsUserNotExist(err) {
+			return false, fmt.Errorf("GetUserByName: %v", err)
+		}
+		return false, nil
+	}
+
+	if val, ok := c.GetSuperSecureCookie(u.Rands+u.Password, setting.CookieRememberName); !ok || val != u.UserName {
+		return false, nil
+	}
+
+	isSucceed = true
+	c.Session.Set("uid", u.ID)
+	c.Session.Set("uname", u.UserName)
+	c.SetCookie(setting.CSRFCookieName, "", -1, setting.AppSubURL)
+	if setting.EnableLoginStatusCookie {
+		c.SetCookie(setting.LoginStatusCookieName, "true", 0, setting.AppSubURL)
+	}
+	return true, nil
+}
+
 // Login
 func Login(ctx *context.Context) {
 	ctx.Title("login.title")
 
-	// TODO: auto login remember_me
+	// check for auto-login
+	isSucceed, err := AutoLogin(ctx)
+	if err != nil {
+		ctx.Handle(500, "AutoLogin", err)
+		return
+	}
+
+	redirectTo := ctx.Query("redirect_to")
+	if len(redirectTo) > 0 {
+		ctx.SetCookie("redirect_to", redirectTo, 0, setting.AppSubURL)
+	} else {
+		redirectTo, _ = url.QueryUnescape(ctx.GetCookie("redirect_to"))
+	}
+	ctx.SetCookie("redirect_to", "", -1, setting.AppSubURL)
+
+	if isSucceed {
+		if isValidRedirect(redirectTo) {
+			ctx.Redirect(redirectTo)
+		} else {
+			ctx.Redirect(setting.AppSubURL + "/")
+		}
+		return
+	}
 
 	ctx.HTML(200, LOGIN)
 }
@@ -74,6 +140,7 @@ func afterLogin(ctx *context.Context, u *models.User, remember bool) {
 	}
 
 	redirectTo, _ := url.QueryUnescape(ctx.GetCookie("redirect_to"))
+	ctx.SetCookie("redirect_to", "", -1, setting.AppSubURL)
 	if isValidRedirect(redirectTo) {
 		ctx.Redirect(redirectTo)
 		return

@@ -84,6 +84,21 @@ func GetUserByID(id int64) (*User, error) {
 	return getUserByID(x, id)
 }
 
+// GetUserByName returns user by given name.
+func GetUserByName(name string) (*User, error) {
+	if len(name) == 0 {
+		return nil, errors.UserNotExist{0, name}
+	}
+	u := &User{LowerName: strings.ToLower(name)}
+	has, err := x.Get(u)
+	if err != nil {
+		return nil, err
+	} else if !has {
+		return nil, errors.UserNotExist{0, name}
+	}
+	return u, nil
+}
+
 // IsUserExist checks if given user name exist,
 // the user name should be noncased unique.
 // If uid is presented, then check will rule out that one,
