@@ -25,6 +25,7 @@ import (
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/routers/user"
+	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 )
 
 var Web = cli.Command{
@@ -74,7 +75,7 @@ func newMacaron() *macaron.Macaron {
 	}
 	m.Use(i18n.I18n(i18n.Options{
 		SubURL:          setting.AppSubURL,
-		Files:           localFiles,
+		//Files:           localFiles,
 		Langs:           setting.Langs,
 		Names:           setting.Names,
 		DefaultLang:     "en-US",
@@ -124,6 +125,7 @@ func runWeb(ctx *cli.Context) error {
 
 	reqSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: true})
 	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
+	checkAnonymousCreate := context.Toggle(&context.ToggleOptions{AnonymousCreate: setting.AnonymousCreate})
 
 	bindIgnErr := binding.BindIgnErr
 
@@ -147,6 +149,11 @@ func runWeb(ctx *cli.Context) error {
 	m.Group("/user", func() {
 		m.Get("/logout", user.Logout)
 	})
+
+	m.Group("/new", func() {
+		m.Get("", gitxt.New)
+		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
+	}, checkAnonymousCreate)
 
 	// /<username>
 

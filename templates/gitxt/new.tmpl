@@ -1,0 +1,40 @@
+{{template "base/head" .}}
+
+<form class="form" action="{{.Link}}" method="post">
+    {{.CSRFTokenHTML}}
+    <h4 class="header">{{.i18n.Tr "gitxt_new.title"}}</h4>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="content">
+                <div class="description form-group {{if .Err_Description}}has-error{{end}}">
+                    <label for="description" class="sr-only">{{.i18n.Tr "gitxt.description"}}</label>
+                    <input type="string" name="description" id="description" class="form-control" value="{{.description}}" placeholder='{{.i18n.Tr "gitxt.description_placeholder"}}'>
+                </div>
+
+                <hr>
+
+                {{range $index, $value := .FilesContent}}
+                    <div class="filename form-group">
+                        <label for="file_{{$index}}_filename" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
+                        <input type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
+                    </div>
+                    <div class="content form-group">
+                        <label for="file_{{$index}}_content" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
+                        <textarea type="text" name="files_content" id="file_{{$index}}_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'>{{index $.FilesContent $index}}</textarea>
+                    </div>
+
+                    {{if gt $index 0}}
+                    <hr>
+                    {{end}}
+                {{end}}
+
+                <button name="is_public" value="0" class="btn btn-sm btn-warning" type="submit">{{.i18n.Tr "gitxt.save_private"}}</button>
+                <button name="is_public" value="1" class="btn btn-sm btn-success" type="submit">{{.i18n.Tr "gitxt.save_public"}}</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{{template "base/footer" .}}

@@ -218,6 +218,7 @@ func RegisterPost(ctx *context.Context, f form.Register) {
 
 	// TODO: send activation email
 
+	ctx.Flash.Success("Register succesfull")
 	ctx.Redirect(setting.AppSubURL + "/user/login")
 }
 

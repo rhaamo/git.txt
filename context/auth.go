@@ -12,6 +12,7 @@ type ToggleOptions struct {
 	SignOutRequired bool
 	AdminRequired   bool
 	DisableCSRF     bool
+	AnonymousCreate bool
 }
 
 func Toggle(options *ToggleOptions) macaron.Handler {
@@ -45,6 +46,12 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 		if !options.SignOutRequired && !ctx.IsLogged && len(ctx.GetCookie(setting.CookieUserName)) > 0 {
 			ctx.SetCookie("redirect_to", url.QueryEscape(setting.AppSubURL + ctx.Req.RequestURI), 0, setting.AppSubURL)
 			ctx.Redirect(setting.AppSubURL + "/user/login")
+			return
+		}
+
+		// Redirect to / if anonymous create disallowed
+		if !options.AnonymousCreate {
+			ctx.Redirect(setting.AppSubURL + "/")
 			return
 		}
 	}
