@@ -24,6 +24,7 @@ import (
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/routers/user"
+	//"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 )
 
@@ -124,7 +125,6 @@ func runWeb(ctx *cli.Context) error {
 
 	reqSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: true})
 	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
-	checkAnonymousCreate := context.Toggle(&context.ToggleOptions{AnonymousCreate: setting.AnonymousCreate})
 
 	bindIgnErr := binding.BindIgnErr
 
@@ -154,10 +154,10 @@ func runWeb(ctx *cli.Context) error {
 	m.Group("/new", func() {
 		m.Get("", gitxt.New)
 		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
-	}, checkAnonymousCreate)
+	})
 
-	m.Get("/:user([0-9a-zA-Z]+)", context.AssignUser(), gitxt.ListUploads)
-	m.Get("/:user([0-9a-zA-Z]+)/:hash([0-9a-zA-Z]+)", context.AssignUser(), context.AssignRepository(), gitxt.View)
+	m.Get("/:user", context.AssignUser(), gitxt.ListUploads)
+	m.Get("/:user/:hash", context.AssignUser(), context.AssignRepository(), gitxt.View)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

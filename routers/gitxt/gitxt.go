@@ -35,6 +35,12 @@ func New(ctx *context.Context) {
 }
 
 func NewPost(ctx *context.Context, f form.Gitxt) {
+	// Reject-redirect if not logged-in and anonymous create is deactivated
+	if !setting.AnonymousCreate && !ctx.IsLogged {
+		ctx.Redirect(setting.AppSubURL + "/")
+		return
+	}
+
 	ctx.Title("gitxt_new.title")
 	ctx.PageIs("GitxtNewPost")
 
@@ -240,7 +246,7 @@ func View(ctx *context.Context) {
 	if err != nil {
 		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: could not open repository.")
-		ctx.HTML(500, "GitxtView")
+		ctx.Handle(500, "GitxtView", err)
 		return
 	}
 
@@ -249,7 +255,7 @@ func View(ctx *context.Context) {
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: repository is empty or corrupted")
-		ctx.HTML(500, "GitxtView")
+		ctx.Handle(500, "GitxtView", err)
 		return
 	}
 
@@ -258,7 +264,7 @@ func View(ctx *context.Context) {
 	if err != nil {
 		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: cannot get repository tree entries")
-		ctx.HTML(500, "GitxtView")
+		ctx.Handle(500, "GitxtView", err)
 		return
 
 	}

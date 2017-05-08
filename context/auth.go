@@ -48,11 +48,5 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 			ctx.Redirect(setting.AppSubURL + "/user/login")
 			return
 		}
-
-		// Redirect to / if anonymous create disallowed
-		if !options.AnonymousCreate {
-			ctx.Redirect(setting.AppSubURL + "/")
-			return
-		}
 	}
 }
