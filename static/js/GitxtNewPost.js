@@ -18,8 +18,8 @@ $(document).on("click", "#add_new_form", function() {
     // This only works in debugger, not here, thank you JS
     //new_file.data("id", newIndex);
     new_file.attr("data-id", newIndex);
-    
-    new_file.attr("class", "form_" + newIndex);
+
+    new_file.attr("class", "form_" + newIndex + " gitxt_new_file");
     new_file.find("label[for='file_"+index+"_filename']").attr("for", "file_"+newIndex+"_filename");
     new_file.find("label[for='file_"+index+"_content']").attr("for", "file_"+newIndex+"_content");
 
