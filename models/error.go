@@ -199,3 +199,19 @@ func IsErrDeployKeyNameAlreadyUsed(err error) bool {
 func (err ErrDeployKeyNameAlreadyUsed) Error() string {
 	return fmt.Sprintf("public key already exists [repo_id: %d, name: %s]", err.RepoID, err.Name)
 }
+
+
+// Gitxt
+type ErrHashAlreadyExist struct {
+	Hash string
+}
+
+func IsErrHashAlreadyExist(err error) bool {
+	_, ok := err.(ErrHashAlreadyExist)
+	return ok
+}
+
+
+func (err ErrHashAlreadyExist) Error() string {
+	return fmt.Sprintf("hash already exists [hash: %s]", err.Hash)
+}

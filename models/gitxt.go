@@ -22,3 +22,33 @@ type Gitxt struct {
 	// Relations
 	// 	UserID
 }
+
+// IsHashUsed checks if given hash exist,
+func IsHashUsed(uid int64, hash string) (bool, error) {
+	if len(hash) == 0 {
+		return false, nil
+	}
+	return x.Get(&Gitxt{Hash: hash})
+}
+
+// Create a new gitxt
+func CreateGitxt(g *Gitxt) (err error) {
+	isExist, err := IsHashUsed(0, g.Hash)
+	if err != nil {
+		return err
+	} else if isExist {
+		return ErrHashAlreadyExist{g.Hash}
+	}
+
+	sess := x.NewSession()
+	defer sessionRelease(sess)
+	if err = sess.Begin(); err != nil {
+		return err
+	}
+
+	if _, err = sess.Insert(g); err != nil {
+		return err
+	}
+
+	return sess.Commit()
+}

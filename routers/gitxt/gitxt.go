@@ -4,7 +4,6 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/context"
 	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"dev.sigpipe.me/dashie/git.txt/stuff/sanitize"
-	// "dev.sigpipe.me/dashie/git.txt/models"
 	"fmt"
 	"strings"
 	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
@@ -13,6 +12,8 @@ import (
 	"os"
 	log "gopkg.in/clog.v1"
 	"gopkg.in/libgit2/git2go.v25"
+	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/setting"
 )
 
 const (
@@ -186,42 +187,33 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	// git update-ref "refs/heads/$MY_BRANCH" "$NEW_COMMIT" "$PARENT_COMMIT"
 
 	// 4. Insert info in database
+	u := &models.Gitxt{
+		Hash: repositoryName,
+		Description: f.Description,
+		IsPrivate: !f.IsPublic,
+	}
+
+	if ctx.IsLogged {
+		u.UserID = ctx.User.ID
+		u.Anonymous = false
+	} else {
+		u.UserID = 0
+		u.Anonymous = true
+	}
+
+	if err := models.CreateGitxt(u); err != nil {
+		switch {
+		case models.IsErrHashAlreadyExist(err):
+			ctx.Data["Err_Hash"] = true
+			ctx.RenderWithErr(ctx.Tr("gitxt_new.hash_been_taken"), NEW, &f)
+		default:
+			ctx.Handle(500, "NewPost", err)
+		}
+		return
+	}
 
 	// 5. Return render to gitxt view page
 
-	// u := &models.User{
-	// 	UserName:	f.UserName,
-	// 	Email:		f.Email,
-	// 	Password:	f.Password,
-	// 	IsActive:	true, // FIXME: implement user activation by email
-	// }
-	// if err := models.CreateUser(u); err != nil {
-	// 	switch {
-	// 	case models.IsErrUserAlreadyExist(err):
-	// 		ctx.Data["Err_UserName"] = true
-	// 		ctx.RenderWithErr(ctx.Tr("form.username_been_taken"), REGISTER, &f)
-	// 	case models.IsErrNameReserved(err):
-	// 		ctx.Data["Err_UserName"] = true
-	// 		ctx.RenderWithErr(ctx.Tr("form.username_reserved"), REGISTER, &f)
-	// 	case models.IsErrNamePatternNotAllowed(err):
-	// 		ctx.Data["Err_UserName"] = true
-	// 		ctx.RenderWithErr(ctx.Tr("form.username_pattern_not_allowed"), REGISTER, &f)
-	// 	default:
-	// 		ctx.Handle(500, "CreateUser", err)
-	// 	}
-	// 	return
-	// }
-	// log.Trace("Account created: %s", u.UserName)
-//
-	// // Auto set Admin if first user
-	// if models.CountUsers() == 1 {
-	// 	u.IsAdmin = true
-	// 	u.IsActive = true // bypass email activation
-	// 	if err := models.UpdateUser(u); err != nil {
-	// 		ctx.Handle(500, "UpdateUser", err)
-	// 		return
-	// 	}
-	// }
-	//
-	// ctx.Redirect(setting.AppSubURL + "/user/login")
+	log.Trace("Pushed repository %s to database as %i", repositoryName, u.ID)
+	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + repositoryName)
 }
