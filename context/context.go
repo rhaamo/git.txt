@@ -28,6 +28,9 @@ type Context struct {
 	Session session.Store
 
 	User	*models.User
+	Gitxt   *models.Gitxt
+
+	RepoOwnerUsername  string
 
 	IsLogged	bool
 	IsBasicAuth	bool

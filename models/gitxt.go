@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"dev.sigpipe.me/dashie/git.txt/models/errors"
 )
 
 type Gitxt struct {
@@ -51,4 +52,25 @@ func CreateGitxt(g *Gitxt) (err error) {
 	}
 
 	return sess.Commit()
+}
+
+// GetRepositoryByName returns the repository by given name under user if exists.
+func GetRepositoryByName(user string, name string) (*Gitxt, error) {
+	// First get user
+	u, err := GetUserByName(user)
+	if err != nil {
+		return nil, err
+	}
+
+	repo := &Gitxt{
+		UserID:   u.ID,
+		Hash:	  name,
+	}
+	has, err := x.Get(repo)
+	if err != nil {
+		return nil, err
+	} else if !has {
+		return nil, errors.RepoNotExist{0, u.ID, name}
+	}
+	return repo, nil
 }

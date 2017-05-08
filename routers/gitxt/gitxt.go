@@ -18,6 +18,7 @@ import (
 
 const (
 	NEW = "gitxt/new"
+	VIEW = "gitxt/view"
 )
 
 func New(ctx *context.Context) {
@@ -216,4 +217,18 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	log.Trace("Pushed repository %s to database as %i", repositoryName, u.ID)
 	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + repositoryName)
+}
+
+// View gitxt
+func View(ctx *context.Context) {
+	ctx.Title("gitxt_view.title")
+	ctx.PageIs("GitxtView")
+
+	ctx.Data["repoDescription"] = ctx.Gitxt.Description
+	ctx.Data["repoIsPrivate"] = ctx.Gitxt.IsPrivate
+	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
+
+	// Get the infos from git
+
+	ctx.Success(VIEW)
 }

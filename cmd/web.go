@@ -155,6 +155,8 @@ func runWeb(ctx *cli.Context) error {
 		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
 	}, checkAnonymousCreate)
 
+	m.Get("/:user([0-9a-zA-Z]+)/:hash([0-9a-zA-Z]+)", context.AssignRepository(), gitxt.View)
+
 	// /<username>
 
 	// /gitxt/<sha>
