@@ -27,7 +27,7 @@
         {{range $entryFile := .repoFiles}}
         <div class="gitxt_file">
             <div class="header" id="file_{{$entryFile.Path}}"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a></div>
-            <div class="content">{{$entryFile.Content}}</div>
+            <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
         </div>
         {{end}}
     </div>

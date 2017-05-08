@@ -176,14 +176,6 @@ div.gitxt_file .header {
 }
 
 div.gitxt_file .content {
-    padding: 1em;
-
-    display: block;
-    font-family: monospace;
-    white-space: pre;
-    margin: 1em 0;
-    overflow-x: scroll;
-    overflow-y: hidden;
 }
 
 /* Gitxt new file modal */
@@ -253,4 +245,9 @@ div.gitxts_list div.gitxts_single_list .content {
     padding: 1em;
     display: block;
     margin: 0 0;
+}
+
+/* Revert bootstrap behavior */
+pre {
+    border: none;
 }

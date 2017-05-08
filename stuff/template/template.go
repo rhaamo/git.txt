@@ -13,6 +13,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"container/list"
 	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
+	"dev.sigpipe.me/dashie/git.txt/stuff/template/highlight"
 )
 
 func NewFuncMap() []template.FuncMap {
@@ -78,6 +79,9 @@ func NewFuncMap() []template.FuncMap {
 		"FilenameIsImage": func(filename string) bool {
 			mimeType := mime.TypeByExtension(filepath.Ext(filename))
 			return strings.HasPrefix(mimeType, "image/")
+		},
+		"FilenameToHighlightClass": func(filename string) string {
+			return highlight.FileNameToHighlightClass(filename)
 		},
 	}}
 }
