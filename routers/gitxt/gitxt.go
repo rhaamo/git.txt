@@ -269,11 +269,17 @@ func View(ctx *context.Context) {
 	ctx.Success(VIEW)
 }
 
-func ListForUser(ctx *context.Context) {
+// List uploads, manage auth'ed user or not and from /:user too
+func ListUploads(ctx *context.Context) {
 	ctx.Title("gitxt_list.title")
 	ctx.PageIs("GitxtList")
 
-	ctx.Data["GitxtListIsUser"] = true
+	if ctx.RepoOwnerUsername != "" {
+		ctx.Data["GitxtListIsUser"] = true
+	} else {
+		ctx.Data["GitxtListIsUser"] = false
+	}
+	ctx.Data["RepoOwnerUsername"] = ctx.RepoOwnerUsername
 
 	ctx.Success(LIST)
 }

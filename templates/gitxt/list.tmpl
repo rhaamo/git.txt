@@ -1,5 +1,9 @@
 {{template "base/head" .}}
 
-list of git.txt uploads
+{{if .GitxtListIsUser}}
+<h4>Show uploads for {{.RepoOwnerUsername}}</h4>
+{{else}}
+<h4>Show all uploads</h4>
+{{end}}
 
 {{template "base/footer" .}}

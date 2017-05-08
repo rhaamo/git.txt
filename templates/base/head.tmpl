@@ -46,6 +46,7 @@
                     <li><a href="{{AppSubURL}}/new">New git.txt</a></li>
                 {{end}}
                 {{if .IsLogged}}
+                    <li><a href="{{AppSubURL}}/{{.LoggedUserName}}">My uploads</a></li>
                     <li><a href="{{AppSubURL}}/user/settings">Settings</a></li>
                     <li><a href="{{AppSubURL}}/user/logout">Logout</a></li>
                 {{else}}

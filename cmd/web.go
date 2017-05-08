@@ -5,7 +5,6 @@ import (
 	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"dev.sigpipe.me/dashie/git.txt/routers"
 	"dev.sigpipe.me/dashie/git.txt/bindata"
 	"dev.sigpipe.me/dashie/git.txt/stuff/template"
 	"dev.sigpipe.me/dashie/git.txt/stuff/form"
@@ -129,7 +128,7 @@ func runWeb(ctx *cli.Context) error {
 
 	bindIgnErr := binding.BindIgnErr
 
-	m.Get("/", routers.Home)
+	m.Get("/", gitxt.ListUploads)
 
 	m.Group("/user", func() {
 		m.Group("/login", func() {
@@ -155,7 +154,7 @@ func runWeb(ctx *cli.Context) error {
 		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
 	}, checkAnonymousCreate)
 
-	m.Get("/:user([0-9a-zA-Z]+)", context.AssignUser(), gitxt.ListForUser)
+	m.Get("/:user([0-9a-zA-Z]+)", context.AssignUser(), gitxt.ListUploads)
 	m.Get("/:user([0-9a-zA-Z]+)/:hash([0-9a-zA-Z]+)", context.AssignUser(), context.AssignRepository(), gitxt.View)
 
 	// robots.txt
