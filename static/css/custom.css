@@ -23,6 +23,16 @@ footer .right {
     float: right;
 }
 
+.clear {
+    clear: both;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+
 .form-signin {
     max-width: 330px;
     padding: 15px;

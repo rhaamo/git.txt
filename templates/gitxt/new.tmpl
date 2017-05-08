@@ -14,23 +14,38 @@
 
                 <hr>
 
-                {{range $index, $value := .FilesContent}}
-                    <div class="filename form-group">
-                        <label for="file_{{$index}}_filename" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
-                        <input type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
-                    </div>
-                    <div class="content form-group">
-                        <label for="file_{{$index}}_content" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
-                        <textarea type="text" name="files_content" id="file_{{$index}}_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'>{{index $.FilesContent $index}}</textarea>
-                    </div>
+                <div class="files">
+                    {{range $index, $value := .FilesContent}}
 
-                    {{if gt $index 0}}
-                    <hr>
+                        {{if gt $index 1}}
+                            <hr>
+                        {{end}}
+
+                        <div class="form_{{$index}}" data-id="{{$index}}">
+                            <div class="file_idx">file {{$index}}</div>
+                            <div class="filename form-group">
+                                <label for="file_{{$index}}_filename" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
+                                <input type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
+                            </div>
+                            <div class="content form-group">
+                                <label for="file_{{$index}}_content" class="sr-only">{{$.i18n.Tr "gitxt.description"}}</label>
+                                <textarea type="text" name="files_content" id="file_{{$index}}_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'>{{index $.FilesContent $index}}</textarea>
+                            </div>
+                        </div>
                     {{end}}
-                {{end}}
+                </div>
 
-                <button name="is_public" value="0" class="btn btn-sm btn-warning" type="submit">{{.i18n.Tr "gitxt.save_private"}}</button>
-                <button name="is_public" value="1" class="btn btn-sm btn-success" type="submit">{{.i18n.Tr "gitxt.save_public"}}</button>
+                <hr>
+
+                <div class="form_actions clear">
+                    <div class="left">
+                        <span id="add_new_form" class="btn btn-sm btn-default">{{.i18n.Tr "gitxt.add_new_file"}}</span>
+                    </div>
+                    <div class="right">
+                        <button name="is_public" value="0" class="btn btn-sm btn-warning" type="submit">{{.i18n.Tr "gitxt.save_private"}}</button>
+                        <button name="is_public" value="1" class="btn btn-sm btn-success" type="submit">{{.i18n.Tr "gitxt.save_public"}}</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
