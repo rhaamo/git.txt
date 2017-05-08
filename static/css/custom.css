@@ -3,6 +3,8 @@ body {
     padding-top: 70px;
     padding-bottom: 20px;
     clear: both;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 footer {
@@ -137,4 +139,37 @@ div.page_modal .header {
 
 div.page_modal .content {
     padding: 1em;
+}
+
+
+/* Gitxt views */
+div.gitxt_description {
+    font-size: 16px;
+    word-wrap: break-word;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+div.gitxt_file {
+    margin-top: 1em;
+    display: block;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+}
+
+div.gitxt_file .header {
+    background: #f0f0f0;
+    padding: .5em 1em;
+    margin: 0 0 1em;
+}
+
+div.gitxt_file .content {
+    padding: 1em;
+
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0;
 }

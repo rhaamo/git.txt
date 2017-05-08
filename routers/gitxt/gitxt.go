@@ -14,6 +14,7 @@ import (
 	"gopkg.in/libgit2/git2go.v25"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
 )
 
 const (
@@ -227,8 +228,47 @@ func View(ctx *context.Context) {
 	ctx.Data["repoDescription"] = ctx.Gitxt.Description
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
+	ctx.Data["repoHash"] = ctx.Gitxt.Hash
 
-	// Get the infos from git
+	// Get the files from git
+	var repoSpec = "HEAD"
+	//var repoFiles = make(map[string]string)
+
+	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Hash)
+
+	repo, err := git.OpenRepository(repoPath)
+	if err != nil {
+		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: could not open repository.")
+		ctx.HTML(500, "GitxtView")
+		return
+	}
+
+	// Test if repository is empty
+	isEmpty, err := repo.IsEmpty();
+	if err != nil || isEmpty {
+		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: repository is empty or corrupted")
+		ctx.HTML(500, "GitxtView")
+		return
+	}
+
+	// Get the repository tree
+	repoTreeEntries, err := gite.GetWalkTreeWithContent(repo, "/")
+	if err != nil {
+		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: cannot get repository tree entries")
+		ctx.HTML(500, "GitxtView")
+		return
+
+	}
+
+	//for i := range repoTreeEntries {
+	//	repoFiles[repoTreeEntries[i].Path] = repoTreeEntries[i].Content
+	//}
+
+	ctx.Data["repoSpec"] = repoSpec
+	ctx.Data["repoFiles"] = repoTreeEntries
 
 	ctx.Success(VIEW)
 }
