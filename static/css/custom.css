@@ -200,8 +200,8 @@ div.gitxt_new_file .filename {
     padding: .5em 1em;
 }
 
-div.gitxt_new_file .filename input {
-    width: 20em;
+div.gitxt_new_file .filename .input-group {
+    width: 25em;
 }
 
 div.gitxt_new_file .content {

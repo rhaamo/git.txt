@@ -3,7 +3,7 @@
  */
 
 $(document).on("click", "#add_new_form", function() {
-    console.log("meh");
+    console.log("adding a new file fields");
     // Clone the file template
     let new_file = $("div.files > div").last().clone();
 
@@ -30,4 +30,16 @@ $(document).on("click", "#add_new_form", function() {
 
     // Append to the files
     new_file.appendTo("div.files");
+});
+
+$(document).on("click", ".btn-delete-file", function() {
+    console.log("removing file fields");
+    let parent = $(this).closest(".gitxt_new_file");
+    if ($("div.files > div").length > 1) {
+        parent.remove();
+    } else {
+        $(this).tooltip({title: "not for this one", placement: "right", container: 'body'});
+        $(this).tooltip('show');
+        console.log("nope I won't do that");
+    }
 });
