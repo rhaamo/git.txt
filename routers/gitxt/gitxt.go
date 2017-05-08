@@ -7,6 +7,12 @@ import (
 	// "dev.sigpipe.me/dashie/git.txt/models"
 	"fmt"
 	"strings"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
+	"time"
+	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
+	"os"
+	log "gopkg.in/clog.v1"
+	"gopkg.in/libgit2/git2go.v25"
 )
 
 const (
@@ -64,10 +70,120 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	// Ok we are good
 
 	// 1. Init a bare repository
+	// Craft a repository name from a SHA1 which should be pretty much unique
+	repositoryName := tool.SHA1(time.Now().String() + ctx.Data["CSRFToken"].(string))
 
-	// 2. Create the files
+	var repositoryUser string
+	if ctx.IsLogged {
+		repositoryUser = ctx.Data["LoggedUserName"].(string)
+	} else {
+		repositoryUser = "anonymous"
+	}
 
-	// 3. Commit
+	// git init --blahblah bare
+	repo, err := repository.InitRepository(repositoryUser, repositoryName)
+	if err != nil {
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_repository_error")
+
+		// Get repository path and remove it from filesystem
+		RepoPath := repository.RepoPath(repositoryUser, repositoryName)
+		if err := os.RemoveAll(RepoPath); err != nil {
+			log.Warn("Cannot remove repository '%s': %s", RepoPath, err)
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_and_remove_repository_error")
+		}
+
+		log.Trace("Repository deleted: %s for %s", repositoryName, repositoryUser)
+
+		ctx.Success(NEW)
+		return
+	}
+
+	log.Trace("Repository created: %s for %s", repositoryName, repositoryUser)
+
+	// 2. 3. Create the files and commit
+
+	// Create the blobs objects
+	// git whatever create blob
+	var blobs []*git.Oid
+	for i := range f.FilesFilename {
+		blob, err := repo.CreateBlobFromBuffer([]byte(f.FilesContent[i]))
+		if err != nil {
+			log.Warn("init_error_create_blob: %s", err)
+			ctx.Data["HasError"] = true
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_create_blob")
+			ctx.Success(NEW)
+			return
+		}
+		blobs = append(blobs, blob)
+	}
+
+	//
+	repoIndex, err := repo.Index()
+	if err != nil {
+		log.Warn("init_error_get_index: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_get_index")
+		ctx.Success(NEW)
+		return
+	}
+
+	// Add the blobs to the index
+	// git update-index --add --cacheinfo 100644 "$BLOB_ID" "myfile.txt"
+	for i := range f.FilesFilename {
+		indexEntry := &git.IndexEntry{
+			Path: f.FilesFilename[i],
+			Mode: git.FilemodeBlob,
+			Id: blobs[i],
+		}
+		if repoIndex.Add(indexEntry) != nil {
+			log.Warn("init_error_add_entry: %s", err)
+			ctx.Data["HasError"] = true
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_add_entry")
+			ctx.Success(NEW)
+			return
+		}
+	}
+
+	// Write the new tree
+	// TREE_ID=$(git write-tree)
+	repoTreeOid, err := repoIndex.WriteTree()
+	if err != nil {
+		log.Warn("init_error_index_write_tree: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_index_write_tree")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// Get latest tree
+	repoTree, err := repo.LookupTree(repoTreeOid)
+	if err != nil {
+		log.Warn("init_error_lookup_tree: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_lookup_tree")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// NEW_COMMIT=$(echo "My commit message" | git commit-tree "$TREE_ID" -p "$PARENT_COMMIT")
+	ruAuthor := &git.Signature{
+		Name: repositoryUser,
+		Email: "autocommit@git.txt",
+	}
+	_, err = repo.CreateCommit("HEAD", ruAuthor, ruAuthor, "First autocommit from git.txt", repoTree)
+	if err != nil {
+		log.Warn("init_error_commit: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_commit")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// git update-ref "refs/heads/$MY_BRANCH" "$NEW_COMMIT" "$PARENT_COMMIT"
 
 	// 4. Insert info in database
 
