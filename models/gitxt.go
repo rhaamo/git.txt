@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
+	"github.com/go-xorm/xorm"
+	"fmt"
 )
 
 type Gitxt struct {
@@ -22,6 +24,11 @@ type Gitxt struct {
 
 	// Relations
 	// 	UserID
+}
+
+type GitxtWithUser struct {
+	User	`xorm:"extends"`
+	Gitxt	`xorm:"extends"`
 }
 
 // IsHashUsed checks if given hash exist,
@@ -73,4 +80,43 @@ func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 		return nil, errors.RepoNotExist{0, u.ID, name}
 	}
 	return repo, nil
+}
+
+type GitxtOptions struct {
+	UserID	int64
+	WithPrivate	bool
+	GetAll		bool
+	Page		int
+	PageSize	int
+}
+
+// Get gitxts
+func GetGitxts(opts *GitxtOptions) (gitxts []*GitxtWithUser, _ int64, _ error) {
+	if opts.Page <= 0 {
+		opts.Page = 1
+	}
+	gitxts = make([]*GitxtWithUser, 0, opts.PageSize)
+
+	sess := x.Where("is_private=?", false)
+
+	if opts.WithPrivate && !opts.GetAll {
+		sess.Or("is_private=?", true)
+	}
+
+	if !opts.GetAll {
+		sess.And("user_id=?", opts.UserID)
+	}
+
+	sess.Desc("gitxt.updated_unix")
+
+	var countSess xorm.Session
+	countSess = *sess
+	count, err := countSess.Count(new(Gitxt))
+	if err != nil {
+		return nil, 0, fmt.Errorf("Count: %v", err)
+	}
+
+	sess.Table(&Gitxt{}).Join("LEFT", "user", "gitxt.user_id = user.id")
+
+	return gitxts, count, sess.Limit(opts.PageSize, (opts.Page-1)*opts.PageSize).Find(&gitxts)
 }

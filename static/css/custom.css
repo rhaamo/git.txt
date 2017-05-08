@@ -222,3 +222,33 @@ div.gitxt_new_form_actions {
     border-top: solid rgba(34, 36, 38, .15) 1px;
     padding-top: 1em;
 }
+
+div.gitxts_list {
+
+}
+
+div.gitxts_list div.gitxts_single_list {
+    margin-top: 1em;
+    display: block;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+    margin-bottom: 2em;
+}
+
+div.gitxts_list div.gitxts_single_list .icon-privacy {
+    width: 1em;
+    display: inline-block;
+}
+
+div.gitxts_list div.gitxts_single_list .header {
+    background: #f0f0f0;
+    padding: .5em 1em;
+}
+
+div.gitxts_list div.gitxts_single_list .content {
+    padding: 1em;
+    display: block;
+    margin: 0 0;
+}

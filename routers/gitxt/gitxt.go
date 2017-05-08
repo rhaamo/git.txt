@@ -274,12 +274,45 @@ func ListUploads(ctx *context.Context) {
 	ctx.Title("gitxt_list.title")
 	ctx.PageIs("GitxtList")
 
+	page := ctx.QueryInt("page")
+	if page <= 0 {
+		page = 1
+	}
+	ctx.Data["PageNumber"] = page
+
+	opts := &models.GitxtOptions{
+		PageSize: 10,	// TODO: put this in config
+		Page: page,
+	}
+
+	if ctx.Data["GetAll"] != nil {
+		opts.GetAll = true
+	}
+
 	if ctx.RepoOwnerUsername != "" {
 		ctx.Data["GitxtListIsUser"] = true
+		opts.UserID = ctx.GitxtUser.ID
 	} else {
 		ctx.Data["GitxtListIsUser"] = false
 	}
 	ctx.Data["RepoOwnerUsername"] = ctx.RepoOwnerUsername
+
+	if ctx.IsLogged {
+		opts.WithPrivate = true
+	} else {
+		opts.WithPrivate = false
+	}
+
+	listOfGitxts, gitxtsCount, err := models.GetGitxts(opts)
+	if err != nil {
+		log.Warn("Cannot get Gitxts with opts %v, %s", opts, err)
+		ctx.Flash.Error("Error while getting list of Gitxts")
+		ctx.Handle(500, "ListUploads", err)
+		return
+	}
+
+	ctx.Data["gitxts"] = listOfGitxts
+	ctx.Data["gitxts_count"] = gitxtsCount
 
 	ctx.Success(LIST)
 }

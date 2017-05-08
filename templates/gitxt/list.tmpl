@@ -6,4 +6,24 @@
 <h4>Show all uploads</h4>
 {{end}}
 
+<div class="gitxts_list">
+{{range $gitxt := .gitxts}}
+    <div class="gitxts_single_list">
+        <div class="header">
+            <span class="icon-privacy">
+                {{if $gitxt.IsPrivate}}<i class="fa fa-lock" aria-hidden="true"></i>{{end}}
+            </span>
+            <a href="{{AppSubURL}}/{{$gitxt.User.UserName}}">{{$gitxt.User.UserName}}</a>&nbsp;/&nbsp;<a href="{{AppSubURL}}/{{$gitxt.User.UserName}}/{{$gitxt.Hash}}">{{$gitxt.Hash}}</a>
+        </div>
+        <div class="content">
+            {{if $gitxt.Description}}
+                {{$gitxt.Description}}
+            {{else}}
+                No description.
+            {{end}}
+        </div>
+    </div>
+{{end}}
+</div>
+
 {{template "base/footer" .}}

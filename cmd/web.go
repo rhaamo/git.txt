@@ -128,7 +128,9 @@ func runWeb(ctx *cli.Context) error {
 
 	bindIgnErr := binding.BindIgnErr
 
-	m.Get("/", gitxt.ListUploads)
+	m.Get("/", func(ctx *context.Context) {
+		ctx.Data["GetAll"] = true
+	}, gitxt.ListUploads)
 
 	m.Group("/user", func() {
 		m.Group("/login", func() {
