@@ -155,13 +155,8 @@ func runWeb(ctx *cli.Context) error {
 		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
 	}, checkAnonymousCreate)
 
-	m.Get("/:user([0-9a-zA-Z]+)/:hash([0-9a-zA-Z]+)", context.AssignRepository(), gitxt.View)
-
-	// /<username>
-
-	// /gitxt/<sha>
-	// /gitxt/<sha>/...
-
+	m.Get("/:user([0-9a-zA-Z]+)", context.AssignUser(), gitxt.ListForUser)
+	m.Get("/:user([0-9a-zA-Z]+)/:hash([0-9a-zA-Z]+)", context.AssignUser(), context.AssignRepository(), gitxt.View)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

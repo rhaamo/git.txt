@@ -20,6 +20,7 @@ import (
 const (
 	NEW = "gitxt/new"
 	VIEW = "gitxt/view"
+	LIST = "gitxt/list"
 )
 
 func New(ctx *context.Context) {
@@ -232,7 +233,6 @@ func View(ctx *context.Context) {
 
 	// Get the files from git
 	var repoSpec = "HEAD"
-	//var repoFiles = make(map[string]string)
 
 	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Hash)
 
@@ -263,12 +263,17 @@ func View(ctx *context.Context) {
 
 	}
 
-	//for i := range repoTreeEntries {
-	//	repoFiles[repoTreeEntries[i].Path] = repoTreeEntries[i].Content
-	//}
-
 	ctx.Data["repoSpec"] = repoSpec
 	ctx.Data["repoFiles"] = repoTreeEntries
 
 	ctx.Success(VIEW)
+}
+
+func ListForUser(ctx *context.Context) {
+	ctx.Title("gitxt_list.title")
+	ctx.PageIs("GitxtList")
+
+	ctx.Data["GitxtListIsUser"] = true
+
+	ctx.Success(LIST)
 }

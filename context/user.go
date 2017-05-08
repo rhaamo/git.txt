@@ -6,21 +6,20 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 )
 
-func AssignRepository() macaron.Handler {
+func AssignUser() macaron.Handler {
 	return func(ctx *Context) {
 		userName := ctx.Params("user")
-		repoHash := ctx.Params("hash")
-		repo, err := models.GetRepositoryByName(userName, repoHash)
+		user, err := models.GetUserByName(userName)
 		if err != nil {
-			if errors.IsRepoNotExist(err) {
+			if errors.IsUserNotExist(err) {
 				ctx.NotFound()
 			} else {
-				ctx.Handle(500, "GetRepositoryByName", err)
+				ctx.Handle(500, "GetUserByName", err)
 			}
 			return
 		}
 
-		ctx.Gitxt = repo
+		ctx.GitxtUser = user
 		ctx.RepoOwnerUsername = userName
 	}
 }

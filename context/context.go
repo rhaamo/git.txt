@@ -27,8 +27,9 @@ type Context struct {
 	Flash   *session.Flash
 	Session session.Store
 
-	User	*models.User
-	Gitxt   *models.Gitxt
+	User	*models.User	// logged in user
+	Gitxt   *models.Gitxt	// repository from URL
+	GitxtUser  *models.User	// user from URL
 
 	RepoOwnerUsername  string
 
