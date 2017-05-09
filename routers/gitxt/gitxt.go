@@ -21,6 +21,7 @@ const (
 	NEW = "gitxt/new"
 	VIEW = "gitxt/view"
 	LIST = "gitxt/list"
+	EDIT = "gitxt/edit"
 )
 
 func New(ctx *context.Context) {
@@ -232,19 +233,19 @@ func View(ctx *context.Context) {
 	ctx.Title("gitxt_view.title")
 	ctx.PageIs("GitxtView")
 
-	ctx.Data["repoDescription"] = ctx.Gitxt.Description
-	ctx.Data["repoIsPrivate"] = ctx.Gitxt.IsPrivate
+	ctx.Data["repoDescription"] = ctx.Gitxt.Gitxt.Description
+	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
-	ctx.Data["repoHash"] = ctx.Gitxt.Hash
+	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
 
 	// Get the files from git
 	var repoSpec = "HEAD"
 
-	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Hash)
+	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Gitxt.Hash)
 
 	repo, err := git.OpenRepository(repoPath)
 	if err != nil {
-		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Hash, err)
+		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: could not open repository.")
 		ctx.Handle(500, "GitxtView", err)
 		return
@@ -253,7 +254,7 @@ func View(ctx *context.Context) {
 	// Test if repository is empty
 	isEmpty, err := repo.IsEmpty();
 	if err != nil || isEmpty {
-		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Hash, err)
+		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: repository is empty or corrupted")
 		ctx.Handle(500, "GitxtView", err)
 		return
@@ -262,7 +263,7 @@ func View(ctx *context.Context) {
 	// Get the repository tree
 	repoTreeEntries, err := gite.GetWalkTreeWithContent(repo, "/")
 	if err != nil {
-		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Hash, err)
+		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error("Error: cannot get repository tree entries")
 		ctx.Handle(500, "GitxtView", err)
 		return
@@ -271,6 +272,7 @@ func View(ctx *context.Context) {
 
 	ctx.Data["repoSpec"] = repoSpec
 	ctx.Data["repoFiles"] = repoTreeEntries
+	ctx.Data["IsOwner"] = ctx.Gitxt.Owner
 
 	ctx.Success(VIEW)
 }
@@ -297,7 +299,7 @@ func ListUploads(ctx *context.Context) {
 
 	if ctx.RepoOwnerUsername != "" {
 		ctx.Data["GitxtListIsUser"] = true
-		opts.UserID = ctx.GitxtUser.ID
+		opts.UserID = ctx.Gitxt.User.ID
 	} else {
 		ctx.Data["GitxtListIsUser"] = false
 	}
@@ -331,4 +333,58 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 		})
 		return
 	}
+
+	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
+		ctx.JSONSuccess(map[string]interface{}{
+			"error": "Unauthorized",
+			"redirect": false,
+		})
+	}
+}
+
+func Edit(ctx *context.Context) {
+	ctx.Title("gitxt_edit.title")
+	ctx.PageIs("GitxtEdit")
+
+	ctx.Data["repoDescription"] = ctx.Gitxt.Gitxt.Description
+	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
+	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
+	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
+
+	// Get the files from git
+	var repoSpec = "HEAD"
+
+	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Gitxt.Hash)
+
+	repo, err := git.OpenRepository(repoPath)
+	if err != nil {
+		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: could not open repository.")
+		ctx.Handle(500, "GitxtView", err)
+		return
+	}
+
+	// Test if repository is empty
+	isEmpty, err := repo.IsEmpty();
+	if err != nil || isEmpty {
+		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: repository is empty or corrupted")
+		ctx.Handle(500, "GitxtView", err)
+		return
+	}
+
+	// Get the repository tree
+	repoTreeEntries, err := gite.GetWalkTreeWithContent(repo, "/")
+	if err != nil {
+		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		ctx.Flash.Error("Error: cannot get repository tree entries")
+		ctx.Handle(500, "GitxtView", err)
+		return
+
+	}
+
+	ctx.Data["repoSpec"] = repoSpec
+	ctx.Data["repoFiles"] = repoTreeEntries
+
+	ctx.Success(EDIT)
 }

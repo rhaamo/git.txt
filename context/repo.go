@@ -6,6 +6,13 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 )
 
+type Gitxt struct {
+	User	*models.User
+	Gitxt	*models.Gitxt
+	Owner	bool
+	UserName	string
+}
+
 func AssignRepository() macaron.Handler {
 	return func(ctx *Context) {
 		userName := ctx.Params("user")
@@ -20,7 +27,8 @@ func AssignRepository() macaron.Handler {
 			return
 		}
 
-		ctx.Gitxt = repo
-		ctx.RepoOwnerUsername = userName
+		ctx.Gitxt.Gitxt = repo
+		ctx.Gitxt.UserName = userName
+		ctx.Gitxt.Owner = ctx.Gitxt.User.ID == ctx.Gitxt.Gitxt.UserID
 	}
 }

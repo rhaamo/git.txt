@@ -19,7 +19,7 @@ func AssignUser() macaron.Handler {
 			return
 		}
 
-		ctx.GitxtUser = user
+		ctx.Gitxt.User = user
 		ctx.RepoOwnerUsername = userName
 	}
 }

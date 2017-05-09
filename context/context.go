@@ -28,8 +28,7 @@ type Context struct {
 	Session session.Store
 
 	User	*models.User	// logged in user
-	Gitxt   *models.Gitxt	// repository from URL
-	GitxtUser  *models.User	// user from URL
+	Gitxt   *Gitxt
 
 	RepoOwnerUsername  string
 
@@ -150,6 +149,7 @@ func Contexter() macaron.Handler {
 			csrf:    x,
 			Flash:   f,
 			Session: sess,
+			Gitxt: &Gitxt{},
 		}
 
 		if len(setting.HTTP.AccessControlAllowOrigin) > 0 {

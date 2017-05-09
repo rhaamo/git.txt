@@ -149,7 +149,7 @@ func runWeb(ctx *cli.Context) error {
 
 	m.Group("/user", func() {
 		m.Get("/logout", user.Logout)
-	})
+	}, reqSignIn)
 
 	m.Group("/new", func() {
 		m.Get("", gitxt.New)
@@ -158,7 +158,8 @@ func runWeb(ctx *cli.Context) error {
 
 	m.Get("/:user", context.AssignUser(), gitxt.ListUploads)
 	m.Get("/:user/:hash", context.AssignUser(), context.AssignRepository(), gitxt.View)
-	m.Post("/:user/:hash/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost)
+	m.Post("/:user/:hash/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost, reqSignIn)
+	m.Get("/:user/:hash/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {
