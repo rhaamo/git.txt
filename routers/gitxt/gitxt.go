@@ -346,7 +346,7 @@ func Edit(ctx *context.Context) {
 	ctx.Title("gitxt_edit.title")
 	ctx.PageIs("GitxtEdit")
 
-	ctx.Data["repoDescription"] = ctx.Gitxt.Gitxt.Description
+	ctx.Data["description"] = ctx.Gitxt.Gitxt.Description
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
 	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
@@ -384,7 +384,17 @@ func Edit(ctx *context.Context) {
 	}
 
 	ctx.Data["repoSpec"] = repoSpec
-	ctx.Data["repoFiles"] = repoTreeEntries
+
+	var FilesContent []string
+	var FilesFilename []string
+
+	for i := range repoTreeEntries {
+		FilesContent = append(FilesContent, repoTreeEntries[i].Content)
+		FilesFilename = append(FilesFilename, repoTreeEntries[i].Path)
+	}
+
+	ctx.Data["FilesContent"] = FilesContent
+	ctx.Data["FilesFilename"] = FilesFilename
 
 	ctx.Success(EDIT)
 }

@@ -1,0 +1,46 @@
+{{template "base/head" .}}
+
+<form class="form" action="{{.Link}}" method="post">
+    {{.CSRFTokenHTML}}
+
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="content">
+                <div class="description form-group {{if .Err_Description}}has-error{{end}}">
+                    <label for="description" class="sr-only">{{.i18n.Tr "gitxt.description"}}</label>
+                    <input type="text" name="description" id="description" class="form-control" value="{{.description}}" placeholder='{{.i18n.Tr "gitxt.description_placeholder"}}'>
+                </div>
+
+                <div class="files">
+                    {{range $index, $value := .FilesContent}}
+                        <div class="form_{{$index}} gitxt_new_file" data-id="{{$index}}">
+                            <div class="filename">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-file-code-o" aria-hidden="true"></i></div>
+                                    <input type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
+                                    <div class="input-group-addon btn btn-delete-file"><i class="fa fa-remove" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+
+                            <div class="content form-group">
+                                <textarea rows="15" type="text" name="files_content" id="file_{{$index}}_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'>{{index $.FilesContent $index}}</textarea>
+                            </div>
+                        </div>
+                    {{end}}
+                </div>
+
+                <div class="gitxt_new_form_actions clear">
+                    <div class="left">
+                        <span id="add_new_form" class="btn btn-sm btn-default">{{.i18n.Tr "gitxt.add_new_file"}}</span>
+                    </div>
+                    <div class="right">
+                        <button class="btn btn-xs btn-{{if .repoIsPrivate}}warning{{else}}success{{end}}">Update {{if .repoIsPrivate}}private{{else}}public{{end}} upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{{template "base/footer" .}}
