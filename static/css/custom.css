@@ -250,4 +250,5 @@ div.gitxts_list div.gitxts_single_list .content {
 /* Revert bootstrap behavior */
 pre {
     border: none;
+    background-color: transparent;
 }

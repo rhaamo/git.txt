@@ -7,6 +7,10 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <meta name="_csrf" content="{{.CSRFToken}}" />
+    <meta name="_suburl" content="{{AppSubURL}}" />
+
     <link rel="icon" href="{{AppSubURL}}/favicon.ico">
 
     <title>{{ .Title }}</title>

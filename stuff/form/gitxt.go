@@ -5,6 +5,7 @@ import (
 	"github.com/go-macaron/binding"
 )
 
+/* New Gitxt */
 type Gitxt struct {
 	Description string `binding:"MaxSize(255)"`
 	IsPublic    bool   `binding:"Default:1"`
@@ -15,5 +16,15 @@ type Gitxt struct {
 }
 
 func (f *Gitxt) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
+	return validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+/* Delete Gitxt */
+type GitxtDelete struct {
+	Hash    string   `binding:"Required"`
+	Owner    string   `binding:"Required"`
+}
+
+func (f *GitxtDelete) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }

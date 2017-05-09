@@ -137,12 +137,12 @@ func runWeb(ctx *cli.Context) error {
 			m.Combo("").Get(user.Login).Post(bindIgnErr(form.Login{}), user.LoginPost)
 		})
 		m.Get("/register", user.Register)
-		m.Post("/register", bindIgnErr(form.Register{}), user.RegisterPost)
+		m.Post("/register", csrf.Validate, bindIgnErr(form.Register{}), user.RegisterPost)
 	}, reqSignOut)
 
 	m.Group("/user/settings", func() {
 		m.Get("", user.Settings)
-		m.Post("", bindIgnErr(form.UpdateSettingsProfile{}), user.SettingsPost)
+		m.Post("", csrf.Validate, bindIgnErr(form.UpdateSettingsProfile{}), user.SettingsPost)
 	}, reqSignIn, func(ctx *context.Context) {
 		ctx.Data["PageIsUserSettings"] = true
 	})
@@ -153,11 +153,12 @@ func runWeb(ctx *cli.Context) error {
 
 	m.Group("/new", func() {
 		m.Get("", gitxt.New)
-		m.Post("", bindIgnErr(form.Gitxt{}), gitxt.NewPost)
+		m.Post("", csrf.Validate, bindIgnErr(form.Gitxt{}), gitxt.NewPost)
 	})
 
 	m.Get("/:user", context.AssignUser(), gitxt.ListUploads)
 	m.Get("/:user/:hash", context.AssignUser(), context.AssignRepository(), gitxt.View)
+	m.Post("/:user/:hash/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

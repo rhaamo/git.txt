@@ -1,15 +1,17 @@
 {{template "base/head" .}}
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-lg-offset-1">
         <h4>
-            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
             {{if .repoIsPrivate}}
             <span class="label label-warning" title="private git.txt">private</span>
             {{end}}
+            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
         </h4>
     </div>
-    <div class="col-lg-4"></div>
+    <div class="col-lg-1 col-lg-offset-2">
+        <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">Delete</a>
+    </div>
 </div>
 
 <div class="row">

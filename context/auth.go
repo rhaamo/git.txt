@@ -5,6 +5,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"github.com/go-macaron/csrf"
 	"net/url"
+	log "gopkg.in/clog.v1"
 )
 
 type ToggleOptions struct {
@@ -23,7 +24,9 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 			return
 		}
 
+		log.Trace("SignOutRequired: %s, DisableCSRF: %s, Req Method: %s", options.SignOutRequired, options.DisableCSRF, ctx.Req.Method)
 		if !options.SignOutRequired && !options.DisableCSRF && ctx.Req.Method == "POST" {
+			log.Trace("Validating CSRF")
 			csrf.Validate(ctx.Context, ctx.csrf)
 			if ctx.Written() {
 				return

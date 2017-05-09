@@ -322,3 +322,13 @@ func ListUploads(ctx *context.Context) {
 
 	ctx.Success(LIST)
 }
+
+func DeletePost(ctx *context.Context, f form.GitxtDelete) {
+	if ctx.HasError() {
+		ctx.JSONSuccess(map[string]interface{}{
+			"error": ctx.Data["ErrorMsg"],
+			"redirect": false,
+		})
+		return
+	}
+}
