@@ -159,7 +159,8 @@ func runWeb(ctx *cli.Context) error {
 	m.Get("/:user", context.AssignUser(), gitxt.ListUploads)
 	m.Get("/:user/:hash", context.AssignUser(), context.AssignRepository(), gitxt.View)
 	m.Post("/:user/:hash/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost, reqSignIn)
-	m.Get("/:user/:hash/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit)
+	m.Get("/:user/:hash/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit, reqSignIn)
+	m.Post("/:user/:hash/edit", csrf.Validate, context.AssignUser(), context.AssignRepository(), bindIgnErr(form.GitxtEdit{}), gitxt.EditPost, reqSignIn)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

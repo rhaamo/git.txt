@@ -95,13 +95,13 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	repo, err := repository.InitRepository(repositoryUser, repositoryName)
 	if err != nil {
 		ctx.Data["HasError"] = true
-		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_repository_error")
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_init_repository")
 
 		// Get repository path and remove it from filesystem
 		RepoPath := repository.RepoPath(repositoryUser, repositoryName)
 		if err := os.RemoveAll(RepoPath); err != nil {
 			log.Warn("Cannot remove repository '%s': %s", RepoPath, err)
-			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_and_remove_repository_error")
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_remove_repository")
 		}
 
 		log.Trace("Repository deleted: %s for %s", repositoryName, repositoryUser)
@@ -122,7 +122,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		if err != nil {
 			log.Warn("init_error_create_blob: %s", err)
 			ctx.Data["HasError"] = true
-			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_create_blob")
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
 			ctx.Success(NEW)
 			return
 		}
@@ -134,7 +134,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	if err != nil {
 		log.Warn("init_error_get_index: %s", err)
 		ctx.Data["HasError"] = true
-		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_get_index")
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_index")
 		ctx.Success(NEW)
 		return
 	}
@@ -150,7 +150,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		if repoIndex.Add(indexEntry) != nil {
 			log.Warn("init_error_add_entry: %s", err)
 			ctx.Data["HasError"] = true
-			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_add_entry")
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
 			ctx.Success(NEW)
 			return
 		}
@@ -162,7 +162,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	if err != nil {
 		log.Warn("init_error_index_write_tree: %s", err)
 		ctx.Data["HasError"] = true
-		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_index_write_tree")
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_index_write_tree")
 		ctx.Success(NEW)
 		return
 
@@ -173,7 +173,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	if err != nil {
 		log.Warn("init_error_lookup_tree: %s", err)
 		ctx.Data["HasError"] = true
-		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_lookup_tree")
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_lookup_tree")
 		ctx.Success(NEW)
 		return
 
@@ -188,7 +188,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	if err != nil {
 		log.Warn("init_error_commit: %s", err)
 		ctx.Data["HasError"] = true
-		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.init_error_commit")
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_commit")
 		ctx.Success(NEW)
 		return
 
@@ -346,6 +346,12 @@ func Edit(ctx *context.Context) {
 	ctx.Title("gitxt_edit.title")
 	ctx.PageIs("GitxtEdit")
 
+	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
+		ctx.Flash.Error("Unauthorized")
+		ctx.Redirect(setting.AppSubURL + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
+		return
+	}
+
 	ctx.Data["description"] = ctx.Gitxt.Gitxt.Description
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
@@ -397,4 +403,198 @@ func Edit(ctx *context.Context) {
 	ctx.Data["FilesFilename"] = FilesFilename
 
 	ctx.Success(EDIT)
+}
+
+func EditPost(ctx *context.Context, f form.GitxtEdit) {
+	if !ctx.IsLogged {
+		ctx.Redirect(setting.AppSubURL + "/")
+		return
+	}
+
+	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
+		ctx.Flash.Error("Unauthorized")
+		ctx.Redirect(setting.AppSubURL + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
+		return
+	}
+
+	ctx.Title("gitxt_edit.title")
+	ctx.PageIs("GitxtEditPost")
+
+	if ctx.HasError() {
+		ctx.Success(NEW)
+		return
+	}
+
+	for i := range f.FilesFilename {
+		// For each filename sanitize it
+		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
+		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
+			// If length is zero, use default filename
+			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
+		}
+	}
+
+	for i := range f.FilesContent {
+		if len(strings.TrimSpace(f.FilesContent[i])) <= 0 {
+			ctx.Data[fmt.Sprintf("Err_FilesContent_%d", i)] = ctx.Tr("gitxt_new.error_files_content")
+			ctx.Data["HasError"] = true
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.files_content_cannot_empty")
+		}
+	}
+
+	// Since the validation of slices doesn't works in bindings, manually update context
+	ctx.Data["FilesFilename"] = f.FilesFilename
+	ctx.Data["FilesContent"] = f.FilesContent
+
+	// We got an error in the manual validation step, render with error
+	if ctx.HasError() {
+		//ctx.RenderWithErr(ctx.Tr("gitxt_new.error_plz_correct"), NEW, &f)
+		ctx.Success(NEW)
+		return
+	}
+
+	// Ok we are good
+
+	repositoryUser := ctx.Gitxt.User.UserName
+	repositoryHash := ctx.Gitxt.Gitxt.Hash
+
+	repoPath := repository.RepoPath(repositoryUser, repositoryHash)
+
+	repo, err := git.OpenRepository(repoPath)
+	if err != nil {
+		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		ctx.Flash.Error(ctx.Tr("gitxt_git.could_not_open"))
+		ctx.Handle(500, "GitxtEditPost", err)
+		return
+	}
+
+	// Test if repository is empty
+	isEmpty, err := repo.IsEmpty();
+	if err != nil || isEmpty {
+		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
+		ctx.Handle(500, "GitxtEditPost", err)
+		return
+	}
+
+	// git whatever create blob
+	var blobs []*git.Oid
+	for i := range f.FilesFilename {
+		blob, err := repo.CreateBlobFromBuffer([]byte(f.FilesContent[i]))
+		if err != nil {
+			log.Warn("init_error_create_blob: %s", err)
+			ctx.Data["HasError"] = true
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
+			ctx.Success(NEW)
+			return
+		}
+		blobs = append(blobs, blob)
+	}
+
+	//
+	repoIndex, err := repo.Index()
+	if err != nil {
+		log.Warn("init_error_get_index: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_index")
+		ctx.Success(NEW)
+		return
+	}
+
+	// Add the blobs to the index
+	// git update-index --add --cacheinfo 100644 "$BLOB_ID" "myfile.txt"
+	for i := range f.FilesFilename {
+		indexEntry := &git.IndexEntry{
+			Path: f.FilesFilename[i],
+			Mode: git.FilemodeBlob,
+			Id: blobs[i],
+		}
+		if repoIndex.Add(indexEntry) != nil {
+			log.Warn("init_error_add_entry: %s", err)
+			ctx.Data["HasError"] = true
+			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
+			ctx.Success(NEW)
+			return
+		}
+	}
+
+	// Write the new tree
+	// TREE_ID=$(git write-tree)
+	repoTreeOid, err := repoIndex.WriteTree()
+	if err != nil {
+		log.Warn("init_error_index_write_tree: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_index_write_tree")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// Get latest tree
+	repoTree, err := repo.LookupTree(repoTreeOid)
+	if err != nil {
+		log.Warn("init_error_lookup_tree: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_lookup_tree")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// Get repo head
+	repoHead, err := repo.Head()
+	if err != nil {
+		log.Warn("git_error_get_head: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_head")
+		ctx.Success(NEW)
+		return
+	}
+
+	// Get latest commit
+	headCommit, err := repo.LookupCommit(repoHead.Target())
+	if err != nil {
+		log.Warn("git_error_get_head_commit: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_head_commit")
+		ctx.Success(NEW)
+		return
+	}
+
+	// NEW_COMMIT=$(echo "My commit message" | git commit-tree "$TREE_ID" -p "$PARENT_COMMIT")
+	ruAuthor := &git.Signature{
+		Name: repositoryUser,
+		Email: "autocommit@git.txt",
+	}
+	_, err = repo.CreateCommit("HEAD", ruAuthor, ruAuthor, "Autocommit from git.txt", repoTree, headCommit)
+	if err != nil {
+		log.Warn("init_error_commit: %s", err)
+		ctx.Data["HasError"] = true
+		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_commit")
+		ctx.Success(NEW)
+		return
+
+	}
+
+	// git update-ref "refs/heads/$MY_BRANCH" "$NEW_COMMIT" "$PARENT_COMMIT"
+
+	// 4. Insert info in database
+	u := &models.Gitxt{
+		Hash: ctx.Gitxt.Gitxt.Hash,
+		Description: f.Description,
+	}
+
+	if err := models.UpdateGitxt(u); err != nil {
+		switch {
+		default:
+			ctx.Handle(500, "EditPost", err)
+		}
+		return
+	}
+
+	// 5. Return render to gitxt view page
+
+	log.Trace("Edit Pushed repository %s - %i", ctx.Gitxt.Gitxt.Hash, u.ID)
+	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + ctx.Gitxt.Gitxt.Hash)
+
 }

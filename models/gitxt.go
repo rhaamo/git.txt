@@ -120,3 +120,13 @@ func GetGitxts(opts *GitxtOptions) (gitxts []*GitxtWithUser, _ int64, _ error) {
 
 	return gitxts, count, sess.Limit(opts.PageSize, (opts.Page-1)*opts.PageSize).Find(&gitxts)
 }
+
+// Update a Gitxt
+func updateGitxt(e Engine, u *Gitxt) error {
+	_, err := e.Id(u.ID).AllCols().Update(u)
+	return err
+}
+
+func UpdateGitxt(u *Gitxt) error {
+	return updateGitxt(x, u)
+}

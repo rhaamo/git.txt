@@ -28,3 +28,16 @@ type GitxtDelete struct {
 func (f *GitxtDelete) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }
+
+/* Edit Gitxt */
+type GitxtEdit struct {
+	Description string `binding:"MaxSize(255)"`
+	// Validation builtin into Macaron/Binding doesn't validates theses slices
+	// See the router view for manual validation
+	FilesFilename	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
+	FilesContent	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
+}
+
+func (f *GitxtEdit) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
+	return validate(errs, ctx.Data, f, ctx.Locale)
+}
