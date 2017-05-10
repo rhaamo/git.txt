@@ -95,6 +95,10 @@ func (ctx *Context) Handle(status int, title string, err error) {
 	ctx.HTML(status, fmt.Sprintf("status/%d", status))
 }
 
+func (ctx *Context) HandleText(status int, title string) {
+	ctx.PlainText(status, []byte(title))
+}
+
 // NotFound renders the 404 page.
 func (ctx *Context) NotFound() {
 	ctx.Handle(http.StatusNotFound, "", nil)

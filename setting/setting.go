@@ -72,6 +72,8 @@ var (
 
 	// Repository settings
 	RepositoryRoot	string
+	DisableHttpGit	bool
+	GitBinary	string
 
 	// Session settings
 	SessionConfig  session.Options
@@ -219,6 +221,8 @@ func InitConfig() {
 
 	sec = Cfg.Section("repository")
 	RepositoryRoot = sec.Key("ROOT").MustString(path.Join(homeDir, "gitxt-repositories"))
+	DisableHttpGit = sec.Key("DISABLE_HTTP_GIT").MustBool(false)
+	GitBinary = sec.Key("GIT_BINARY").MustString("git")
 
 	sec = Cfg.Section("security")
 	SecretKey = sec.Key("SECRET_KEY").String()

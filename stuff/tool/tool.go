@@ -6,6 +6,8 @@ import (
 	"crypto/md5"
 	"math/big"
 	"crypto/rand"
+	"strings"
+	"encoding/base64"
 )
 
 const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -62,4 +64,20 @@ func randomInt(max *big.Int) (int, error) {
 	}
 
 	return int(rand.Int64()), nil
+}
+
+// BasicAuthDecode decodes username and password portions of HTTP Basic Authentication
+// from encoded content.
+func BasicAuthDecode(encoded string) (string, string, error) {
+	s, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		return "", "", err
+	}
+	auth := strings.SplitN(string(s), ":", 2)
+	return auth[0], auth[1], nil
+}
+
+// BasicAuthEncode encodes username and password in HTTP Basic Authentication format.
+func BasicAuthEncode(username, password string) string {
+	return base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 }

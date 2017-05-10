@@ -156,11 +156,19 @@ func runWeb(ctx *cli.Context) error {
 		m.Post("", csrf.Validate, bindIgnErr(form.Gitxt{}), gitxt.NewPost)
 	})
 
-	m.Get("/:user", context.AssignUser(), gitxt.ListUploads)
-	m.Get("/:user/:hash", context.AssignUser(), context.AssignRepository(), gitxt.View)
-	m.Post("/:user/:hash/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost, reqSignIn)
-	m.Get("/:user/:hash/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit, reqSignIn)
-	m.Post("/:user/:hash/edit", csrf.Validate, context.AssignUser(), context.AssignRepository(), bindIgnErr(form.GitxtEdit{}), gitxt.EditPost, reqSignIn)
+	m.Group("/:user", func() {
+		m.Get("", context.AssignUser(), gitxt.ListUploads)
+		m.Group("/:hash", func() {
+			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)
+			m.Post("/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost, reqSignIn)
+			m.Get("/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit, reqSignIn)
+			m.Post("/edit", csrf.Validate, context.AssignUser(), context.AssignRepository(), bindIgnErr(form.GitxtEdit{}), gitxt.EditPost, reqSignIn)
+		})
+		m.Group("/:hash([\\d\\w-_\\.]+\\.git$)", func() {
+			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)
+			m.Route("/*", "GET,POST", gitxt.HTTPContexter(), gitxt.HTTP)
+		})
+	})
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {
