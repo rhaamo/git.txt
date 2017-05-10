@@ -4,9 +4,18 @@ import (
 	"gopkg.in/libgit2/git2go.v25"
 	"strings"
 	"path/filepath"
-	"io"
 	"archive/zip"
+	"archive/tar"
+	"os"
 )
+
+type errorString struct {
+	s string
+}
+
+func (e *errorString) Error() string {
+	return e.s
+}
 
 // Some stuff to play with git because easy things are not always easy
 // Some of theses functions comes from https://git.nurupoga.org/kr/_discorde/src/master/discorde/tree.go
@@ -122,8 +131,57 @@ func getEntriesPaths(entries *[]TreeEntry, target string) git.TreeWalkCallback {
 		return 0
 	}
 }
-func WriteZipFromRepository(w io.Writer, repo *git.Repository) (err error) {
-	z := zip.NewWriter(w)
+func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (err error) {
+	archiveFile, err := os.Create(archivePath)
+	if err != nil {
+		return err
+	}
+	defer archiveFile.Close()
+
+	z := tar.NewWriter(archiveFile)
+	defer z.Close()
+
+	tree, err := getRepositoryTree(repo)
+	if err != nil {
+		return
+	}
+	entries := []TreeEntry{}
+	tree.Walk(getEntriesPaths(&entries, "/"))
+	for _, entry := range entries {
+		if entry.IsDir {
+			continue
+		}
+		c, e := getRawContent(repo, entry.Path)
+		if e != nil {
+			return e
+		}
+
+		hdr := &tar.Header{
+			Name: entry.Path,
+			Mode: 0600,
+			Size: int64(len(c)),
+		}
+		if err := z.WriteHeader(hdr); err != nil {
+			return err
+		}
+		if _, err := z.Write(c); err != nil {
+			return err
+		}
+	}
+
+	return
+}
+
+func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (err error) {
+	archiveFile, err := os.Create(archivePath)
+	if err != nil {
+		return err
+	}
+	defer archiveFile.Close()
+
+	z := zip.NewWriter(archiveFile)
+	defer z.Close()
+
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
 		return
@@ -146,9 +204,10 @@ func WriteZipFromRepository(w io.Writer, repo *git.Repository) (err error) {
 			return e
 		}
 	}
-	err = z.Close()
+
 	return
 }
+
 
 // Get root tree without depth and contents
 

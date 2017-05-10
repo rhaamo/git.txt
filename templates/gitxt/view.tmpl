@@ -1,7 +1,7 @@
 {{template "base/head" .}}
 
 <div class="row">
-    <div class="col-lg-8 col-lg-offset-1">
+    <div class="col-lg-6 col-lg-offset-1">
         <h4>
             {{if .repoIsPrivate}}
             <span class="label label-warning" title="private git.txt">private</span>
@@ -9,7 +9,10 @@
             <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
         </h4>
     </div>
-    <div class="col-lg-2 col-lg-offset-1">
+    <div class="col-lg-3 col-lg-offset-2">
+        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.zip" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .zip</a>
+        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.tar.gz" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .tar.gz</a>
+
         {{if .IsOwner}}
         <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">Edit</a>
         {{end}}
