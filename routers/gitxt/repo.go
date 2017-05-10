@@ -60,12 +60,14 @@ func HTTPContexter() macaron.Handler {
 
 		owner, err := models.GetUserByName(ownerName)
 		if err != nil {
+			log.Trace("Could not found user: %s", ownerName)
 			ctx.NotFoundOrServerError("GetUserByName", errors.IsUserNotExist, err)
 			return
 		}
 
 		repo, err := models.GetRepositoryByName(ownerName, repoName)
 		if err != nil {
+			log.Trace("Could not found repository: %s", repoName)
 			ctx.NotFoundOrServerError("GetRepositoryByName", errors.IsRepoNotExist, err)
 			return
 		}
@@ -74,15 +76,17 @@ func HTTPContexter() macaron.Handler {
 			ctx.Map(&HTTPContext{
 				Context: ctx,
 			})
+			log.Trace("It's a pull request")
 			return
 		}
 
 		// In case user requested a wrong URL and not intended to access Git objects.
-		action := ctx.Params("")
+		action := ctx.Params("*")
 		if !strings.Contains(action, "git-") &&
 			!strings.Contains(action, "info/") &&
 			!strings.Contains(action, "HEAD") &&
 			!strings.Contains(action, " objects/") {
+			log.Trace("Whoops could not match anything from this action: %s", action)
 			ctx.NotFound()
 			return
 		}
@@ -106,8 +110,13 @@ func HTTPContexter() macaron.Handler {
 		}
 
 		authUser, err := models.UserLogin(authUsername, authPassword)
-		if err != nil && !errors.IsUserNotExist(err) {
-			ctx.Handle(http.StatusInternalServerError, "UserLogin", err)
+		log.Trace("%s", err)
+		if err != nil {
+			if errors.IsUserNotExist(err) {
+				askCredentials(ctx, http.StatusUnauthorized, "")
+			} else {
+				ctx.Handle(http.StatusInternalServerError, "UserLogin", err)
+			}
 			return
 		}
 
@@ -221,7 +230,7 @@ func serviceRPC(h serviceHandler, service string) {
 	}
 
 	var stderr bytes.Buffer
-	cmd := exec.Command("git", service, "--stateless-rpc", h.dir)
+	cmd := exec.Command(setting.GitBinary, service, "--stateless-rpc", h.dir)
 	if service == "receive-pack" {
 		cmd.Env = append(os.Environ(), ComposeHookEnvs(ComposeHookEnvsOptions{
 			AuthUser:  h.authUser,
@@ -261,7 +270,7 @@ func getServiceType(r *http.Request) string {
 
 // FIXME: use process module
 func gitCommand(dir string, args ...string) []byte {
-	cmd := exec.Command("git", args...)
+	cmd := exec.Command(setting.GitBinary, args...)
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	if err != nil {
@@ -342,12 +351,12 @@ var routes = []struct {
 	{regexp.MustCompile("(.*?)/objects/pack/pack-[0-9a-f]{40}\\.idx$"), "GET", getIdxFile},
 }
 
-func getGitRepoPath(user string, repoDir string) (string, error) {
+func getGitRepoPath(repoDir string) (string, error) {
 	if !strings.HasSuffix(repoDir, ".git") {
 		repoDir += ".git"
 	}
 
-	filename := path.Join(setting.RepositoryRoot, user, repoDir)
+	filename := path.Join(setting.RepositoryRoot, repoDir)
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		return "", err
 	}
@@ -377,7 +386,7 @@ func HTTP(ctx *HTTPContext) {
 		}
 
 		file := strings.TrimPrefix(reqPath, m[1]+"/")
-		dir, err := getGitRepoPath(ctx.OwnerName, m[1])
+		dir, err := getGitRepoPath(m[1])
 		if err != nil {
 			log.Warn("HTTP.getGitRepoPath: %v", err)
 			ctx.NotFound()
@@ -399,5 +408,6 @@ func HTTP(ctx *HTTPContext) {
 		return
 	}
 
+	log.Trace("Not found %s", ctx.Req.Request)
 	ctx.NotFound()
 }
