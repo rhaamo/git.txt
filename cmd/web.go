@@ -26,6 +26,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/routers/user"
 	//"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
+	"dev.sigpipe.me/dashie/git.txt/routers/repo"
 )
 
 var Web = cli.Command{
@@ -166,7 +167,7 @@ func runWeb(ctx *cli.Context) error {
 		})
 		m.Group("/:hash([\\d\\w-_\\.]+\\.git$)", func() {
 			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)
-			m.Route("/*", "GET,POST", gitxt.HTTPContexter(), gitxt.HTTP)
+			m.Route("/*", "GET,POST", repo.HTTPContexter(), repo.HTTP)
 		})
 	})
 

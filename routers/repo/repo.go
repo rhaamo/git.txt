@@ -1,7 +1,7 @@
 // Copyright 2017 The Gogs Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style license
 
-package gitxt
+package repo
 
 import (
 	"gopkg.in/macaron.v1"
