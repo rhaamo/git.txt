@@ -7,6 +7,20 @@ One day this will do something like Gist with pastes backed by git.
 
 Right now it's a mess of crap.
 
+# Current Features list
+- User or Anonymous Gitxts
+- Archive download in Zip or TarGz of Gitxts repositories
+- Git pull over HTTP/S for all Gitxts
+- Git push over HTTP/S for user Gitxts (Using Basic Auth)
+- Text Highlighting with Highlight.JS
+
+# Planned Feature List
+- Pull or Push over SSH for user Gitxts
+- Display PDF, images, Markdown, rich texts
+- Size limits to avoid problems
+- Raw files of Gitxts available
+- API for third party tools
+
 # Use or build
 
     Install or build libgit2 0.25.x ONLY. NO Version less than 0.25 (hello Debian Stable)
