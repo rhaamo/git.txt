@@ -7,6 +7,7 @@ import (
 	"archive/zip"
 	"archive/tar"
 	"os"
+	"dev.sigpipe.me/dashie/git.txt/setting"
 )
 
 type errorString struct {
@@ -107,7 +108,7 @@ func isBinary(data []byte) bool {
 	}
 	return false
 }
-func getRawContent(repo *git.Repository, path string) (content []byte, size int64, err error) {
+func getRawContent(repo *git.Repository, path string, overSizeCheck bool) (content []byte, size int64, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
 		return
@@ -117,6 +118,12 @@ func getRawContent(repo *git.Repository, path string) (content []byte, size int6
 	blob, err := repo.LookupBlob(entry.Id)
 	if err != nil {
 		return
+	}
+	// If file is too big, content will be nil
+	if overSizeCheck {
+		if blob.Size() > setting.Bloby.MaxSizeDisplay {
+			return nil, blob.Size(), err
+		}
 	}
 	return blob.Contents(), blob.Size(), err
 }
@@ -152,7 +159,7 @@ func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if entry.IsDir {
 			continue
 		}
-		c, _, e := getRawContent(repo, entry.Path)
+		c, _, e := getRawContent(repo, entry.Path, false)
 		if e != nil {
 			return e
 		}
@@ -197,7 +204,7 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if e != nil {
 			return e
 		}
-		c, _, e := getRawContent(repo, entry.Path)
+		c, _, e := getRawContent(repo, entry.Path, false)
 		if e != nil {
 			return e
 		}
@@ -217,8 +224,10 @@ type TreeFiles struct {
 	Path	string
 	Content	string
 	Size	int64	// bytes
+	OverSize bool
 }
 
+// TreeFiles.Content will be nil if size is too big
 func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []TreeFiles, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
@@ -232,7 +241,7 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 		if entry.IsDir {
 			continue
 		}
-		content, size, err := getRawContent(repo, entry.Path)
+		content, size, err := getRawContent(repo, entry.Path, true)
 		if err != nil {
 			return nil, err
 		}
@@ -242,6 +251,7 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 			Content: string(content[:]),
 			Id: entry.Oid.String(),
 			Size: size,
+			OverSize: content[:] == nil,
 		})
 	}
 	return finalEntries, nil

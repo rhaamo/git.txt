@@ -36,7 +36,11 @@
         {{range $entryFile := .repoFiles}}
         <div class="gitxt_file">
             <div class="header" id="file_{{$entryFile.Path}}"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span></div>
+            {{if $entryFile.OverSize}}
+            <pre id="code" class="nohilight">File is too big and can't be displayed.</pre>
+            {{else}}
             <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
+            {{end}}
         </div>
         {{end}}
     </div>

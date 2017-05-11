@@ -110,6 +110,11 @@ var (
 	Names     []string
 	dateLangs map[string]string
 
+	// Static settings
+	Bloby struct {
+		MaxSizeDisplay	int64
+	}
+
 )
 
 // DateLang transforms standard language locale name to corresponding value in datetime plugin.
@@ -265,6 +270,10 @@ func InitConfig() {
 	if err != nil {
 		log.Fatal(2, "Fail to map Cron settings: %v", err)
 	}
+
+	// Static
+	// Max display 4Mbytes
+	Bloby.MaxSizeDisplay = 4000000.0
 
 	initSession()
 	initCache()
