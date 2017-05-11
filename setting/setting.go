@@ -13,6 +13,7 @@ import (
 	"github.com/Unknwon/com"
 	"net/url"
 	"github.com/go-macaron/session"
+	"time"
 )
 
 type Scheme string
@@ -38,6 +39,16 @@ var (
 	AppSubURLDepth  int // Number of slashes
 	CanRegister	bool
 	AnonymousCreate	bool
+
+	// Cron tasks
+	Cron struct {
+		RepoArchiveCleanup struct {
+			Enabled		bool
+			RunAtStart	bool
+			Schedule	string
+			OlderThan	time.Duration
+		} `ini:"cron.repo_archive_cleanup"`
+	}
 
 	// Server settings
 	Protocol		Scheme
@@ -98,6 +109,7 @@ var (
 	Langs     []string
 	Names     []string
 	dateLangs map[string]string
+
 )
 
 // DateLang transforms standard language locale name to corresponding value in datetime plugin.
@@ -166,6 +178,7 @@ func InitConfig() {
 	if err != nil {
 		log.Fatal(2, "Fail to parse '%s': %v", CustomConf, err)
 	}
+	Cfg.NameMapper = ini.AllCapsUnderscore
 
 	homeDir, err := com.HomeDir()
 	if err != nil {
@@ -246,8 +259,13 @@ func InitConfig() {
 	EnableLoginStatusCookie = sec.Key("ENABLE_LOGIN_STATUS_COOKIE").MustBool(false)
 	LoginStatusCookieName = sec.Key("LOGIN_STATUS_COOKIE_NAME").MustString("login_status")
 
-
 	initLogging()
+
+	err = Cfg.Section("cron").MapTo(&Cron)
+	if err != nil {
+		log.Fatal(2, "Fail to map Cron settings: %v", err)
+	}
+
 	initSession()
 	initCache()
 }

@@ -5,6 +5,13 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 	"github.com/go-xorm/xorm"
 	"fmt"
+	"os"
+	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
+	"dev.sigpipe.me/dashie/git.txt/stuff/sync"
+	"dev.sigpipe.me/dashie/git.txt/setting"
+	log "gopkg.in/clog.v1"
+	"path/filepath"
+	"github.com/Unknwon/com"
 )
 
 type Gitxt struct {
@@ -30,6 +37,13 @@ type GitxtWithUser struct {
 	User	`xorm:"extends"`
 	Gitxt	`xorm:"extends"`
 }
+
+// Preventing duplicate running tasks
+var taskStatusTable = sync.NewStatusTable()
+
+const (
+	_CLEAN_OLD_ARCHIVES = "clean_old_archives"
+)
 
 // IsHashUsed checks if given hash exist,
 func IsHashUsed(uid int64, hash string) (bool, error) {
@@ -129,4 +143,60 @@ func updateGitxt(e Engine, u *Gitxt) error {
 
 func UpdateGitxt(u *Gitxt) error {
 	return updateGitxt(x, u)
+}
+
+
+// Archive deletion
+func DeleteOldRepositoryArchives() {
+	if taskStatusTable.IsRunning(_CLEAN_OLD_ARCHIVES) {
+		return
+	}
+	taskStatusTable.Start(_CLEAN_OLD_ARCHIVES)
+	defer taskStatusTable.Stop(_CLEAN_OLD_ARCHIVES)
+
+	log.Trace("Doing: DeleteOldRepositoryArchives")
+
+	formats := []string{"zip", "targz"}
+	oldestTime := time.Now().Add(-setting.Cron.RepoArchiveCleanup.OlderThan)
+
+	if err := x.Where("gitxt.id > 0").Table(&Gitxt{}).Join("LEFT", "user", "gitxt.user_id = user.id").Iterate(new(GitxtWithUser),
+		func(idx int, bean interface{}) error {
+			repo := bean.(*GitxtWithUser)
+			basePath := filepath.Join(repository.RepoPath(repo.User.UserName, repo.Gitxt.Hash), "archives")
+			for _, format := range formats {
+				dirPath := filepath.Join(basePath, format)
+				if !com.IsDir(dirPath) {
+					continue
+				}
+
+				dir, err := os.Open(dirPath)
+				if err != nil {
+					log.Error(3, "Fail to open directory '%s': %v", dirPath, err)
+					continue
+				}
+
+				fis, err := dir.Readdir(0)
+				dir.Close()
+				if err != nil {
+					log.Error(3, "Fail to read directory '%s': %v", dirPath, err)
+					continue
+				}
+
+				for _, fi := range fis {
+					if fi.IsDir() || fi.ModTime().After(oldestTime) {
+						continue
+					}
+
+					archivePath := filepath.Join(dirPath, fi.Name())
+					if err = os.Remove(archivePath); err != nil {
+						desc := fmt.Sprintf("Fail to health delete archive '%s': %v", archivePath, err)
+						log.Warn(desc)
+					}
+				}
+			}
+
+			return nil
+		}); err != nil {
+		log.Error(2, "DeleteOldRepositoryArchives: %v", err)
+	}
 }

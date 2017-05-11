@@ -24,9 +24,9 @@ import (
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/routers/user"
-	//"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 	"dev.sigpipe.me/dashie/git.txt/routers/repo"
+	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
 )
 
 var Web = cli.Command{
@@ -121,6 +121,7 @@ func runWeb(ctx *cli.Context) error {
 
 	setting.InitConfig()
 	models.InitDb()
+	cron.NewContext()
 
 	m := newMacaron()
 
