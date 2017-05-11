@@ -20,6 +20,7 @@ gopkg.in/libgit2/git2go.v25 =
 gopkg.in/macaron.v1 = 
 github.com/getsentry/raven-go = 
 github.com/gogits/cron = 
+github.com/mattn/go-sqlite3 = 
 
 [res]
 include = templates|static|conf
