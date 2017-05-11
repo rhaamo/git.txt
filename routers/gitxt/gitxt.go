@@ -589,12 +589,8 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	// git update-ref "refs/heads/$MY_BRANCH" "$NEW_COMMIT" "$PARENT_COMMIT"
 
 	// 4. Insert info in database
-	u := &models.Gitxt{
-		Hash: ctx.Gitxt.Gitxt.Hash,
-		Description: f.Description,
-	}
-
-	if err := models.UpdateGitxt(u); err != nil {
+	ctx.Gitxt.Gitxt.Description = f.Description
+	if err := models.UpdateGitxt(ctx.Gitxt.Gitxt); err != nil {
 		switch {
 		default:
 			ctx.Handle(500, "EditPost", err)
@@ -604,7 +600,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// 5. Return render to gitxt view page
 
-	log.Trace("Edit Pushed repository %s - %i", ctx.Gitxt.Gitxt.Hash, u.ID)
+	log.Trace("Edit Pushed repository %s - %i", ctx.Gitxt.Gitxt.Hash, ctx.Gitxt.Gitxt.ID)
 	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + ctx.Gitxt.Gitxt.Hash)
 
 }
