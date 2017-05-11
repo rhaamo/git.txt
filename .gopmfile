@@ -18,6 +18,8 @@ gopkg.in/clog.v1 =
 gopkg.in/ini.v1 = 
 gopkg.in/libgit2/git2go.v25 = 
 gopkg.in/macaron.v1 = 
+github.com/getsentry/raven-go = 
+github.com/gogits/cron = 
 
 [res]
 include = templates|static|conf
