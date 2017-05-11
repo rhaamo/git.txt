@@ -4,7 +4,7 @@
     <div class="col-lg-6 col-lg-offset-1">
         <h4>
             {{if .repoIsPrivate}}
-            <span class="label label-warning" title="private git.txt">private</span>
+            <span class="label label-warning" title="private git.txt"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
             {{end}}
             <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
         </h4>
