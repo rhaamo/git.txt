@@ -26,6 +26,7 @@ type TreeEntry struct {
 	Path     string
 	IsDir    bool
 	IsParent bool
+	Oid      *git.Oid
 }
 
 // appendTargetEntries returns a tree walking callback which appends
@@ -37,7 +38,7 @@ func appendTargetEntries(entries *[]TreeEntry, target string) git.TreeWalkCallba
 		if path == target {
 			isDir := git.FilemodeTree == git.Filemode(entry.Filemode)
 			path = filepath.Join(path, entry.Name)
-			*entries = append(*entries, TreeEntry{path, isDir, false})
+			*entries = append(*entries, TreeEntry{path, isDir, false, nil})
 		}
 		return 0
 	}
@@ -59,7 +60,7 @@ func getRepositoryTree(repo *git.Repository) (*git.Tree, error) {
 
 func appendParentEntry(entries *[]TreeEntry, target string) {
 	if target != "/" && target != "" {
-		*entries = append(*entries, TreeEntry{filepath.Dir(target), true, true})
+		*entries = append(*entries, TreeEntry{filepath.Dir(target), true, true, nil})
 	}
 }
 
@@ -106,7 +107,7 @@ func isBinary(data []byte) bool {
 	}
 	return false
 }
-func getRawContent(repo *git.Repository, path string) (content []byte, err error) {
+func getRawContent(repo *git.Repository, path string) (content []byte, size int64, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
 		return
@@ -117,7 +118,7 @@ func getRawContent(repo *git.Repository, path string) (content []byte, err error
 	if err != nil {
 		return
 	}
-	return blob.Contents(), err
+	return blob.Contents(), blob.Size(), err
 }
 
 // Helper to get a Zip from repository
@@ -127,7 +128,7 @@ func getEntriesPaths(entries *[]TreeEntry, target string) git.TreeWalkCallback {
 		path = strings.Trim(path, "/")
 		path = filepath.Join(path, entry.Name)
 		isDir := git.FilemodeTree == git.Filemode(entry.Filemode)
-		*entries = append(*entries, TreeEntry{path, isDir, false})
+		*entries = append(*entries, TreeEntry{path, isDir, false, entry.Id})
 		return 0
 	}
 }
@@ -151,7 +152,7 @@ func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if entry.IsDir {
 			continue
 		}
-		c, e := getRawContent(repo, entry.Path)
+		c, _, e := getRawContent(repo, entry.Path)
 		if e != nil {
 			return e
 		}
@@ -196,7 +197,7 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if e != nil {
 			return e
 		}
-		c, e := getRawContent(repo, entry.Path)
+		c, _, e := getRawContent(repo, entry.Path)
 		if e != nil {
 			return e
 		}
@@ -212,8 +213,10 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 // Get root tree without depth and contents
 
 type TreeFiles struct {
+	Id	string
 	Path	string
 	Content	string
+	Size	int64	// bytes
 }
 
 func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []TreeFiles, err error) {
@@ -229,11 +232,17 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 		if entry.IsDir {
 			continue
 		}
-		content, err := getRawContent(repo, entry.Path)
+		content, size, err := getRawContent(repo, entry.Path)
 		if err != nil {
 			return nil, err
 		}
-		finalEntries = append(finalEntries, TreeFiles{Path: entry.Path, Content: string(content[:])})
+
+		finalEntries = append(finalEntries, TreeFiles{
+			Path: entry.Path,
+			Content: string(content[:]),
+			Id: entry.Oid.String(),
+			Size: size,
+		})
 	}
 	return finalEntries, nil
 }

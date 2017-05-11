@@ -45,6 +45,7 @@ func NewFuncMap() []template.FuncMap {
 		"LoadTimes": func(startTime time.Time) string {
 			return fmt.Sprint(time.Since(startTime).Nanoseconds()/1e6) + "ms"
 		},
+		"FileSize": 	tool.FileSize,
 		"Safe":         Safe,
 		"Sanitize":     bluemonday.UGCPolicy().Sanitize,
 		"Str2html": Str2html,
