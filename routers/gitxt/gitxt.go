@@ -15,6 +15,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
+	"path/filepath"
 )
 
 const (
@@ -56,6 +57,10 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
+		}
+		if len(filepath.Ext(f.FilesFilename[i])) == 0 {
+			// No extension, forces .txt
+			f.FilesFilename[i] = fmt.Sprintf("%s.txt", f.FilesFilename[i])
 		}
 	}
 
@@ -432,7 +437,12 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
 		}
+		if len(filepath.Ext(f.FilesFilename[i])) == 0 {
+			// No extension, forces .txt
+			f.FilesFilename[i] = fmt.Sprintf("%s.txt", f.FilesFilename[i])
+		}
 	}
+
 
 	for i := range f.FilesContent {
 		if len(strings.TrimSpace(f.FilesContent[i])) <= 0 {
