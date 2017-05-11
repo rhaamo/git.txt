@@ -59,7 +59,7 @@ func HTTPContexter() macaron.Handler {
 		isPull := ctx.Query("service") == "git-upload-pack" || strings.HasSuffix(ctx.Req.URL.Path, "git-upload-pack") || ctx.Req.Method == "GET"
 
 		owner, err := models.GetUserByName(ownerName)
-		if err != nil {
+		if err != nil && ownerName != "anonymous" {
 			log.Trace("Could not found user: %s", ownerName)
 			ctx.NotFoundOrServerError("GetUserByName", errors.IsUserNotExist, err)
 			return
