@@ -29,6 +29,10 @@ func AssignRepository() macaron.Handler {
 
 		ctx.Gitxt.Gitxt = repo
 		ctx.Gitxt.UserName = userName
-		ctx.Gitxt.Owner = ctx.Gitxt.User.ID == ctx.Gitxt.Gitxt.UserID
+		if ctx.Gitxt.Gitxt.Anonymous {
+			ctx.Gitxt.Owner = false
+		} else {
+			ctx.Gitxt.Owner = ctx.Gitxt.User.ID == ctx.Gitxt.Gitxt.UserID
+		}
 	}
 }

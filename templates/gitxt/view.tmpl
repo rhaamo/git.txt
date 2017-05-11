@@ -15,9 +15,7 @@
 
         {{if .IsOwner}}
         <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">Edit</a>
-        {{end}}
 
-        {{if .IsLogged}}
         <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">Delete</a>
         {{end}}
     </div>

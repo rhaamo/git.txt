@@ -27,6 +27,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
 	"dev.sigpipe.me/dashie/git.txt/routers/repo"
 	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
+	"dev.sigpipe.me/dashie/git.txt/routers"
 )
 
 var Web = cli.Command{
@@ -182,8 +183,7 @@ func runWeb(ctx *cli.Context) error {
 		}
 	})
 
-	// TODO not found handler
-	// m.NotFound()
+	m.NotFound(routers.NotFound)
 
 	if ctx.IsSet("port") {
 		setting.AppURL = strings.Replace(setting.AppURL, setting.HTTPPort, ctx.String("port"), 1)

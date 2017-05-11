@@ -79,19 +79,25 @@ func CreateGitxt(g *Gitxt) (err error) {
 func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 	// First get user
 	u, err := GetUserByName(user)
-	if err != nil {
+	if err != nil && user != "anonymous"{
 		return nil, err
 	}
 
 	repo := &Gitxt{
-		UserID:   u.ID,
 		Hash:	  name,
 	}
+
+	if user == "anonymous" {
+		repo.UserID = 0
+	} else {
+		repo.UserID = u.ID
+	}
+
 	has, err := x.Get(repo)
 	if err != nil {
 		return nil, err
 	} else if !has {
-		return nil, errors.RepoNotExist{0, u.ID, name}
+		return nil, errors.RepoNotExist{0, repo.UserID, name}
 	}
 	return repo, nil
 }

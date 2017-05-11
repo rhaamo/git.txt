@@ -9,6 +9,14 @@ import (
 func AssignUser() macaron.Handler {
 	return func(ctx *Context) {
 		userName := ctx.Params("user")
+
+		// Anonymous user doesn't really exists, that's nil
+		if userName == "anonymous" {
+			ctx.Gitxt.User = nil
+			ctx.RepoOwnerUsername = "anonymous"
+			return
+		}
+
 		user, err := models.GetUserByName(userName)
 		if err != nil {
 			if errors.IsUserNotExist(err) {

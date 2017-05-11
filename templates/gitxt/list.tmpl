@@ -13,7 +13,11 @@
             <span class="icon-privacy">
                 {{if $gitxt.IsPrivate}}<i class="fa fa-lock" aria-hidden="true"></i>{{end}}
             </span>
+            {{if $gitxt.User.UserName}}
             <a href="{{AppSubURL}}/{{$gitxt.User.UserName}}">{{$gitxt.User.UserName}}</a>&nbsp;/&nbsp;<a href="{{AppSubURL}}/{{$gitxt.User.UserName}}/{{$gitxt.Hash}}">{{$gitxt.Hash}}</a>
+            {{else}}
+            anonymous /&nbsp;<a href="{{AppSubURL}}/anonymous/{{$gitxt.Hash}}">{{$gitxt.Hash}}</a>
+            {{end}}
         </div>
         <div class="content">
             {{if $gitxt.Description}}
