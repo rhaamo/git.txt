@@ -5,12 +5,16 @@ import (
 	"github.com/urfave/cli"
 	"dev.sigpipe.me/dashie/git.txt/cmd"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"github.com/getsentry/raven-go"
 )
 
 const APP_VER = "0.1"
 
 func init() {
 	setting.AppVer = APP_VER
+	if os.Getenv("USE_RAVEN") == "true" {
+		raven.SetDSN(os.Getenv("RAVEN_DSN"))
+	}
 }
 
 func main() {
