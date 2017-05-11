@@ -33,6 +33,15 @@ type Gitxt struct {
 	// 	UserID
 }
 
+func (gitxt *Gitxt) BeforeInsert() {
+	gitxt.CreatedUnix = time.Now().Unix()
+	gitxt.UpdatedUnix = gitxt.CreatedUnix
+}
+
+func (gitxt *Gitxt) BeforeUpdate() {
+	gitxt.UpdatedUnix = time.Now().Unix()
+}
+
 type GitxtWithUser struct {
 	User	`xorm:"extends"`
 	Gitxt	`xorm:"extends"`

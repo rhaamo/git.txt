@@ -39,23 +39,13 @@ type User struct {
 	// 	SshKeys
 }
 
-type SshKey struct {
-	ID		int64	`xorm:"pk autoincr"`
-	UserID		int64	`xorm:"INDEX NOT NULL"`
+func (user *User) BeforeInsert() {
+	user.CreatedUnix = time.Now().Unix()
+	user.UpdatedUnix = user.CreatedUnix
+}
 
-	Name		string	`xorm:"NOT NULL"`
-	Fingerprint	string	`xorm:"NOT NULL"`
-	Content		string	`xorm:"TEXT NOT NULL"`
-	Mode		int	`xorm:"NOT NULL DEFAULT 2"`
-	Type		int	`xorm:"NOT NULL DEFAULT 1"`
-
-	Created		time.Time	`xorm:"-"`
-	CreatedUnix	int64
-	Updated		time.Time	`xorm:"-"`
-	UpdatedUnix	int64
-
-	// Relations
-	// 	UserID
+func (user *User) BeforeUpdate() {
+	user.UpdatedUnix = time.Now().Unix()
 }
 
 func countUsers(e Engine) int64 {
