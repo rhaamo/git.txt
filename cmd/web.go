@@ -163,6 +163,7 @@ func runWeb(ctx *cli.Context) error {
 		m.Get("", context.AssignUser(), gitxt.ListUploads)
 		m.Group("/:hash", func() {
 			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)
+			m.Get("/info/refs", context.AssignUser(), context.AssignRepository(), context.GitUACheck())
 			m.Post("/delete", csrf.Validate, bindIgnErr(form.GitxtDelete{}), gitxt.DeletePost, reqSignIn)
 			m.Get("/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit, reqSignIn)
 			m.Post("/edit", csrf.Validate, context.AssignUser(), context.AssignRepository(), bindIgnErr(form.GitxtEdit{}), gitxt.EditPost, reqSignIn)

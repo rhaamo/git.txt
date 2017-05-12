@@ -4,6 +4,8 @@ import (
 	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
+	"strings"
+	"dev.sigpipe.me/dashie/git.txt/setting"
 )
 
 type Gitxt struct {
@@ -33,6 +35,16 @@ func AssignRepository() macaron.Handler {
 			ctx.Gitxt.Owner = false
 		} else {
 			ctx.Gitxt.Owner = ctx.Gitxt.User.ID == ctx.Gitxt.Gitxt.UserID
+		}
+	}
+}
+
+func GitUACheck() macaron.Handler {
+	return func(ctx *Context) {
+		if strings.HasPrefix(strings.Join(ctx.Req.Header["User-Agent"], ""), "git/") {
+			ctx.Redirect(setting.AppSubURL + strings.Replace(ctx.Req.URL.String(), ctx.Params("hash"), ctx.Params("hash")+".git", 1))
+		} else {
+			ctx.Redirect(setting.AppSubURL + "/" + ctx.Params("user") + "/" + ctx.Params("hash"))
 		}
 	}
 }
