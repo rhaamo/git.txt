@@ -38,12 +38,14 @@
             <div class="header" id="file_{{$entryFile.Path}}"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span> <small>({{$entryFile.MimeType}})</small></div>
             {{if $entryFile.OverSize}}
             <pre id="code" class="nohilight">File is too big and can't be displayed.</pre>
-            {{else if $entryFile.IsBinary}}
-            <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else if $entryFile.OverPageSize}}
             <pre id="code" class="nohilight">Page size limit exceeded and file won't me displayed.</pre>
+            {{else if eq $entryFile.MimeType "image/png"}}
+            TODO: Display image
+            {{else if $entryFile.IsBinary}}
+            <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else}}
-            <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
+                <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
             {{end}}
         </div>
         {{end}}
