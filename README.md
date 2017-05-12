@@ -13,11 +13,12 @@ Right now it's a mess of crap.
 - Git pull over HTTP/S for all Gitxts
 - Git push over HTTP/S for user Gitxts (Using Basic Auth)
 - Text Highlighting with Highlight.JS
+- Size limit per individual file
+- Size limit for the whole page (only text files not over-size are counted)
 
 # Planned Feature List
 - Pull or Push over SSH for user Gitxts
 - Display PDF, images, Markdown, rich texts
-- Size limits to avoid problems
 - Raw files of Gitxts available
 - API for third party tools
 

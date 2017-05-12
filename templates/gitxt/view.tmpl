@@ -40,6 +40,8 @@
             <pre id="code" class="nohilight">File is too big and can't be displayed.</pre>
             {{else if $entryFile.IsBinary}}
             <pre id="code" class="nohilight">Can't display binary files.</pre>
+            {{else if $entryFile.OverPageSize}}
+            <pre id="code" class="nohilight">Page size limit exceeded and file won't me displayed.</pre>
             {{else}}
             <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
             {{end}}

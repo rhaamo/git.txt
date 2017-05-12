@@ -201,6 +201,7 @@ type TreeFiles struct {
 	Size		int64	// bytes
 	OverSize	bool
 	IsBinary	bool
+	OverPageSize	bool
 }
 
 // Content helpers
@@ -220,7 +221,7 @@ func isBinary(data []byte) bool {
 	}
 	return false
 }
-func getTreeFile(repo *git.Repository, path string) (treeFile TreeFiles, err error) {
+func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile TreeFiles, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
 		return
@@ -235,21 +236,30 @@ func getTreeFile(repo *git.Repository, path string) (treeFile TreeFiles, err err
 
 	treeFile.IsBinary = isBinary(blob.Contents())
 
-	// If file is too big, content will be ""
-	if blob.Size() > setting.Bloby.MaxSizeDisplay {
+	// First check if Binary
+	if treeFile.IsBinary {
 		treeFile.Content = ""
-		treeFile.OverSize = true
 	} else {
-		// "" Content if content detected as binary
-		if !treeFile.IsBinary {
-			treeFile.Content = string(blob.Contents()[:])
-		} else {
+		// Then the whole file size
+		if blob.Size() > setting.Bloby.MaxSizeDisplay {
 			treeFile.Content = ""
+			treeFile.OverSize = true
+		} else {
+			// If we still are in the limits, check the page display size
+			if curSize + blob.Size() > setting.Bloby.MaxPageDisplay {
+				treeFile.OverPageSize = true
+				treeFile.Content = ""
+			} else {
+				treeFile.OverPageSize = false
+				treeFile.Content = string(blob.Contents()[:])
+			}
 		}
 	}
+
 	treeFile.Size = blob.Size()
 	treeFile.Path = path
 	treeFile.Id = blob.Id().String()
+
 	return treeFile, err
 }
 
@@ -264,13 +274,19 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 
 	tree.Walk(getEntriesPaths(&entries, path))
 
+	var pageSize int64
+
 	for _, entry := range entries {
 		if entry.IsDir {
 			continue
 		}
-		treeFile, err := getTreeFile(repo, entry.Path)
+		treeFile, err := getTreeFile(repo, entry.Path, pageSize)
 		if err != nil {
 			return nil, err
+		}
+
+		if !treeFile.IsBinary && !treeFile.OverSize {
+			pageSize += treeFile.Size
 		}
 
 		finalEntries = append(finalEntries, treeFile)
