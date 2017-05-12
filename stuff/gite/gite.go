@@ -90,44 +90,6 @@ func getTreeEntryByPath(tentry *git.TreeEntry, target string) git.TreeWalkCallba
 	}
 }
 
-// Content helpers
-
-const RAW_CONTENT_CHECK_SIZE = 5000
-
-// isBinary returns true if data's format is binary.
-// This function will only check the first RAW_CONTENT_CHECK_SIZE bytes
-// so it may give false positives even if it is unlikely.
-func isBinary(data []byte) bool {
-	if len(data) > RAW_CONTENT_CHECK_SIZE {
-		data = data[:RAW_CONTENT_CHECK_SIZE]
-	}
-	for _, b := range data {
-		if b == byte(0x0) {
-			return true
-		}
-	}
-	return false
-}
-func getRawContent(repo *git.Repository, path string, overSizeCheck bool) (content []byte, size int64, err error) {
-	tree, err := getRepositoryTree(repo)
-	if err != nil {
-		return
-	}
-	var entry git.TreeEntry
-	tree.Walk(getTreeEntryByPath(&entry, path))
-	blob, err := repo.LookupBlob(entry.Id)
-	if err != nil {
-		return
-	}
-	// If file is too big, content will be nil
-	if overSizeCheck {
-		if blob.Size() > setting.Bloby.MaxSizeDisplay {
-			return nil, blob.Size(), err
-		}
-	}
-	return blob.Contents(), blob.Size(), err
-}
-
 // Helper to get a Zip from repository
 func getEntriesPaths(entries *[]TreeEntry, target string) git.TreeWalkCallback {
 	target = strings.Trim(target, "/")
@@ -138,6 +100,19 @@ func getEntriesPaths(entries *[]TreeEntry, target string) git.TreeWalkCallback {
 		*entries = append(*entries, TreeEntry{path, isDir, false, entry.Id})
 		return 0
 	}
+}
+func getJustRawContent(repo *git.Repository, path string) (content []byte, size int64, err error) {
+	tree, err := getRepositoryTree(repo)
+	if err != nil {
+		return
+	}
+	var entry git.TreeEntry
+	tree.Walk(getTreeEntryByPath(&entry, path))
+	blob, err := repo.LookupBlob(entry.Id)
+	if err != nil {
+		return
+	}
+	return blob.Contents(), blob.Size(), err
 }
 func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (err error) {
 	archiveFile, err := os.Create(archivePath)
@@ -159,7 +134,7 @@ func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if entry.IsDir {
 			continue
 		}
-		c, _, e := getRawContent(repo, entry.Path, false)
+		c, _, e := getJustRawContent(repo, entry.Path)
 		if e != nil {
 			return e
 		}
@@ -204,7 +179,7 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 		if e != nil {
 			return e
 		}
-		c, _, e := getRawContent(repo, entry.Path, false)
+		c, _, e := getJustRawContent(repo, entry.Path)
 		if e != nil {
 			return e
 		}
@@ -220,12 +195,64 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 // Get root tree without depth and contents
 
 type TreeFiles struct {
-	Id	string
-	Path	string
-	Content	string
-	Size	int64	// bytes
-	OverSize bool
+	Id		string
+	Path		string
+	Content		string
+	Size		int64	// bytes
+	OverSize	bool
+	IsBinary	bool
 }
+
+// Content helpers
+const RAW_CONTENT_CHECK_SIZE = 5000
+
+// isBinary returns true if data's format is binary.
+// This function will only check the first RAW_CONTENT_CHECK_SIZE bytes
+// so it may give false positives even if it is unlikely.
+func isBinary(data []byte) bool {
+	if len(data) > RAW_CONTENT_CHECK_SIZE {
+		data = data[:RAW_CONTENT_CHECK_SIZE]
+	}
+	for _, b := range data {
+		if b == byte(0x0) {
+			return true
+		}
+	}
+	return false
+}
+func getTreeFile(repo *git.Repository, path string) (treeFile TreeFiles, err error) {
+	tree, err := getRepositoryTree(repo)
+	if err != nil {
+		return
+	}
+	var entry git.TreeEntry
+	tree.Walk(getTreeEntryByPath(&entry, path))
+	blob, err := repo.LookupBlob(entry.Id)
+	if err != nil {
+		return
+	}
+	treeFile = TreeFiles{}
+
+	treeFile.IsBinary = isBinary(blob.Contents())
+
+	// If file is too big, content will be ""
+	if blob.Size() > setting.Bloby.MaxSizeDisplay {
+		treeFile.Content = ""
+		treeFile.OverSize = true
+	} else {
+		// "" Content if content detected as binary
+		if !treeFile.IsBinary {
+			treeFile.Content = string(blob.Contents()[:])
+		} else {
+			treeFile.Content = ""
+		}
+	}
+	treeFile.Size = blob.Size()
+	treeFile.Path = path
+	treeFile.Id = blob.Id().String()
+	return treeFile, err
+}
+
 
 // TreeFiles.Content will be nil if size is too big
 func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []TreeFiles, err error) {
@@ -241,18 +268,12 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 		if entry.IsDir {
 			continue
 		}
-		content, size, err := getRawContent(repo, entry.Path, true)
+		treeFile, err := getTreeFile(repo, entry.Path)
 		if err != nil {
 			return nil, err
 		}
 
-		finalEntries = append(finalEntries, TreeFiles{
-			Path: entry.Path,
-			Content: string(content[:]),
-			Id: entry.Oid.String(),
-			Size: size,
-			OverSize: content[:] == nil,
-		})
+		finalEntries = append(finalEntries, treeFile)
 	}
 	return finalEntries, nil
 }
