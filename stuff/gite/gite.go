@@ -8,6 +8,7 @@ import (
 	"archive/tar"
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"github.com/rakyll/magicmime"
 )
 
 type errorString struct {
@@ -202,6 +203,7 @@ type TreeFiles struct {
 	OverSize	bool
 	IsBinary	bool
 	OverPageSize	bool
+	MimeType	string
 }
 
 // Content helpers
@@ -235,6 +237,16 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 	treeFile = TreeFiles{}
 
 	treeFile.IsBinary = isBinary(blob.Contents())
+
+	if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:RAW_CONTENT_CHECK_SIZE])
+	} else {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:])
+	}
+
+	if err != nil {
+		return
+	}
 
 	// First check if Binary
 	if treeFile.IsBinary {
@@ -270,6 +282,11 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 	if err != nil {
 		return nil, err
 	}
+	if err := magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_ERROR); err != nil {
+		return nil, err
+	}
+	defer magicmime.Close()
+
 	entries := []TreeEntry{}
 
 	tree.Walk(getEntriesPaths(&entries, path))
