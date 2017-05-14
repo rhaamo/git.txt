@@ -16,6 +16,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
 	"path/filepath"
+	"bytes"
 )
 
 const (
@@ -280,6 +281,45 @@ func View(ctx *context.Context) {
 	ctx.Data["IsOwner"] = ctx.Gitxt.Owner
 
 	ctx.Success(VIEW)
+}
+
+
+func RawFile(ctx *context.Context) {
+	file := ctx.Params("path")
+
+	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Gitxt.Hash)
+
+	repo, err := git.OpenRepository(repoPath)
+	if err != nil {
+		ctx.ServerError("Cannot open repository", err)
+		return
+	}
+
+	// Test if repository is empty
+	isEmpty, err := repo.IsEmpty();
+	if err != nil || isEmpty {
+		ctx.ServerError("Repository empty or corrupted", err)
+		return
+	}
+
+	// Get blob fileEntry struct
+	treeFile, err := gite.GetTreeFileNoLimit(repo, file)
+	if err != nil {
+		ctx.ServerError("Cannot get file", err)
+		return
+	}
+
+	if treeFile.Size > setting.Bloby.MaxRawSize {
+		ctx.Handle(500, "MaxRawSize", nil)
+		return
+	}
+
+	// download if isBinary
+	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") {
+		ctx.ServeContent(file, bytes.NewReader(treeFile.ContentB))
+	} else {
+		ctx.ServeContentNoDownload(file, treeFile.MimeType, bytes.NewReader(treeFile.ContentB))
+	}
 }
 
 // List uploads, manage auth'ed user or not and from /:user too

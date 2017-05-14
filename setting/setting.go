@@ -114,6 +114,7 @@ var (
 	Bloby struct {
 		MaxSizeDisplay	int64
 		MaxPageDisplay  int64
+		MaxRawSize	int64
 	}
 
 )
@@ -277,6 +278,8 @@ func InitConfig() {
 	Bloby.MaxSizeDisplay = 2000000
 	// Max total page display is max display per file * 2
 	Bloby.MaxPageDisplay = Bloby.MaxSizeDisplay * 2
+	// Max RAW size authorized (20M)
+	Bloby.MaxRawSize = 1000000 * 20
 
 	initSession()
 	initCache()

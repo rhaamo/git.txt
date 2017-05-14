@@ -168,6 +168,7 @@ func runWeb(ctx *cli.Context) error {
 			m.Get("/edit", context.AssignUser(), context.AssignRepository(), gitxt.Edit, reqSignIn)
 			m.Post("/edit", csrf.Validate, context.AssignUser(), context.AssignRepository(), bindIgnErr(form.GitxtEdit{}), gitxt.EditPost, reqSignIn)
 			m.Get("/archive/*", context.AssignUser(), context.AssignRepository(), repo.DownloadArchive)
+			m.Get("/raw/:path", context.AssignUser(), context.AssignRepository(), gitxt.RawFile)
 		})
 		m.Group("/:hash([\\d\\w-_\\.]+\\.git$)", func() {
 			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)

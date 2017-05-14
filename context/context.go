@@ -144,6 +144,22 @@ func (ctx *Context) ServeContent(name string, r io.ReadSeeker, params ...interfa
 	http.ServeContent(ctx.Resp, ctx.Req.Request, name, modtime, r)
 }
 
+func (ctx *Context) ServeContentNoDownload(name string, mime string, r io.ReadSeeker, params ...interface{}) {
+	modtime := time.Now()
+	for _, p := range params {
+		switch v := p.(type) {
+		case time.Time:
+			modtime = v
+		}
+	}
+	ctx.Resp.Header().Set("Content-Description", "File Content")
+	ctx.Resp.Header().Set("Content-Type", mime)
+	ctx.Resp.Header().Set("Expires", "0")
+	ctx.Resp.Header().Set("Cache-Control", "must-revalidate")
+	ctx.Resp.Header().Set("Pragma", "public")
+	http.ServeContent(ctx.Resp, ctx.Req.Request, name, modtime, r)
+}
+
 // Contexter initializes a classic context for a request.
 func Contexter() macaron.Handler {
 	return func(c *macaron.Context, l i18n.Locale, cache cache.Cache, sess session.Store, f *session.Flash, x csrf.CSRF) {

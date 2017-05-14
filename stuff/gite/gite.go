@@ -199,6 +199,7 @@ type TreeFiles struct {
 	Id		string
 	Path		string
 	Content		string
+	ContentB	[]byte
 	Size		int64	// bytes
 	OverSize	bool
 	IsBinary	bool
@@ -275,6 +276,47 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 	return treeFile, err
 }
 
+func GetTreeFileNoLimit(repo *git.Repository, path string) (treeFile TreeFiles, err error) {
+	tree, err := getRepositoryTree(repo)
+	if err != nil {
+		return
+	}
+	if err = magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_ERROR); err != nil {
+		return
+	}
+	defer magicmime.Close()
+
+
+	var entry git.TreeEntry
+	tree.Walk(getTreeEntryByPath(&entry, path))
+	blob, err := repo.LookupBlob(entry.Id)
+	if err != nil {
+		return
+	}
+	treeFile = TreeFiles{}
+
+	treeFile.IsBinary = isBinary(blob.Contents())
+
+	if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:RAW_CONTENT_CHECK_SIZE])
+	} else {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:])
+	}
+
+	if err != nil {
+		return
+	}
+
+	// First check if Binary
+	treeFile.OverPageSize = false
+	treeFile.ContentB = blob.Contents()
+
+	treeFile.Size = blob.Size()
+	treeFile.Path = path
+	treeFile.Id = blob.Id().String()
+
+	return treeFile, err
+}
 
 // TreeFiles.Content will be nil if size is too big
 func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []TreeFiles, err error) {
