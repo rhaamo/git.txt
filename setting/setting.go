@@ -39,6 +39,7 @@ var (
 	AppSubURLDepth  int // Number of slashes
 	CanRegister	bool
 	AnonymousCreate	bool
+	ProdMode	bool
 
 	// Cron tasks
 	Cron struct {
@@ -265,6 +266,8 @@ func InitConfig() {
 	CookieSecure = sec.Key("COOKIE_SECURE").MustBool(false)
 	EnableLoginStatusCookie = sec.Key("ENABLE_LOGIN_STATUS_COOKIE").MustBool(false)
 	LoginStatusCookieName = sec.Key("LOGIN_STATUS_COOKIE_NAME").MustString("login_status")
+
+	ProdMode = Cfg.Section("").Key("RUN_MODE").String() == "prod"
 
 	initLogging()
 

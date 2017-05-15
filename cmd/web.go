@@ -126,6 +126,14 @@ func runWeb(ctx *cli.Context) error {
 
 	m := newMacaron()
 
+	if setting.ProdMode {
+		macaron.Env = macaron.PROD
+		macaron.ColorLog = false
+	} else {
+		macaron.Env = macaron.DEV
+	}
+	log.Info("Run Mode: %s", strings.Title(macaron.Env))
+
 	reqSignIn := context.Toggle(&context.ToggleOptions{SignInRequired: true})
 	reqSignOut := context.Toggle(&context.ToggleOptions{SignOutRequired: true})
 
