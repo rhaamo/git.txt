@@ -318,7 +318,11 @@ func RawFile(ctx *context.Context) {
 	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") {
 		ctx.ServeContent(file, bytes.NewReader(treeFile.ContentB))
 	} else {
-		ctx.ServeContentNoDownload(file, treeFile.MimeType, bytes.NewReader(treeFile.ContentB))
+		if strings.HasPrefix(treeFile.MimeType, "text/") {
+			ctx.ServeContentNoDownload(file, "text/plain", bytes.NewReader(treeFile.ContentB))
+		} else {
+			ctx.ServeContentNoDownload(file, treeFile.MimeType, bytes.NewReader(treeFile.ContentB))
+		}
 	}
 }
 
