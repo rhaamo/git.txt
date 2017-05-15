@@ -3,9 +3,7 @@ git.txt
 
 # What
 
-One day this will do something like Gist with pastes backed by git.
-
-Right now it's a mess of crap.
+It's a Pastebin where all pastes are backed in is own Git repository.
 
 # Current Features list
 - User or Anonymous Gitxts
@@ -15,11 +13,11 @@ Right now it's a mess of crap.
 - Text Highlighting with Highlight.JS
 - Size limit per individual file
 - Size limit for the whole page (only text files not over-size are counted)
+- Viewing RAW content of a file or download if binary type, a RAW Size Limit apply to whatever blob is wanted
 
 # Planned Feature List
 - Pull or Push over SSH for user Gitxts
 - Display PDF, images, Markdown, rich texts
-- Raw files of Gitxts available
 - API for third party tools
 
 # Use or build
