@@ -348,7 +348,11 @@ func ListUploads(ctx *context.Context) {
 
 	if ctx.RepoOwnerUsername != "" {
 		ctx.Data["GitxtListIsUser"] = true
-		opts.UserID = ctx.Gitxt.User.ID
+		if ctx.RepoOwnerUsername == "anonymous" {
+			opts.UserID = 0
+		} else {
+			opts.UserID = ctx.Gitxt.User.ID
+		}
 	} else {
 		ctx.Data["GitxtListIsUser"] = false
 	}
