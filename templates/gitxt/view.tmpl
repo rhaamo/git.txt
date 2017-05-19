@@ -44,7 +44,9 @@
             {{else if $entryFile.OverPageSize}}
             <pre id="code" class="nohilight">Page size limit exceeded and file won't me displayed.</pre>
             {{else if eq $entryFile.MimeType "image/png"}}
-            <img data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}" class="img-hidden"/>
+            <div class="img-element non-raw-text">
+                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}" class="btn btn-success btn-xs img-loader">Load image</button>
+            </div>
             {{else if $entryFile.IsBinary}}
             <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else if IsMarkdown $entryFile.Path }}

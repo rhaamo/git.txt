@@ -14,11 +14,11 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - Size limit per individual file
 - Size limit for the whole page (only text files not over-size are counted)
 - Viewing RAW content of a file or download if binary type, a RAW Size Limit apply to whatever blob is wanted
-- Rendering of special types: Markdown
+- Rendering of special types: Markdown, Images
 
 # Planned Feature List
 - Pull or Push over SSH for user Gitxts
-- Display PDF, images, rich texts
+- Display PDF, other rich texts
 - API for third party tools
 
 # Use or build
