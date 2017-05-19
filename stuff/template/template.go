@@ -84,6 +84,12 @@ func NewFuncMap() []template.FuncMap {
 		"FilenameToHighlightClass": func(filename string) string {
 			return highlight.FileNameToHighlightClass(filename)
 		},
+		"IsMarkdown": func(filename string) bool {
+			return markup.IsMarkdownFile(filename)
+		},
+		"ToMarkdown": func(content string) string {
+			return string(markup.Markdown(content, setting.AppSubURL)[:])
+		},
 	}}
 }
 

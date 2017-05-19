@@ -111,6 +111,22 @@ var (
 	Names     []string
 	dateLangs map[string]string
 
+	// Markdown sttings
+	Markdown struct {
+	    EnableHardLineBreak bool
+	    CustomURLSchemes    []string `ini:"CUSTOM_URL_SCHEMES"`
+	    FileExtensions      []string
+	}
+
+	// Smartypants settings
+	Smartypants struct {
+	    Enabled      bool
+	    Fractions    bool
+	    Dashes       bool
+	    LatexDashes  bool
+	    AngledQuotes bool
+	}
+
 	// Static settings
 	Bloby struct {
 		MaxSizeDisplay	int64
@@ -271,9 +287,12 @@ func InitConfig() {
 
 	initLogging()
 
-	err = Cfg.Section("cron").MapTo(&Cron)
-	if err != nil {
+	if err = Cfg.Section("cron").MapTo(&Cron); err != nil {
 		log.Fatal(2, "Fail to map Cron settings: %v", err)
+	} else if err = Cfg.Section("markdown").MapTo(&Markdown); err != nil {
+		log.Fatal(2, "Fail to map Markdown settings: %v", err)
+	} else if err = Cfg.Section("smartypants").MapTo(&Smartypants); err != nil {
+		log.Fatal(2, "Fail to map Smartypants settings: %v", err)
 	}
 
 	// Static
