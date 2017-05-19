@@ -4,7 +4,9 @@ $('pre#code').each(function(i, block) {
     hljs.highlightBlock(block);
 });
 
+// Chain all on-click actions on document
 $(document).on("click", "a.delete_link", function(e) {
+    // Delete link actions : Ajax with CSRF
     e.preventDefault();
 
     let $this = $(this);
@@ -18,14 +20,19 @@ $(document).on("click", "a.delete_link", function(e) {
             "owner": rOwner,
             "hash": rHash
             }).done(function (data) {
+                // TODO FIXME
                 //window.location.href = data.redirect;
             });
     }
-});
-
-$(document).on("click", "button.img-loader", function(e) {
+}).on("click", "button.img-loader", function(e) {
+    // img-loader will load the image inplace
     e.preventDefault();
 
     let imgUrl = $(this).data('src');
     $(this).parent().html("<img src='" + imgUrl + "' alt='gitxt image' />");
+}).on("click", "button.pdf-loader", function(e) {
+    // pdf-loader will load PDF.js viewer with the PDF inplace
+   e.preventDefault();
+
+   alert("no");
 });

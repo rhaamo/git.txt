@@ -90,6 +90,9 @@ func NewFuncMap() []template.FuncMap {
 		"ToMarkdown": func(content string) string {
 			return string(markup.Markdown(content, setting.AppSubURL)[:])
 		},
+		"IsPdf": func(mime string) bool {
+			return strings.EqualFold(mime, "application/pdf")
+		},
 	}}
 }
 

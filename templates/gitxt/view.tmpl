@@ -47,10 +47,14 @@
             <div class="img-element non-raw-text">
                 <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}" class="btn btn-success btn-xs img-loader">Load image</button>
             </div>
-            {{else if $entryFile.IsBinary}}
-            <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else if IsMarkdown $entryFile.Path }}
             <div class="non-raw-text">{{ToMarkdown $entryFile.Content | Str2html}}</div>
+            {{else if IsPdf $entryFile.MimeType }}
+            <div class="non-raw-text">
+                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}" class="btn btn-success btn-xs pdf-loader">Load PDF Viewer</button>
+            </div>
+            {{else if $entryFile.IsBinary}}
+            <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else}}
                 <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
             {{end}}
