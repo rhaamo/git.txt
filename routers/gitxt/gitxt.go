@@ -315,7 +315,7 @@ func RawFile(ctx *context.Context) {
 	}
 
 	// download if isBinary
-	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") {
+	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") && !(treeFile.MimeType == "application/pdf"){
 		ctx.ServeContent(file, bytes.NewReader(treeFile.ContentB))
 	} else {
 		if strings.HasPrefix(treeFile.MimeType, "text/") {
