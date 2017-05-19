@@ -34,5 +34,6 @@ $(document).on("click", "a.delete_link", function(e) {
     // pdf-loader will load PDF.js viewer with the PDF inplace
    e.preventDefault();
 
-   alert("no");
+   let pdfUrl = $(this).data('src');
+   $(this).parent().html('<iframe width="100%" height="600px" src="/pdfjs-1.7.225/web/viewer.html?file=' + pdfUrl + '"></iframe>');
 });
