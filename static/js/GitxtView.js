@@ -27,5 +27,5 @@ $(document).on("click", "button.img-loader", function(e) {
     e.preventDefault();
 
     let imgUrl = $(this).data('src');
-    $("div.img-element").html("<img src='" + imgUrl + "' alt='gitxt image' />");
+    $(this).parent().html("<img src='" + imgUrl + "' alt='gitxt image' />");
 });

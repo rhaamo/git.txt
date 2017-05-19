@@ -256,4 +256,9 @@ pre {
 div.non-raw-text {
     padding-left: 1em;
     padding-bottom: 1em;
+    padding-right: 1em;
+}
+
+div.non-raw-text img {
+    max-width: 100%;
 }
