@@ -15,11 +15,15 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - Size limit for the whole page (only text files not over-size are counted)
 - Viewing RAW content of a file or download if binary type, a RAW Size Limit apply to whatever blob is wanted
 - Rendering of special types: Markdown, Images, PDF (via PDF.js)
+- Line Numbers for text files
 
 # Planned Feature List
 - Pull or Push over SSH for user Gitxts
 - Display other rich texts
 - API for third party tools
+
+# Current issues or misbehaviour
+- If a Git.txt upload is pushed with binary contents (or maybe big files, even text) they are not handled using web interface and cannot be edited that way, it's still possible to use Git itself and clone/push.
 
 # Use or build
 
