@@ -9,6 +9,7 @@ import (
 	"os"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"github.com/rakyll/magicmime"
+	gotemplate "html/template"
 )
 
 type errorString struct {
@@ -200,11 +201,13 @@ type TreeFiles struct {
 	Path		string
 	Content		string
 	ContentB	[]byte
+	ContentH	gotemplate.HTML
 	Size		int64	// bytes
 	OverSize	bool
 	IsBinary	bool
 	OverPageSize	bool
 	MimeType	string
+	LineNos		gotemplate.HTML
 }
 
 // Content helpers

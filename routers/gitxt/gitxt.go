@@ -17,6 +17,8 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
 	"path/filepath"
 	"bytes"
+	gotemplate "html/template"
+	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
 )
 
 const (
@@ -274,6 +276,27 @@ func View(ctx *context.Context) {
 		ctx.Handle(500, "GitxtView", err)
 		return
 
+	}
+
+	for idx := range repoTreeEntries {
+		if repoTreeEntries[idx].IsBinary || markup.IsMarkdownFile(repoTreeEntries[idx].Path) {
+			continue
+		}
+
+		var output bytes.Buffer
+		lines := strings.Split(repoTreeEntries[idx].Content, "\n")
+		for index, line := range lines {
+			output.WriteString(fmt.Sprintf(`<li class="L%d" rel="L%d">%s</li>`, index+1, index+1, gotemplate.HTMLEscapeString(line)) + "\n")
+		}
+		// Reset the Content and set the ContentH(tml)
+		repoTreeEntries[idx].Content = ""
+		repoTreeEntries[idx].ContentH = gotemplate.HTML(output.String())
+
+		output.Reset()
+		for i := 0; i < len(lines); i++ {
+			output.WriteString(fmt.Sprintf(`<span id="L%d">%d</span>`, i+1, i+1))
+		}
+		repoTreeEntries[idx].LineNos = gotemplate.HTML(output.String())
 	}
 
 	ctx.Data["repoSpec"] = repoSpec

@@ -56,7 +56,16 @@
             {{else if $entryFile.IsBinary}}
             <pre id="code" class="nohilight">Can't display binary files.</pre>
             {{else}}
-                <pre id="code" class="{{FilenameToHighlightClass $entryFile.Path}}">{{$entryFile.Content}}</pre>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="lines-num">{{$entryFile.LineNos}}</td>
+                        <td class="lines-code">
+                            <pre><code class="{{FilenameToHighlightClass $entryFile.Path}}"><ol class="linenums">{{$entryFile.ContentH}}</ol></code></pre>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             {{end}}
         </div>
         {{end}}
