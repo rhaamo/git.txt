@@ -11,7 +11,7 @@ import (
 type Gitxt struct {
 	User	*models.User
 	Gitxt	*models.Gitxt
-	Owner	bool
+	Owner	bool		// Gitxt.Owner: "toto/repos" does "repos" belongs to "toto" ?
 	UserName	string
 }
 

@@ -301,7 +301,11 @@ func View(ctx *context.Context) {
 
 	ctx.Data["repoSpec"] = repoSpec
 	ctx.Data["repoFiles"] = repoTreeEntries
-	ctx.Data["IsOwner"] = ctx.Gitxt.Owner
+	if ctx.IsLogged == true && !ctx.Gitxt.Gitxt.Anonymous {
+		ctx.Data["IsOwner"] = ctx.Gitxt.User.ID == ctx.User.ID
+	} else {
+		ctx.Data["IsOwner"] = false
+	}
 
 	ctx.Success(VIEW)
 }
