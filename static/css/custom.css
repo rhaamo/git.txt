@@ -177,8 +177,14 @@ div.gitxt_file .header {
 div.gitxt_file .content {
 }
 
+div.gitxt_file table * {
+    font-size: 12px;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    line-height: 20px;
+}
+
 div.gitxt_file .lines-num {
-    padding: 0;
+    vertical-align: top;
     text-align: right;
     color: #999;
     background: #f5f5f5;
@@ -192,30 +198,41 @@ div.gitxt_file .lines-num span {
     display: block;
 }
 
-div.gitxt_file .lines-code pre {
-    padding: 0 !important;
+div.gitxt_file .lines-num, div.gitxt_file .lines-code {
+    padding: 0;
 }
 
-div.gitxt_file .lines-code code {
-    padding:0 !important;
-    padding-left: 10px;
-}
-
-div.gitxt_file table {
-    font-size: 12px;
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    line-height: 20px !important;
-}
-
-div.gitxt_file .lines-code .linenums {
+div.gitxt_file .lines-num pre,
+div.gitxt_file .lines-num ol,
+div.gitxt_file .lines-num .hljs,
+div.gitxt_file .lines-code pre,
+div.gitxt_file .lines-code ol,
+div.gitxt_file .lines-code .hljs {
+    background-color: white;
     margin: 0;
     padding: 0 !important;
 }
 
-div.gitxt_file .lines-code li {
+div.gitxt_file .lines-num pre li,
+div.gitxt_file .lines-num ol li,
+div.gitxt_file .lines-num .hljs li,
+div.gitxt_file .lines-code pre li,
+div.gitxt_file .lines-code ol li,
+div.gitxt_file .lines-code .hljs li {
     display: inline-block;
     width: 100%;
 }
+
+div.gitxt_file .lines-num pre li:before,
+div.gitxt_file .lines-num ol li:before,
+div.gitxt_file .lines-num .hljs li:before,
+div.gitxt_file .lines-code pre li:before,
+div.gitxt_file .lines-code ol li:before,
+div.gitxt_file .lines-code .hljs li:before {
+    content: ' ';
+}
+
+
 
 /* Gitxt new file modal */
 div.gitxt_new_file {
