@@ -15,7 +15,7 @@ func init() {
 	setting.AppVer = APP_VER
 	if os.Getenv("USE_RAVEN") == "true" {
 		raven.SetDSN(os.Getenv("RAVEN_DSN"))
-		fmt.Printf("Using Raven with DSN: %s", os.Getenv("RAVEN_DSN"))
+		fmt.Printf("Using Raven with DSN: %s\n", os.Getenv("RAVEN_DSN"))
 	} else {
 		fmt.Println("Running without Raven/Sentry support.")
 	}
