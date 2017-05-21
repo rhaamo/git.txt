@@ -6,14 +6,18 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/cmd"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"github.com/getsentry/raven-go"
+	"fmt"
 )
 
-const APP_VER = "0.1"
+const APP_VER = "0.2"
 
 func init() {
 	setting.AppVer = APP_VER
 	if os.Getenv("USE_RAVEN") == "true" {
 		raven.SetDSN(os.Getenv("RAVEN_DSN"))
+		fmt.Printf("Using Raven with DSN: %s", os.Getenv("RAVEN_DSN"))
+	} else {
+		fmt.Println("Running without Raven/Sentry support.")
 	}
 }
 
