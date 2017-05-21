@@ -7,29 +7,7 @@ package tool
 import (
 	"fmt"
 	"math"
-	"net/http"
-	"strings"
 )
-
-// IsTextFile returns true if file content format is plain text or empty.
-func IsTextFile(data []byte) bool {
-	if len(data) == 0 {
-		return true
-	}
-	return strings.Contains(http.DetectContentType(data), "text/")
-}
-
-func IsImageFile(data []byte) bool {
-	return strings.Contains(http.DetectContentType(data), "image/")
-}
-
-func IsPDFFile(data []byte) bool {
-	return strings.Contains(http.DetectContentType(data), "application/pdf")
-}
-
-func IsVideoFile(data []byte) bool {
-	return strings.Contains(http.DetectContentType(data), "video/")
-}
 
 const (
 	Byte  = 1
