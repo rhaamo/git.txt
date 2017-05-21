@@ -21,6 +21,8 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - Pull or Push over SSH for user Gitxts
 - Display other rich texts
 - API for third party tools
+- More tests coverage
+- Paste expiry (1d, 2d, 3d, 4d, 5d, 6d, 7d, 1w, 1m, 1y, never)
 
 # Current issues or misbehaviour
 - If a Git.txt upload is pushed with binary contents (or maybe big files, even text) they are not handled using web interface and cannot be edited that way, it's still possible to use Git itself and clone/push.
