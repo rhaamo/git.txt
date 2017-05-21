@@ -33,6 +33,11 @@ It's a Pastebin where all pastes are backed in is own Git repository.
     go get -u github.com/jteeuwen/go-bindata/...
     go get -v -insecure -u dev.sigpipe.me/dashie/git.txt
 
+# Contact, issues
+- Main contact: Dashie <dashie (at) sigpipe (dot) me>
+- Main repository: https://dev.sigpipe.me/dashie/git.txt
+- Main issue tracker: https://dev.sigpipe.me/dashie/git.txt/issues
+
 # Sources used
 
 I learned playing with Macaron/Xorm etc. from Gogs sources so lot of logic have been reused from Gogs.
