@@ -15,14 +15,19 @@ $(document).on("click", "a.delete_link", function(e) {
     let rHash = $this.data("hash");
 
     if (confirm("Are you sure ?") === true) {
-        $.post($this.data('url'), {
-            "_csrf": csrf,
-            "owner": rOwner,
-            "hash": rHash
-            }).done(function (data) {
-                // TODO FIXME
-                //window.location.href = data.redirect;
-            });
+        $.ajax({
+            type: "POST",
+            url: $this.data('url'),
+            data: {"_csrf": csrf, "owner": rOwner, "hash": rHash},
+            dataType: "json",
+            success: function(data) {
+                window.location.href = data.redirect;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Error, status = " + textStatus + ", " + "error thrown: " + errorThrown);
+
+            }
+        });
     }
 }).on("click", "button.img-loader", function(e) {
     // img-loader will load the image inplace

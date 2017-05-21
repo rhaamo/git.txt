@@ -12,22 +12,24 @@ import (
 	log "gopkg.in/clog.v1"
 	"path/filepath"
 	"github.com/Unknwon/com"
+	"strings"
+	"os/exec"
 )
 
 type Gitxt struct {
-	ID		int64	`xorm:"pk autoincr"`
-	Hash		string	`xorm:"UNIQUE NOT NULL"`
-	UserID		int64	`xorm:"INDEX"`
-	Anonymous	bool
-	Description	string	`xorm:"TEXT"`
+	ID          int64        `xorm:"pk autoincr"`
+	Hash        string        `xorm:"UNIQUE NOT NULL"`
+	UserID      int64        `xorm:"INDEX"`
+	Anonymous   bool
+	Description string        `xorm:"TEXT"`
 
 	// Permissions
-	IsPrivate	bool	`xorm:"DEFAULT 0"`
+	IsPrivate bool        `xorm:"DEFAULT 0"`
 
-	Created		time.Time	`xorm:"-"`
-	CreatedUnix	int64
-	Updated		time.Time	`xorm:"-"`
-	UpdatedUnix	int64
+	Created     time.Time        `xorm:"-"`
+	CreatedUnix int64
+	Updated     time.Time        `xorm:"-"`
+	UpdatedUnix int64
 
 	// Relations
 	// 	UserID
@@ -43,8 +45,8 @@ func (gitxt *Gitxt) BeforeUpdate() {
 }
 
 type GitxtWithUser struct {
-	User	`xorm:"extends"`
-	Gitxt	`xorm:"extends"`
+	User        `xorm:"extends"`
+	Gitxt        `xorm:"extends"`
 }
 
 // Preventing duplicate running tasks
@@ -88,12 +90,12 @@ func CreateGitxt(g *Gitxt) (err error) {
 func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 	// First get user
 	u, err := GetUserByName(user)
-	if err != nil && user != "anonymous"{
+	if err != nil && user != "anonymous" {
 		return nil, err
 	}
 
 	repo := &Gitxt{
-		Hash:	  name,
+		Hash: name,
 	}
 
 	if user == "anonymous" {
@@ -112,11 +114,11 @@ func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 }
 
 type GitxtOptions struct {
-	UserID	int64
-	WithPrivate	bool
-	GetAll		bool
-	Page		int
-	PageSize	int
+	UserID      int64
+	WithPrivate bool
+	GetAll      bool
+	Page        int
+	PageSize    int
 }
 
 // Get gitxts
@@ -159,7 +161,6 @@ func updateGitxt(e Engine, u *Gitxt) error {
 func UpdateGitxt(u *Gitxt) error {
 	return updateGitxt(x, u)
 }
-
 
 // Archive deletion
 func DeleteOldRepositoryArchives() {
@@ -214,4 +215,59 @@ func DeleteOldRepositoryArchives() {
 		}); err != nil {
 		log.Error(2, "DeleteOldRepositoryArchives: %v", err)
 	}
+}
+
+func removeRepository(path string) {
+	var err error
+	// LEGACY [Go 1.7]: workaround for Go not being able to remove read-only files/folders: https://github.com/golang/go/issues/9606
+	// this bug should be fixed on Go 1.7, so the workaround should be removed when Gogs don't support Go 1.6 anymore:
+	// https://github.com/golang/go/commit/2ffb3e5d905b5622204d199128dec06cefd57790
+	// Note: Windows complains when delete target does not exist, therefore we can skip deletion in such cases.
+	if setting.IsWindows && com.IsExist(path) {
+		// converting "/" to "\" in path on Windows
+		path = strings.Replace(path, "/", "\\", -1)
+		err = exec.Command("cmd", "/C", "rmdir", "/S", "/Q", path).Run()
+	} else {
+		err = os.RemoveAll(path)
+	}
+
+	if err != nil {
+		desc := fmt.Sprintf("%s: %v", path, err)
+		log.Warn(desc)
+	}
+}
+
+// Delete repository :'(
+func DeleteRepository(ownerID int64, repoID int64) error {
+	repo := &Gitxt{ID: repoID, UserID: ownerID}
+	has, err := x.Get(repo)
+	if err != nil {
+		return err
+	} else if !has {
+		return errors.RepoNotExist{repoID, ownerID, ""}
+	}
+
+	repoUser, err := GetUserByID(ownerID)
+	if err != nil {
+		return fmt.Errorf("GetUserByID: %v", err)
+	}
+
+	sess := x.NewSession()
+	defer sessionRelease(sess)
+	if err = sess.Begin(); err != nil {
+		return err
+	}
+
+	if _, err = sess.Delete(&Gitxt{ID: repoID}); err != nil {
+		return fmt.Errorf("sess.Delete: %v", err)
+	}
+
+	if err = sess.Commit(); err != nil {
+		return fmt.Errorf("Commit: %v", err)
+	}
+
+	pathRepo := repository.RepoPath(repoUser.UserName, repo.Hash)
+	removeRepository(pathRepo)
+
+	return nil
 }

@@ -421,6 +421,23 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 			"redirect": false,
 		})
 	}
+
+	err := models.DeleteRepository(ctx.Gitxt.User.ID, ctx.Gitxt.Gitxt.ID)
+	if err != nil {
+		ctx.Flash.Error("Error trying deletion of repository")
+		log.Warn("DeletePost.DeleteRepository: %v", err)
+		ctx.JSONSuccess(map[string]interface{}{
+			"error": "Error trying deletion of repository",
+			"redirect": false,
+		})
+		return
+	}
+
+	ctx.JSONSuccess(map[string]interface{}{
+		"error": nil,
+		"redirect": setting.AppSubURL + "/",
+	})
+	return
 }
 
 func Edit(ctx *context.Context) {
