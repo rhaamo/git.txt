@@ -428,7 +428,7 @@ func Edit(ctx *context.Context) {
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
 		ctx.Flash.Error("Unauthorized")
-		ctx.Redirect(setting.AppSubURL + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
+		ctx.Redirect(setting.AppSubURL + "/" + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
 		return
 	}
 
@@ -493,7 +493,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
 		ctx.Flash.Error("Unauthorized")
-		ctx.Redirect(setting.AppSubURL + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
+		ctx.Redirect(setting.AppSubURL + "/" + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
 		return
 	}
 
