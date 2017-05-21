@@ -31,6 +31,31 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+
+    {{if .PageIsGitxtView}}
+        <meta content="{{AppName}}" property="og:site_name" />
+        <meta content="object" property="og:type" />
+        {{if .repoDescription}}
+        <meta content="{{.repoDescription}}" property="og:title" />
+        <meta content="{{.repoDescription}}" property="og:description" />
+        {{else}}
+        <meta content="Repository {{.repoHash}} or {{.repoOwnerUsername}}" property="og:title" />
+        <meta content="Repository {{.repoHash}} or {{.repoOwnerUsername}}" property="og:description" />
+        {{end}}
+        <meta content="{{AppURL}}{{.repoOwnerUsername}}/{{.repoHash}}" property="og:url" />
+    {{else if .PageIsGitxtListUser}}
+        <meta property="og:url" content="{{AppURL}}{{.RepoOwnerUsername}}">
+        <meta property="og:type" content="profile">
+        <meta property="og:site_name" content="{{AppName}}">
+        <meta property="og:title" content="List of snippets for {{.RepoOwnerUsername}} - {{AppName}}">
+        <meta property="og:description" content="List of snippets for {{.RepoOwnerUsername}} - {{AppName}}">
+    {{else}}
+        <meta property="og:url" content="{{AppURL}}">
+        <meta property="og:site_name" content="{{AppName}}">
+        <meta property="og:title" content="{{AppName}} - Git backed snippets">
+        <meta property="og:description" content="Create snippets hosted in git repositories">
+    {{end}}
 </head>
 
 <body>

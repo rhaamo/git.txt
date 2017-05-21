@@ -380,6 +380,7 @@ func ListUploads(ctx *context.Context) {
 		} else {
 			opts.UserID = ctx.Gitxt.User.ID
 		}
+		ctx.PageIs("GitxtListUser")
 	} else {
 		ctx.Data["GitxtListIsUser"] = false
 	}
