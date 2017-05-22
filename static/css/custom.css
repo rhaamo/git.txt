@@ -4,7 +4,7 @@ body {
     padding-bottom: 20px;
     clear: both;
 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", Arial, Helvetica, sans-serif !important;
 }
 
 footer {
@@ -315,4 +315,32 @@ div.non-raw-text {
 
 div.non-raw-text img {
     max-width: 100%;
+}
+
+/* Admin dashboard */
+div.admin-dashboard {
+    font-size: 13px;
+}
+
+div.admin-dashboard div.content dl {
+    padding: 20px;
+    margin: 0;
+}
+
+div.admin-dashboard div.content dl dd {
+    margin-left: 240px;
+}
+div.admin-dashboard div.content dl dt {
+    font-weight: bolder;
+    float: left;
+    width: 250px;
+    clear: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+div.admin-dashboard div.divider {
+    border-top: 1px solid rgba(34,36,38,.15);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin: 1rem 0;
 }

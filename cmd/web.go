@@ -28,6 +28,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/routers/repo"
 	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
 	"dev.sigpipe.me/dashie/git.txt/routers"
+	"dev.sigpipe.me/dashie/git.txt/routers/admin"
 )
 
 var Web = cli.Command{
@@ -182,6 +183,13 @@ func runWeb(ctx *cli.Context) error {
 			m.Get("", context.AssignUser(), context.AssignRepository(), gitxt.View)
 			m.Route("/*", "GET,POST", repo.HTTPContexter(), repo.HTTP)
 		})
+	})
+
+	/* Admin part */
+
+	adminReq := context.Toggle(&context.ToggleOptions{SignInRequired: true, AdminRequired: true})
+	m.Group("/admin", func() {
+		m.Get("", adminReq, admin.Dashboard)
 	})
 
 	// robots.txt

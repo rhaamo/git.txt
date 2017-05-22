@@ -51,5 +51,13 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 			ctx.Redirect(setting.AppSubURL + "/user/login")
 			return
 		}
+
+		if options.AdminRequired {
+			if !ctx.User.IsAdmin {
+				ctx.Error(403)
+				return
+			}
+			ctx.Data["PageIsAdmin"] = true
+		}
 	}
 }
