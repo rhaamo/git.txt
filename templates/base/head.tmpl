@@ -81,6 +81,9 @@
                 {{if .IsLogged}}
                     <li><a href="{{AppSubURL}}/{{.LoggedUserName}}">My uploads</a></li>
                     <li><a href="{{AppSubURL}}/user/settings">Settings</a></li>
+                    {{if .UserIsAdmin}}
+                        <li><a href="{{AppSubURL}}/admin">Admin</a></li>
+                    {{end}}
                     <li><a href="{{AppSubURL}}/user/logout">Logout</a></li>
                 {{else}}
                     {{if CanRegister}}

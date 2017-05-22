@@ -190,7 +190,7 @@ func runWeb(ctx *cli.Context) error {
 	adminReq := context.Toggle(&context.ToggleOptions{SignInRequired: true, AdminRequired: true})
 	m.Group("/admin", func() {
 		m.Get("", adminReq, admin.Dashboard)
-	})
+	}, adminReq)
 
 	// robots.txt
 	m.Get("/robots.txt", func(ctx *context.Context) {

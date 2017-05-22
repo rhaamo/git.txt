@@ -320,6 +320,7 @@ div.non-raw-text img {
 /* Admin dashboard */
 div.admin-dashboard {
     font-size: 13px;
+    margin-bottom: 2em;
 }
 
 div.admin-dashboard div.content dl {
