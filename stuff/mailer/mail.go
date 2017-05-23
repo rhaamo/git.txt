@@ -17,7 +17,6 @@ const (
 	MAIL_AUTH_ACTIVATE        = "auth/activate"
 	MAIL_AUTH_ACTIVATE_EMAIL  = "auth/activate_email"
 	MAIL_AUTH_RESET_PASSWORD  = "auth/reset_passwd"
-	MAIL_AUTH_REGISTER_NOTIFY = "auth/register_notify"
 )
 
 type MailRender interface {
@@ -55,18 +54,6 @@ type User interface {
 	Email() string
 	GenerateActivateCode() string
 	GenerateEmailActivateCode(string) string
-}
-
-type Repository interface {
-	FullName() string
-	HTMLURL() string
-	ComposeMetas() map[string]string
-}
-
-type Issue interface {
-	MailSubject() string
-	Content() string
-	HTMLURL() string
 }
 
 func SendUserMail(c *macaron.Context, u User, tpl, code, subject, info string) {
@@ -114,29 +101,4 @@ func SendActivateEmailMail(c *macaron.Context, u User, email string) {
 	msg.Info = fmt.Sprintf("UID: %d, activate email", u.ID())
 
 	SendAsync(msg)
-}
-
-// SendRegisterNotifyMail triggers a notify e-mail by admin created a account.
-func SendRegisterNotifyMail(c *macaron.Context, u User) {
-	data := map[string]interface{}{
-		"Username": u.DisplayName(),
-	}
-	body, err := mailRender.HTMLString(string(MAIL_AUTH_REGISTER_NOTIFY), data)
-	if err != nil {
-		log.Error(3, "HTMLString: %v", err)
-		return
-	}
-
-	msg := NewMessage([]string{u.Email()}, c.Tr("mail.register_notify"), body)
-	msg.Info = fmt.Sprintf("UID: %d, registration notify", u.ID())
-
-	SendAsync(msg)
-}
-
-func composeTplData(subject, body, link string) map[string]interface{} {
-	data := make(map[string]interface{}, 10)
-	data["Subject"] = subject
-	data["Body"] = body
-	data["Link"] = link
-	return data
 }
