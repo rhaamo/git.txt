@@ -5,6 +5,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 	log "gopkg.in/clog.v1"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 	"net/url"
@@ -230,4 +231,119 @@ func Logout(ctx *context.Context) {
 	ctx.SetCookie(setting.CookieRememberName, "", -1, setting.AppSubURL)
 	ctx.SetCookie(setting.CSRFCookieName, "", -1, setting.AppSubURL)
 	ctx.Redirect(setting.AppSubURL + "/")
+}
+
+
+// ResetPassword
+func ResetPasswd(ctx *context.Context) {
+	ctx.Title("auth.reset_password")
+	code := ctx.Query("code")
+	if len(code) == 0 {
+		ctx.Error(404)
+		return
+	}
+	ctx.Data["Code"] = code
+	ctx.Data["IsResetForm"] = true
+	ctx.HTML(200, RESET_PASSWORD)
+}
+
+func ResetPasswdPost(ctx *context.Context) {
+	ctx.Data["Title"] = ctx.Tr("auth.reset_password")
+
+	code := ctx.Query("code")
+	if len(code) == 0 {
+		ctx.Error(404)
+		return
+	}
+	ctx.Data["Code"] = code
+
+	if u := models.VerifyUserActiveCode(code); u != nil {
+		// Validate password length.
+		passwd := ctx.Query("password")
+		if len(passwd) < 6 {
+			ctx.Data["IsResetForm"] = true
+			ctx.Data["Err_Password"] = true
+			ctx.RenderWithErr(ctx.Tr("auth.password_too_short"), RESET_PASSWORD, nil)
+			return
+		}
+
+		u.Password = passwd
+		var err error
+		if u.Rands, err = models.GetUserSalt(); err != nil {
+			ctx.Handle(500, "UpdateUser", err)
+			return
+		}
+		if u.Salt, err = models.GetUserSalt(); err != nil {
+			ctx.Handle(500, "UpdateUser", err)
+			return
+		}
+		u.EncodePasswd()
+		if err := models.UpdateUser(u); err != nil {
+			ctx.Handle(500, "UpdateUser", err)
+			return
+		}
+
+		log.Trace("User password reset: %s", u.UserName)
+		ctx.Redirect(setting.AppSubURL + "/user/login")
+		return
+	}
+	ctx.Data["IsResetFailed"] = true
+	ctx.HTML(200, RESET_PASSWORD)
+}
+
+func ForgotPasswd(ctx *context.Context) {
+	ctx.Data["Title"] = ctx.Tr("auth.forgot_password")
+
+	if setting.MailService == nil {
+		ctx.Data["IsResetDisable"] = true
+		ctx.HTML(200, FORGOT_PASSWORD)
+		return
+	}
+
+	ctx.Data["IsResetRequest"] = true
+
+	ctx.HTML(200, FORGOT_PASSWORD)
+}
+
+func ForgotPasswdPost(ctx *context.Context) {
+	ctx.Data["Title"] = ctx.Tr("auth.forgot_password")
+
+	if setting.MailService == nil {
+		ctx.Handle(403, "ForgotPasswdPost", nil)
+		return
+	}
+	ctx.Data["IsResetRequest"] = true
+
+	email := ctx.Query("email")
+	ctx.Data["Email"] = email
+
+	u, err := models.GetUserByEmail(email)
+	if err != nil {
+		if errors.IsUserNotExist(err) {
+			// HARDCODED
+			ctx.Data["Hours"] = 180 / 60
+			ctx.Data["IsResetSent"] = true
+			ctx.HTML(200, FORGOT_PASSWORD)
+			return
+		} else {
+			ctx.Handle(500, "user.ResetPasswd(check existence)", err)
+		}
+		return
+	}
+
+	if ctx.Cache.IsExist("MailResendLimit_" + u.LowerName) {
+		ctx.Data["ResendLimited"] = true
+		ctx.HTML(200, FORGOT_PASSWORD)
+		return
+	}
+
+	mailer.SendResetPasswordMail(ctx.Context, models.NewMailerUser(u))
+	if err = ctx.Cache.Put("MailResendLimit_"+u.LowerName, u.LowerName, 180); err != nil {
+		log.Error(4, "Set cache(MailResendLimit) fail: %v", err)
+	}
+
+	// HARDCODED
+	ctx.Data["Hours"] = 180 / 60
+	ctx.Data["IsResetSent"] = true
+	ctx.HTML(200, FORGOT_PASSWORD)
 }

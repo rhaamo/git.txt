@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"github.com/go-macaron/session"
 	"time"
+	"net/mail"
 )
 
 type Scheme string
@@ -133,7 +134,6 @@ var (
 		MaxPageDisplay  int64
 		MaxRawSize	int64
 	}
-
 )
 
 // DateLang transforms standard language locale name to corresponding value in datetime plugin.
@@ -305,6 +305,7 @@ func InitConfig() {
 
 	initSession()
 	initCache()
+	initMailer()
 }
 
 func initLogging() {
@@ -418,3 +419,59 @@ func initCache() {
 
 	log.Info("Cache Service Enabled")
 }
+
+// Mailer represents mail service.
+type Mailer struct {
+	QueueLength       int
+	Subject           string
+	Host              string
+	From              string
+	FromEmail         string
+	User, Passwd      string
+	DisableHelo       bool
+	HeloHostname      string
+	SkipVerify        bool
+	UseCertificate    bool
+	CertFile, KeyFile string
+	UsePlainText      bool
+}
+
+var (
+	MailService *Mailer
+)
+
+func initMailer() {
+	sec := Cfg.Section("mailer")
+	// Check mailer setting.
+	if !sec.Key("ENABLED").MustBool() {
+		log.Info("Mail Service Disabled")
+		return
+	}
+
+	MailService = &Mailer{
+		QueueLength:    sec.Key("SEND_BUFFER_LEN").MustInt(100),
+		Subject:        sec.Key("SUBJECT").MustString(AppName),
+		Host:           sec.Key("HOST").String(),
+		User:           sec.Key("USER").String(),
+		Passwd:         sec.Key("PASSWD").String(),
+		DisableHelo:    sec.Key("DISABLE_HELO").MustBool(),
+		HeloHostname:   sec.Key("HELO_HOSTNAME").String(),
+		SkipVerify:     sec.Key("SKIP_VERIFY").MustBool(),
+		UseCertificate: sec.Key("USE_CERTIFICATE").MustBool(),
+		CertFile:       sec.Key("CERT_FILE").String(),
+		KeyFile:        sec.Key("KEY_FILE").String(),
+		UsePlainText:   sec.Key("USE_PLAIN_TEXT").MustBool(),
+	}
+	MailService.From = sec.Key("FROM").MustString(MailService.User)
+
+	if len(MailService.From) > 0 {
+		parsed, err := mail.ParseAddress(MailService.From)
+		if err != nil {
+			log.Fatal(2, "Invalid mailer.FROM (%s): %v", MailService.From, err)
+		}
+		MailService.FromEmail = parsed.Address
+	}
+
+	log.Info("Mail Service Enabled")
+}
+

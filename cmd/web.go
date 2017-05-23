@@ -29,6 +29,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
 	"dev.sigpipe.me/dashie/git.txt/routers"
 	"dev.sigpipe.me/dashie/git.txt/routers/admin"
+	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 )
 
 var Web = cli.Command{
@@ -67,6 +68,7 @@ func newMacaron() *macaron.Macaron {
 		Funcs:		   funcMap,
 		IndentJSON:        macaron.Env != macaron.PROD,
 	}))
+	mailer.InitMailRender(path.Join(setting.StaticRootPath, "templates/mail"), funcMap)
 
 	localeNames, err := bindata.AssetDir("conf/locale")
 	if err != nil {
@@ -150,6 +152,8 @@ func runWeb(ctx *cli.Context) error {
 		})
 		m.Get("/register", user.Register)
 		m.Post("/register", csrf.Validate, bindIgnErr(form.Register{}), user.RegisterPost)
+		m.Get("/reset_password", user.ResetPasswd)
+		m.Post("/reset_password", user.ResetPasswdPost)
 	}, reqSignOut)
 
 	m.Group("/user/settings", func() {
@@ -162,6 +166,13 @@ func runWeb(ctx *cli.Context) error {
 	m.Group("/user", func() {
 		m.Get("/logout", user.Logout)
 	}, reqSignIn)
+
+	m.Group("/user", func() {
+		m.Get("/forget_password", user.ForgotPasswd)
+		m.Post("/forget_password", user.ForgotPasswdPost)
+	})
+
+	// END USER
 
 	m.Group("/new", func() {
 		m.Get("", gitxt.New)

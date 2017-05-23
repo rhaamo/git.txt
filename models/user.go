@@ -13,6 +13,10 @@ import (
 	"os"
 	"path/filepath"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"encoding/hex"
+	"github.com/Unknwon/com"
+	log "gopkg.in/clog.v1"
+	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 )
 
 type User struct {
@@ -87,6 +91,25 @@ func GetUserByName(name string) (*User, error) {
 		return nil, errors.UserNotExist{0, name}
 	}
 	return u, nil
+}
+
+// GetUserByEmail returns the user object by given e-mail if exists.
+func GetUserByEmail(email string) (*User, error) {
+	if len(email) == 0 {
+		return nil, errors.UserNotExist{0, "email"}
+	}
+
+	email = strings.ToLower(email)
+	user := &User{Email: email}
+	has, err := x.Get(user)
+	if err != nil {
+		return nil, err
+	}
+	if has {
+		return user, nil
+	}
+
+	return nil, errors.UserNotExist{0, email}
 }
 
 // IsUserExist checks if given user name exist,
@@ -231,4 +254,84 @@ func UserLogin(username, password string) (*User, error) {
 	}
 
 	return nil, errors.UserNotExist{user.ID, user.UserName}
+}
+
+// get user by verify code
+func getVerifyUser(code string) (user *User) {
+	if len(code) <= tool.TIME_LIMIT_CODE_LENGTH {
+		return nil
+	}
+
+	// use tail hex username query user
+	hexStr := code[tool.TIME_LIMIT_CODE_LENGTH:]
+	if b, err := hex.DecodeString(hexStr); err == nil {
+		if user, err = GetUserByName(string(b)); user != nil {
+			return user
+		} else if !errors.IsUserNotExist(err) {
+			log.Error(2, "GetUserByName: %v", err)
+		}
+	}
+
+	return nil
+}
+
+// verify active code when active account
+func VerifyUserActiveCode(code string) (user *User) {
+	// HARDCODED
+	minutes := 180
+
+	if user = getVerifyUser(code); user != nil {
+		// time limit code
+		prefix := code[:tool.TIME_LIMIT_CODE_LENGTH]
+		data := com.ToStr(user.ID) + user.Email + user.LowerName + user.Password + user.Rands
+
+		if tool.VerifyTimeLimitCode(data, minutes, prefix) {
+			return user
+		}
+	}
+	return nil
+}
+
+// GenerateEmailActivateCode generates an activate code based on user information and given e-mail.
+func (u *User) GenerateEmailActivateCode(email string) string {
+	code := tool.CreateTimeLimitCode(
+		com.ToStr(u.ID)+email+u.LowerName+u.Password+u.Rands,180, nil)
+
+	// Add tail hex username
+	code += hex.EncodeToString([]byte(u.LowerName))
+	return code
+}
+
+// GenerateActivateCode generates an activate code based on user information.
+func (u *User) GenerateActivateCode() string {
+	return u.GenerateEmailActivateCode(u.Email)
+}
+
+// mailerUser is a wrapper for satisfying mailer.User interface.
+type mailerUser struct {
+	user *User
+}
+
+func (this mailerUser) ID() int64 {
+	return this.user.ID
+}
+
+func (this mailerUser) Email() string {
+	return this.user.Email
+}
+
+func (this mailerUser) DisplayName() string {
+	return this.user.UserName
+}
+
+func (this mailerUser) GenerateActivateCode() string {
+	return this.user.GenerateActivateCode()
+}
+
+func (this mailerUser) GenerateEmailActivateCode(email string) string {
+	return this.user.GenerateEmailActivateCode(email)
+}
+
+func NewMailerUser(u *User) mailer.User {
+	return mailerUser{u}
 }
