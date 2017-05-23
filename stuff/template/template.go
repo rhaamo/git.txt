@@ -55,7 +55,7 @@ func NewFuncMap() []template.FuncMap {
 		"DateFmtLong": func(t time.Time) string {
 			return t.Format(time.RFC1123Z)
 		},
-		"DateFmtShort": func(t time.Time) string {
+			"DateFmtShort": func(t time.Time) string {
 			return t.Format("Jan 02, 2006")
 		},
 		"List": List,

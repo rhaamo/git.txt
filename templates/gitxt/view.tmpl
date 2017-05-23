@@ -33,6 +33,20 @@
 
 <div class="row">
     <div class="col-lg-11 col-lg-offset-1">
+        <div class="gitxt_description">
+            {{if .expiry}}
+                {{if eq .expiry 0}}
+                {{else}}
+                    Expiry on: {{DateFmtShort .expiryOn}}
+                {{end}}
+            {{end}}
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-11 col-lg-offset-1">
         {{range $entryFile := .repoFiles}}
         <div class="gitxt_file">
             <div class="header clearfix" id="file_{{$entryFile.Path}}">

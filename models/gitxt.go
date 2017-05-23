@@ -24,9 +24,10 @@ type Gitxt struct {
 	Description string        `xorm:"TEXT"`
 
 	// Choosen expiry in hours
-	Expiry		int64
+	ExpiryHours		int64  `xorm:"INDEX"`
 	// Calculated expiry unix timestamp from the time of creation/update
-	ExpiryUnix	int64	`xorm:"INDEX"`
+	ExpiryUnix	int64
+	Expiry		time.Time	`xorm:"-"`
 
 	// Permissions
 	IsPrivate bool        `xorm:"DEFAULT 0"`
@@ -47,6 +48,17 @@ func (gitxt *Gitxt) BeforeInsert() {
 
 func (gitxt *Gitxt) BeforeUpdate() {
 	gitxt.UpdatedUnix = time.Now().Unix()
+}
+
+func (g *Gitxt) AfterSet(colName string, _ xorm.Cell) {
+	switch colName {
+	case "created_unix":
+		g.Created = time.Unix(g.CreatedUnix, 0).Local()
+	case "updated_unix":
+		g.Updated = time.Unix(g.UpdatedUnix, 0).Local()
+	case "expiry_unix":
+		g.Expiry = time.Unix(g.ExpiryUnix, 0).Local()
+	}
 }
 
 type GitxtWithUser struct {

@@ -15,7 +15,7 @@ type Gitxt struct {
 	FilesContent	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
 
 	//				     no, 1h, 4h, 1d, 2d, 3d, 4d, 5d,  6d,  7d,  1m,  1y
-	Expiry		int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
+	ExpiryHours	int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
 }
 
 func (f *Gitxt) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
@@ -41,7 +41,7 @@ type GitxtEdit struct {
 	FilesContent	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
 
 	//				     no, 1h, 4h, 1d, 2d, 3d, 4d, 5d,  6d,  7d,  1m,  1y
-	Expiry		int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
+	ExpiryHours	int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
 }
 
 func (f *GitxtEdit) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {

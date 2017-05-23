@@ -36,6 +36,9 @@ func New(ctx *context.Context) {
 	ctx.Data["FilesContent"] = []string{""}
 	ctx.Data["FilesFilename"] = []string{""}
 
+	// Initial expiry
+	ctx.Data["ExpiryHours"] = 0
+
 	ctx.Success(NEW)
 }
 
@@ -73,7 +76,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
-	ctx.Data["Expiry"] = f.Expiry
+	ctx.Data["Expiry"] = f.ExpiryHours
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
@@ -205,8 +208,8 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		Hash: repositoryName,
 		Description: f.Description,
 		IsPrivate: !f.IsPublic,
-		Expiry: f.Expiry,
-		ExpiryUnix: time.Now().Add(time.Hour * time.Duration(f.Expiry)).Unix(),
+		ExpiryHours: f.ExpiryHours,
+		ExpiryUnix: time.Now().Add(time.Hour * time.Duration(f.ExpiryHours)).Unix(),
 	}
 
 	if ctx.IsLogged {
@@ -243,6 +246,8 @@ func View(ctx *context.Context) {
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
 	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
+	ctx.Data["expiry"] = ctx.Gitxt.Gitxt.ExpiryHours
+	ctx.Data["expiryOn"] = ctx.Gitxt.Gitxt.Expiry
 
 	// Get the files from git
 	var repoSpec = "HEAD"
@@ -452,7 +457,7 @@ func Edit(ctx *context.Context) {
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
 	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
-	ctx.Data["Expiry"] = ctx.Gitxt.Gitxt.Expiry
+	ctx.Data["ExpiryHours"] = ctx.Gitxt.Gitxt.ExpiryHours
 
 	// Get the files from git
 	var repoSpec = "HEAD"
@@ -516,7 +521,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	ctx.Title("gitxt_edit.title")
 	ctx.PageIs("GitxtEditPost")
-	
+
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
@@ -542,7 +547,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
-	ctx.Data["Expiry"] = f.Expiry
+	ctx.Data["Expiry"] = f.ExpiryHours
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
@@ -678,8 +683,8 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// 4. Insert info in database
 	ctx.Gitxt.Gitxt.Description = f.Description
-	ctx.Gitxt.Gitxt.Expiry = f.Expiry
-	ctx.Gitxt.Gitxt.ExpiryUnix = time.Now().Add(time.Hour * time.Duration(f.Expiry)).Unix()
+	ctx.Gitxt.Gitxt.ExpiryHours = f.ExpiryHours
+	ctx.Gitxt.Gitxt.ExpiryUnix = time.Now().Add(time.Hour * time.Duration(f.ExpiryHours)).Unix()
 
 	if err := models.UpdateGitxt(ctx.Gitxt.Gitxt); err != nil {
 		switch {
