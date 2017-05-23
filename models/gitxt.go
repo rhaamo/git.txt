@@ -23,6 +23,11 @@ type Gitxt struct {
 	Anonymous   bool
 	Description string        `xorm:"TEXT"`
 
+	// Choosen expiry in hours
+	Expiry		int64
+	// Calculated expiry unix timestamp from the time of creation/update
+	ExpiryUnix	int64	`xorm:"INDEX"`
+
 	// Permissions
 	IsPrivate bool        `xorm:"DEFAULT 0"`
 

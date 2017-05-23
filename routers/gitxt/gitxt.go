@@ -49,11 +49,6 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	ctx.Title("gitxt_new.title")
 	ctx.PageIs("GitxtNewPost")
 
-	if ctx.HasError() {
-		ctx.Success(NEW)
-		return
-	}
-
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
@@ -78,6 +73,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
+	ctx.Data["Expiry"] = f.Expiry
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
@@ -209,6 +205,8 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		Hash: repositoryName,
 		Description: f.Description,
 		IsPrivate: !f.IsPublic,
+		Expiry: f.Expiry,
+		ExpiryUnix: time.Now().Add(time.Hour * time.Duration(f.Expiry)).Unix(),
 	}
 
 	if ctx.IsLogged {
@@ -454,6 +452,7 @@ func Edit(ctx *context.Context) {
 	ctx.Data["repoIsPrivate"] = ctx.Gitxt.Gitxt.IsPrivate
 	ctx.Data["repoOwnerUsername"] = ctx.RepoOwnerUsername
 	ctx.Data["repoHash"] = ctx.Gitxt.Gitxt.Hash
+	ctx.Data["Expiry"] = ctx.Gitxt.Gitxt.Expiry
 
 	// Get the files from git
 	var repoSpec = "HEAD"
@@ -517,12 +516,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	ctx.Title("gitxt_edit.title")
 	ctx.PageIs("GitxtEditPost")
-
-	if ctx.HasError() {
-		ctx.Success(NEW)
-		return
-	}
-
+	
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
@@ -548,6 +542,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
+	ctx.Data["Expiry"] = f.Expiry
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
@@ -683,6 +678,9 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// 4. Insert info in database
 	ctx.Gitxt.Gitxt.Description = f.Description
+	ctx.Gitxt.Gitxt.Expiry = f.Expiry
+	ctx.Gitxt.Gitxt.ExpiryUnix = time.Now().Add(time.Hour * time.Duration(f.Expiry)).Unix()
+
 	if err := models.UpdateGitxt(ctx.Gitxt.Gitxt); err != nil {
 		switch {
 		default:

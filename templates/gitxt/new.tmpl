@@ -6,9 +6,30 @@
     <div class="row">
         <div class="col-lg-10 col-lg-offset-1">
             <div class="content">
-                <div class="description form-group {{if .Err_Description}}has-error{{end}}">
-                    <label for="description" class="sr-only">{{.i18n.Tr "gitxt.description"}}</label>
-                    <input type="text" name="description" id="description" class="form-control" value="{{.description}}" placeholder='{{.i18n.Tr "gitxt.description_placeholder"}}'>
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="description form-group {{if .Err_Description}}has-error{{end}}">
+                            <label for="description" class="sr-only">{{.i18n.Tr "gitxt.description"}}</label>
+                            <input type="text" name="description" id="description" class="form-control" value="{{.description}}" placeholder='{{.i18n.Tr "gitxt.description_placeholder"}}'>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="expiry">Expiry:</label>
+                        <select id="expiry" name="expiry">
+                            <option value="0" {{if eq .Expiry 0}}selected{{end}} >Never</option>
+                            <option value="1" {{if eq .Expiry 1}}selected{{end}} >1h</option>
+                            <option value="4" {{if eq .Expiry 4}}selected{{end}} >4h</option>
+                            <option value="24" {{if eq .Expiry 24}}selected{{end}} >1d</option>
+                            <option value="48" {{if eq .Expiry 48}}selected{{end}} >2d</option>
+                            <option value="72" {{if eq .Expiry 72}}selected{{end}} >3d</option>
+                            <option value="96" {{if eq .Expiry 96}}selected{{end}} >4d</option>
+                            <option value="120" {{if eq .Expiry 120}}selected{{end}} >5d</option>
+                            <option value="144" {{if eq .Expiry 144}}selected{{end}} >6d</option>
+                            <option value="168" {{if eq .Expiry 168}}selected{{end}} >7d</option>
+                            <option value="730" {{if eq .Expiry 730}}selected{{end}} >1m</option>
+                            <option value="8760" {{if eq .Expiry 8760}}selected{{end}} >1y</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="files">

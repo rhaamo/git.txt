@@ -85,6 +85,10 @@ func getInclude(field reflect.StructField) string {
 	return getRuleBody(field, "Include(")
 }
 
+func getIn(field reflect.StructField) string {
+	return getRuleBody(field, "In(")
+}
+
 func validate(errs binding.Errors, data map[string]interface{}, f Form, l macaron.Locale) binding.Errors {
 	log.Trace("Validating form")
 
@@ -143,6 +147,8 @@ func validate(errs binding.Errors, data map[string]interface{}, f Form, l macaro
 				data["ErrorMsg"] = trName + l.Tr("form.url_error")
 			case binding.ERR_INCLUDE:
 				data["ErrorMsg"] = trName + l.Tr("form.include_error", getInclude(field))
+			case binding.ERR_IN:
+				data["ErrorMsg"] = trName + l.Tr("form.in_error", getIn(field))
 			default:
 				data["ErrorMsg"] = l.Tr("form.unknown_error") + " " + errs[0].Classification
 			}
