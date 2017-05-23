@@ -6,6 +6,8 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 	"strings"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"time"
+	log "gopkg.in/clog.v1"
 )
 
 type Gitxt struct {
@@ -45,6 +47,17 @@ func GitUACheck() macaron.Handler {
 			ctx.Redirect(setting.AppSubURL + strings.Replace(ctx.Req.URL.String(), ctx.Params("hash"), ctx.Params("hash")+".git", 1))
 		} else {
 			ctx.Redirect(setting.AppSubURL + "/" + ctx.Params("user") + "/" + ctx.Params("hash"))
+		}
+	}
+}
+
+func CheckRepoExpiry() macaron.Handler {
+	return func(ctx *Context) {
+		if ctx.Gitxt.Gitxt.ExpiryHours > 0 && ctx.Gitxt.Gitxt.ExpiryUnix <= time.Now().Unix() {
+			log.Trace("Repository %s/%s expired", ctx.Gitxt.UserName, ctx.Gitxt.Gitxt.Hash)
+			ctx.Handle(404, "RepositoryExpired", nil)
+			//ctx.Redirect(setting.AppSubURL + "/", 404)
+			return
 		}
 	}
 }
