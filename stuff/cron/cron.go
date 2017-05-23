@@ -28,6 +28,13 @@ func NewContext() {
 			go models.DeleteOldRepositoryArchives()
 		}
 	}
+
+	entry, err = c.AddFunc("Delete expired repositories", "@every 1h", models.DeleteExpiredRepositories)
+	if err != nil {
+		log.Fatal(2, "Cron.(delete expired repositories): %v", err)
+	}
+	entry.Next = time.Now().Add(time.Minute*1)
+
 	c.Start()
 }
 

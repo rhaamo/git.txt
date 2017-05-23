@@ -71,6 +71,7 @@ var taskStatusTable = sync.NewStatusTable()
 
 const (
 	_CLEAN_OLD_ARCHIVES = "clean_old_archives"
+	_DELETE_EXPIRED_REPOSITORIES = "delete_expired_repositories"
 )
 
 // IsHashUsed checks if given hash exist,
@@ -177,6 +178,47 @@ func updateGitxt(e Engine, u *Gitxt) error {
 
 func UpdateGitxt(u *Gitxt) error {
 	return updateGitxt(x, u)
+}
+
+// Delete expired
+func DeleteExpiredRepositories() {
+	if taskStatusTable.IsRunning(_DELETE_EXPIRED_REPOSITORIES) {
+		return
+	}
+	taskStatusTable.Start(_DELETE_EXPIRED_REPOSITORIES)
+	defer taskStatusTable.Stop(_DELETE_EXPIRED_REPOSITORIES)
+
+	log.Trace("Doing: DeleteExpiredRepositories")
+
+	type GitxtExpired struct {
+		userId int64
+		repoId int64
+		hash   string
+	}
+	expired := []GitxtExpired{}
+
+	if err := x.Where("expiry_hours > 0").And("expiry_unix <= ?", time.Now().Unix()).Iterate(new(Gitxt),
+		func(idx int, bean interface{}) error {
+			repo := bean.(*Gitxt)
+
+			log.Trace("Deleting expired repository: %i/%s", repo.UserID, repo.Hash)
+
+			expired = append(expired, GitxtExpired{repo.UserID, repo.ID, repo.Hash})
+
+			return nil
+		}); err != nil {
+		log.Error(2, "DeleteExpiredRepositories: %v", err)
+	}
+
+	for _, tc := range expired {
+		err := DeleteRepository(tc.userId, tc.repoId)
+		if err != nil {
+			log.Warn("Error removing repository %i/%i: %v", tc.userId, tc.repoId, err)
+		} else {
+			log.Trace("Deleted repository %s", tc.hash)
+		}
+
+	}
 }
 
 // Archive deletion

@@ -37,7 +37,7 @@
             {{if .expiry}}
                 {{if eq .expiry 0}}
                 {{else}}
-                    Expiry on: {{DateFmtShort .expiryOn}}
+            Expiry on: <time datetime="{{DateFmtLong .expiryOn}}">{{DateFmtLong .expiryOn}}</time>
                 {{end}}
             {{end}}
         </div>
