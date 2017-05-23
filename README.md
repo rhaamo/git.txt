@@ -6,6 +6,7 @@ git.txt
 It's a Pastebin where all pastes are backed in is own Git repository.
 
 # Current Features list
+- First registered user is automatically admin
 - User or Anonymous Gitxts
 - Archive download in Zip or TarGz of Gitxts repositories
 - Git pull over HTTP/S for all Gitxts
