@@ -15,7 +15,6 @@ import (
 const (
 	LOGIN	= "user/auth/login"
 	REGISTER = "user/auth/register"
-	ACTIVATE = "user/auth/activate"
 	FORGOT_PASSWORD = "user/auth/forgot_password"
 	RESET_PASSWORD = "user/auth/reset_password"
 )
@@ -323,6 +322,7 @@ func ForgotPasswdPost(ctx *context.Context) {
 			// HARDCODED
 			ctx.Data["Hours"] = 180 / 60
 			ctx.Data["IsResetSent"] = true
+			log.Trace("User doesn't exists")
 			ctx.HTML(200, FORGOT_PASSWORD)
 			return
 		} else {
@@ -332,6 +332,7 @@ func ForgotPasswdPost(ctx *context.Context) {
 	}
 
 	if ctx.Cache.IsExist("MailResendLimit_" + u.LowerName) {
+		log.Trace("Mail Resend limited")
 		ctx.Data["ResendLimited"] = true
 		ctx.HTML(200, FORGOT_PASSWORD)
 		return
