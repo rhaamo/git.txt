@@ -126,6 +126,7 @@ func runWeb(ctx *cli.Context) error {
 	setting.InitConfig()
 	models.InitDb()
 	cron.NewContext()
+	mailer.NewContext()
 
 	m := newMacaron()
 
