@@ -218,7 +218,7 @@ func RegisterPost(ctx *context.Context, f form.Register) {
 
 	// TODO: send activation email
 
-	ctx.Flash.Success("Register succesfull")
+	ctx.Flash.Success(ctx.Tr("register.successfull"))
 	ctx.Redirect(setting.AppSubURL + "/user/login")
 }
 
@@ -247,7 +247,7 @@ func ResetPasswd(ctx *context.Context) {
 }
 
 func ResetPasswdPost(ctx *context.Context) {
-	ctx.Data["Title"] = ctx.Tr("auth.reset_password")
+	ctx.Title("auth.reset_password")
 
 	code := ctx.Query("code")
 	if len(code) == 0 {
@@ -291,7 +291,7 @@ func ResetPasswdPost(ctx *context.Context) {
 }
 
 func ForgotPasswd(ctx *context.Context) {
-	ctx.Data["Title"] = ctx.Tr("auth.forgot_password")
+	ctx.Title("auth.forgot_password")
 
 	if setting.MailService == nil {
 		ctx.Data["IsResetDisable"] = true
@@ -305,7 +305,7 @@ func ForgotPasswd(ctx *context.Context) {
 }
 
 func ForgotPasswdPost(ctx *context.Context) {
-	ctx.Data["Title"] = ctx.Tr("auth.forgot_password")
+	ctx.Title("auth.forgot_password")
 
 	if setting.MailService == nil {
 		ctx.Handle(403, "ForgotPasswdPost", nil)

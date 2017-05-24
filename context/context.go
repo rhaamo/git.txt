@@ -87,9 +87,9 @@ func (ctx *Context) RenderWithErr(msg, tpl string, f interface{}) {
 func (ctx *Context) Handle(status int, title string, err error) {
 	switch status {
 	case http.StatusNotFound:
-		ctx.Data["Title"] = "Page Not Found"
+		ctx.Data["Title"] = ctx.Tr("error.page_not_found")
 	case http.StatusInternalServerError:
-		ctx.Data["Title"] = "Internal Server Error"
+		ctx.Data["Title"] = ctx.Tr("internal_server_error")
 		log.Error(2, "%s: %v", title, err)
 	}
 	ctx.HTML(status, fmt.Sprintf("status/%d", status))

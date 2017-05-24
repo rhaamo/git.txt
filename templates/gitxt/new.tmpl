@@ -14,20 +14,20 @@
                         </div>
                     </div>
                     <div class="col-lg-2">
-                        <label for="expiry_hours">Expiry:</label>
+                        <label for="expiry_hours">{{.i18n.Tr "gitxt_edit.expiry"}}</label>
                         <select id="expiry_hours" name="expiry_hours">
-                            <option value="0" {{if eq .ExpiryHours 0}}selected{{end}} >Never</option>
-                            <option value="1" {{if eq .ExpiryHours 1}}selected{{end}} >1h</option>
-                            <option value="4" {{if eq .ExpiryHours 4}}selected{{end}} >4h</option>
-                            <option value="24" {{if eq .ExpiryHours 24}}selected{{end}} >1d</option>
-                            <option value="48" {{if eq .ExpiryHours 48}}selected{{end}} >2d</option>
-                            <option value="72" {{if eq .ExpiryHours 72}}selected{{end}} >3d</option>
-                            <option value="96" {{if eq .ExpiryHours 96}}selected{{end}} >4d</option>
-                            <option value="120" {{if eq .ExpiryHours 120}}selected{{end}} >5d</option>
-                            <option value="144" {{if eq .ExpiryHours 144}}selected{{end}} >6d</option>
-                            <option value="168" {{if eq .ExpiryHours 168}}selected{{end}} >7d</option>
-                            <option value="730" {{if eq .ExpiryHours 730}}selected{{end}} >1m</option>
-                            <option value="8760" {{if eq .ExpiryHours 8760}}selected{{end}} >1y</option>
+                            <option value="0" {{if eq .ExpiryHours 0}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.never"}}</option>
+                            <option value="1" {{if eq .ExpiryHours 1}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.1h"}}</option>
+                            <option value="4" {{if eq .ExpiryHours 4}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.4h"}}</option>
+                            <option value="24" {{if eq .ExpiryHours 24}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.1d"}}</option>
+                            <option value="48" {{if eq .ExpiryHours 48}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.2d"}}</option>
+                            <option value="72" {{if eq .ExpiryHours 72}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.3d"}}</option>
+                            <option value="96" {{if eq .ExpiryHours 96}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.4d"}}</option>
+                            <option value="120" {{if eq .ExpiryHours 120}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.5d"}}</option>
+                            <option value="144" {{if eq .ExpiryHours 144}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.6d"}}</option>
+                            <option value="168" {{if eq .ExpiryHours 168}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.7d"}}</option>
+                            <option value="730" {{if eq .ExpiryHours 730}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.1m"}}</option>
+                            <option value="8760" {{if eq .ExpiryHours 8760}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.1y"}}</option>
                         </select>
                     </div>
                 </div>

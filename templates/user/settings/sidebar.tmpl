@@ -1,6 +1,6 @@
 <div class="settings_sidebar">
     <div class="header item">Settings</div>
-    <a class="{{if .PageIsSettingsProfile}}active{{end}} item" href="/user/settings">Profile</a>
-    <a class="{{if .PageIsSettingsSshKeys}}active{{end}} item" href="/user/settings/ssh_keys">SSH Keys</a>
-    <a class="item" href="/user/forget_password">Reset Password</a>
+    <a class="{{if .PageIsSettingsProfile}}active{{end}} item" href="/user/settings">{{.i18n.Tr "settings.sidebar.profile"}}</a>
+    <a class="{{if .PageIsSettingsSshKeys}}active{{end}} item" href="/user/settings/ssh_keys">{{.i18n.Tr "settings.sidebar.ssh_keys"}}</a>
+    <a class="item" href="/user/forget_password">{{.i18n.Tr "settings.sidebar.reset_password"}}</a>
 </div>

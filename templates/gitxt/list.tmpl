@@ -1,9 +1,9 @@
 {{template "base/head" .}}
 
 {{if .GitxtListIsUser}}
-<h4>Show uploads for {{.RepoOwnerUsername}}</h4>
+<h4>{{.i18n.Tr "gitxt_view.show_uploads_for" .RepoOwnerUsername}}</h4>
 {{else}}
-<h4>Show all uploads</h4>
+<h4>{{.i18n.Tr "gitxt_view.show_all_uploads"}}</h4>
 {{end}}
 
 <div class="gitxts_list">
@@ -23,7 +23,7 @@
             {{if $gitxt.Description}}
                 {{$gitxt.Description}}
             {{else}}
-                No description.
+                {{$.i18n.Tr "gitxt_view.no_description"}}
             {{end}}
         </div>
     </div>

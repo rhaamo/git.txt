@@ -14,9 +14,9 @@
         <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.tar.gz" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .tar.gz</a>
 
         {{if .IsOwner}}
-        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">Edit</a>
+        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">{{.i18n.Tr "gitxt_view.edit"}}</a>
 
-        <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">Delete</a>
+        <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">{{.i18n.Tr "gitxt_view.delete"}}</a>
         {{end}}
     </div>
 </div>
@@ -37,7 +37,7 @@
             {{if .expiry}}
                 {{if eq .expiry 0}}
                 {{else}}
-            Expiry on: <time datetime="{{DateFmtLong .expiryOn}}">{{DateFmtLong .expiryOn}}</time>
+                    {{.i18n.Tr "gitxt_view.expiry_on"}} <time datetime="{{DateFmtLong .expiryOn}}">{{DateFmtLong .expiryOn}}</time>
                 {{end}}
             {{end}}
         </div>
@@ -51,24 +51,24 @@
         <div class="gitxt_file">
             <div class="header clearfix" id="file_{{$entryFile.Path}}">
                 <div class="left"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span> <small>({{$entryFile.MimeType}})</small></div>
-                <div class="right"><a class="btn btn-xs btn-default" href="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}">raw file</a></div>
+                <div class="right"><a class="btn btn-xs btn-default" href="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}">{{$.i18n.Tr "gitxt_view.raw_file"}}</a></div>
             </div>
             {{if $entryFile.OverSize}}
-            <pre id="code" class="nohilight">File is too big and can't be displayed.</pre>
+            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.file_too_big"}}</pre>
             {{else if $entryFile.OverPageSize}}
-            <pre id="code" class="nohilight">Page size limit exceeded and file won't me displayed.</pre>
+            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.over_page_size"}}</pre>
             {{else if eq $entryFile.MimeType "image/png"}}
             <div class="img-element non-raw-text">
-                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs img-loader">Load image</button>
+                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs img-loader">{{$.i18n.Tr "gitxt_view.load_image"}}</button>
             </div>
             {{else if IsMarkdown $entryFile.Path }}
             <div class="non-raw-text">{{ToMarkdown $entryFile.Content | Str2html}}</div>
             {{else if IsPdf $entryFile.MimeType }}
             <div class="non-raw-text">
-                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs pdf-loader">Load PDF Viewer</button>
+                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs pdf-loader">{{$.i18n.Tr "gitxt_view.load_pdf"}}</button>
             </div>
             {{else if $entryFile.IsBinary}}
-            <pre id="code" class="nohilight">Can't display binary files.</pre>
+            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.is_binary"}}</pre>
             {{else}}
                 <table>
                     <tbody>

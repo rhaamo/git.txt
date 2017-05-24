@@ -257,7 +257,7 @@ func View(ctx *context.Context) {
 	repo, err := git.OpenRepository(repoPath)
 	if err != nil {
 		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: could not open repository.")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.could_not_open"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 	}
@@ -266,7 +266,7 @@ func View(ctx *context.Context) {
 	isEmpty, err := repo.IsEmpty();
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: repository is empty or corrupted")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 	}
@@ -275,7 +275,7 @@ func View(ctx *context.Context) {
 	repoTreeEntries, err := gite.GetWalkTreeWithContent(repo, "/")
 	if err != nil {
 		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: cannot get repository tree entries")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.cannot_get_tree_entries"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 
@@ -398,7 +398,7 @@ func ListUploads(ctx *context.Context) {
 	listOfGitxts, gitxtsCount, err := models.GetGitxts(opts)
 	if err != nil {
 		log.Warn("Cannot get Gitxts with opts %v, %s", opts, err)
-		ctx.Flash.Error("Error while getting list of Gitxts")
+		ctx.Flash.Error(ctx.Tr("gitxt_list.error_getting_list"))
 		ctx.Handle(500, "ListUploads", err)
 		return
 	}
@@ -420,17 +420,17 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
 		ctx.JSONSuccess(map[string]interface{}{
-			"error": "Unauthorized",
+			"error": ctx.Tr("user.unauthorized"),
 			"redirect": false,
 		})
 	}
 
 	err := models.DeleteRepository(ctx.Gitxt.User.ID, ctx.Gitxt.Gitxt.ID)
 	if err != nil {
-		ctx.Flash.Error("Error trying deletion of repository")
+		ctx.Flash.Error(ctx.Tr("gitxt_delete.error_deleting"))
 		log.Warn("DeletePost.DeleteRepository: %v", err)
 		ctx.JSONSuccess(map[string]interface{}{
-			"error": "Error trying deletion of repository",
+			"error": ctx.Tr("gitxt_delete.error_deleting"),
 			"redirect": false,
 		})
 		return
@@ -448,7 +448,7 @@ func Edit(ctx *context.Context) {
 	ctx.PageIs("GitxtEdit")
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
-		ctx.Flash.Error("Unauthorized")
+		ctx.Flash.Error(ctx.Tr("user.unauthorized"))
 		ctx.Redirect(setting.AppSubURL + "/" + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
 		return
 	}
@@ -467,7 +467,7 @@ func Edit(ctx *context.Context) {
 	repo, err := git.OpenRepository(repoPath)
 	if err != nil {
 		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: could not open repository.")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.could_not_open"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 	}
@@ -476,7 +476,7 @@ func Edit(ctx *context.Context) {
 	isEmpty, err := repo.IsEmpty();
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: repository is empty or corrupted")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 	}
@@ -485,7 +485,7 @@ func Edit(ctx *context.Context) {
 	repoTreeEntries, err := gite.GetWalkTreeWithContent(repo, "/")
 	if err != nil {
 		log.Warn("Cannot get repository tree entries %s: %s", ctx.Gitxt.Gitxt.Hash, err)
-		ctx.Flash.Error("Error: cannot get repository tree entries")
+		ctx.Flash.Error(ctx.Tr("gitxt_git.cannot_get_tree_entries"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 
@@ -514,7 +514,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	}
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
-		ctx.Flash.Error("Unauthorized")
+		ctx.Flash.Error(ctx.Tr("user.unauthorized"))
 		ctx.Redirect(setting.AppSubURL + "/" + ctx.RepoOwnerUsername + "/" + ctx.Gitxt.Gitxt.Hash)
 		return
 	}
