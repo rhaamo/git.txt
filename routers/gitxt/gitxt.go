@@ -80,7 +80,6 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
-		//ctx.RenderWithErr(ctx.Tr("gitxt_new.error_plz_correct"), NEW, &f)
 		ctx.Success(NEW)
 		return
 	}
@@ -551,7 +550,6 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
-		//ctx.RenderWithErr(ctx.Tr("gitxt_new.error_plz_correct"), NEW, &f)
 		ctx.Success(NEW)
 		return
 	}
