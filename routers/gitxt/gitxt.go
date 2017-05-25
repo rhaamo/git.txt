@@ -19,6 +19,7 @@ import (
 	"bytes"
 	gotemplate "html/template"
 	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
+	"github.com/Unknwon/paginater"
 )
 
 const (
@@ -404,6 +405,9 @@ func ListUploads(ctx *context.Context) {
 
 	ctx.Data["gitxts"] = listOfGitxts
 	ctx.Data["gitxts_count"] = gitxtsCount
+
+	ctx.Data["Total"] = gitxtsCount
+	ctx.Data["Page"] = paginater.New(int(gitxtsCount), opts.PageSize, page, 5)
 
 	ctx.Success(LIST)
 }
