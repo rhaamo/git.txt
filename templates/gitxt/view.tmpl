@@ -1,28 +1,32 @@
 {{template "base/head" .}}
 
 <div class="row">
-    <div class="col-lg-6 col-lg-offset-1">
-        <h4>
-            {{if .repoIsPrivate}}
-            <span class="label label-warning" title="private git.txt"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+    <div class="col-lg-12">
+        <div class="paste_header clear">
+            <div class="left">
+            <h4>
+                {{if .repoIsPrivate}}
+                <span class="label label-warning" title="private git.txt"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+                {{end}}
+                <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
+            </h4>
+        </div>
+
+        <div class="right">
+            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.zip" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .zip</a>
+            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.tar.gz" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .tar.gz</a>
+
+            {{if .IsOwner}}
+            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">{{.i18n.Tr "gitxt_view.edit"}}</a>
+
+            <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">{{.i18n.Tr "gitxt_view.delete"}}</a>
             {{end}}
-            <a href="{{AppSubURL}}/{{.repoOwnerUsername}}">{{.repoOwnerUsername}}</a> / <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}">{{.repoHash}}</a>&nbsp;
-        </h4>
-    </div>
-    <div class="col-lg-3 col-lg-offset-2">
-        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.zip" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .zip</a>
-        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/archive/master.tar.gz" class="btn btn-sm btn-default"><i class="fa fa-download" aria-hidden="true"></i> .tar.gz</a>
-
-        {{if .IsOwner}}
-        <a href="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/edit" class="btn btn-sm btn-success">{{.i18n.Tr "gitxt_view.edit"}}</a>
-
-        <a data-url="{{AppSubURL}}/{{.repoOwnerUsername}}/{{.repoHash}}/delete" data-owner="{{.repoOwnerUsername}}" data-hash="{{.repoHash}}" class="btn btn-sm btn-danger delete_link">{{.i18n.Tr "gitxt_view.delete"}}</a>
-        {{end}}
+        </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-lg-11 col-lg-offset-1">
+    <div class="col-lg-12">
         <div class="gitxt_description">
             {{if .repoDescription}}
             <i class="fa fa-comment-o" aria-hidden="true"></i> {{.repoDescription}}
@@ -32,7 +36,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-11 col-lg-offset-1">
+    <div class="col-lg-12">
         <div class="gitxt_description">
             {{if .expiry}}
                 {{if eq .expiry 0}}
@@ -46,41 +50,43 @@
 
 
 <div class="row">
-    <div class="col-lg-11 col-lg-offset-1">
+    <div class="col-lg-12">
         {{range $entryFile := .repoFiles}}
         <div class="gitxt_file">
             <div class="header clearfix" id="file_{{$entryFile.Path}}">
                 <div class="left"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span> <small>({{$entryFile.MimeType}})</small></div>
                 <div class="right"><a class="btn btn-xs btn-default" href="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}">{{$.i18n.Tr "gitxt_view.raw_file"}}</a></div>
             </div>
-            {{if $entryFile.OverSize}}
-            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.file_too_big"}}</pre>
-            {{else if $entryFile.OverPageSize}}
-            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.over_page_size"}}</pre>
-            {{else if eq $entryFile.MimeType "image/png"}}
-            <div class="img-element non-raw-text">
-                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs img-loader">{{$.i18n.Tr "gitxt_view.load_image"}}</button>
+            <div class="gitxt_content">
+                {{if $entryFile.OverSize}}
+                <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.file_too_big"}}</pre>
+                {{else if $entryFile.OverPageSize}}
+                <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.over_page_size"}}</pre>
+                {{else if eq $entryFile.MimeType "image/png"}}
+                <div class="img-element non-raw-text">
+                    <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs img-loader">{{$.i18n.Tr "gitxt_view.load_image"}}</button>
+                </div>
+                {{else if IsMarkdown $entryFile.Path }}
+                <div class="non-raw-text">{{ToMarkdown $entryFile.Content | Str2html}}</div>
+                {{else if IsPdf $entryFile.MimeType }}
+                <div class="non-raw-text">
+                    <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs pdf-loader">{{$.i18n.Tr "gitxt_view.load_pdf"}}</button>
+                </div>
+                {{else if $entryFile.IsBinary}}
+                <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.is_binary"}}</pre>
+                {{else}}
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="lines-num">{{$entryFile.LineNos}}</td>
+                            <td class="lines-code">
+                                <pre><code class="{{FilenameToHighlightClass $entryFile.Path}}"><ol class="linenums">{{$entryFile.ContentH}}</ol></code></pre>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                {{end}}
             </div>
-            {{else if IsMarkdown $entryFile.Path }}
-            <div class="non-raw-text">{{ToMarkdown $entryFile.Content | Str2html}}</div>
-            {{else if IsPdf $entryFile.MimeType }}
-            <div class="non-raw-text">
-                <button data-src="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{EscapePound $entryFile.Path}}" class="btn btn-success btn-xs pdf-loader">{{$.i18n.Tr "gitxt_view.load_pdf"}}</button>
-            </div>
-            {{else if $entryFile.IsBinary}}
-            <pre id="code" class="nohilight">{{$.i18n.Tr "gitxt_view.is_binary"}}</pre>
-            {{else}}
-                <table>
-                    <tbody>
-                    <tr>
-                        <td class="lines-num">{{$entryFile.LineNos}}</td>
-                        <td class="lines-code">
-                            <pre><code class="{{FilenameToHighlightClass $entryFile.Path}}"><ol class="linenums">{{$entryFile.ContentH}}</ol></code></pre>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            {{end}}
         </div>
         {{end}}
     </div>

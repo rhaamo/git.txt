@@ -174,7 +174,14 @@ div.gitxt_file .header {
     padding: .5em 1em;
 }
 
-div.gitxt_file .content {
+div.gitxt_file .gitxt_content {
+    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+pre code {
+    white-space: inherit;
 }
 
 div.gitxt_file table * {
