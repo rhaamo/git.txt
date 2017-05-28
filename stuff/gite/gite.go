@@ -358,3 +358,14 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 	return finalEntries, nil
 }
 
+// We just want the OID
+func GetTreeFileOid(repo *git.Repository, path string) (oid *git.Oid, err error) {
+	tree, err := getRepositoryTree(repo)
+	if err != nil {
+		return
+	}
+	var entry git.TreeEntry
+	tree.Walk(getTreeEntryByPath(&entry, path))
+
+	return entry.Id, err
+}
