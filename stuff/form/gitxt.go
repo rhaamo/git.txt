@@ -39,6 +39,7 @@ type GitxtEdit struct {
 	// See the router view for manual validation
 	FilesFilename	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
 	FilesContent	[]string `binding:"Required;MaxSize(255);MinSizeSlice(1)"`
+	FilesNotHandled []bool
 
 	//				     no, 1h, 4h, 1d, 2d, 3d, 4d, 5d,  6d,  7d,  1m,  1y
 	ExpiryHours	int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`

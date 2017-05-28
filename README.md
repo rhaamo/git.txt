@@ -18,15 +18,13 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - Rendering of special types: Markdown, Images, PDF (via PDF.js)
 - Line Numbers for text files
 - Expiration time with internal cron for deletion
+- Binary or over-size files are excluded from Edit form in Web-UI, preserving them in the commit (they still can be deleted)
 
 # Planned Feature List
 - Pull or Push over SSH for user Gitxts
 - Display other rich texts
 - API for third party tools
 - More tests coverage
-
-# Current issues or misbehaviour
-- If a Git.txt upload is pushed with binary contents (or maybe big files, even text) they are not handled using web interface and cannot be edited that way, it's still possible to use Git itself and clone/push.
 
 # Use or build
 

@@ -38,13 +38,19 @@
                             <div class="filename">
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-code-o" aria-hidden="true"></i></div>
-                                    <input type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
+                                    <input {{if index $.FilesNotHandled $index}}readonly{{end}} type="text" name="files_filename" id="file_{{$index}}_filename" class="form-control" value="{{index $.FilesFilename $index}}" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
                                     <div class="input-group-addon btn btn-delete-file"><i class="fa fa-remove" aria-hidden="true"></i></div>
                                 </div>
                             </div>
 
                             <div class="content form-group">
+                                {{if index $.FilesNotHandled $index}}
+                                File too big or binary type and then cannot be edited here.
+                                <input type="hidden" name="files_content" value="binaryFile">
+                                {{else}}
                                 <textarea rows="15" type="text" name="files_content" id="file_{{$index}}_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'>{{index $.FilesContent $index}}</textarea>
+                                {{end}}
+                                <input type="hidden" name="files_not_handled" id="file_{{$index}}_not_handled" value="{{if index $.FilesNotHandled $index}}1{{else}}0{{end}}">
                             </div>
                         </div>
                     {{end}}

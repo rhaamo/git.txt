@@ -498,14 +498,21 @@ func Edit(ctx *context.Context) {
 
 	var FilesContent []string
 	var FilesFilename []string
+	var FilesNotHandled []bool
 
 	for i := range repoTreeEntries {
 		FilesContent = append(FilesContent, repoTreeEntries[i].Content)
 		FilesFilename = append(FilesFilename, repoTreeEntries[i].Path)
+		if repoTreeEntries[i].IsBinary || repoTreeEntries[i].OverSize || repoTreeEntries[i].OverPageSize {
+			FilesNotHandled = append(FilesNotHandled, true)
+		} else {
+			FilesNotHandled = append(FilesNotHandled, false)
+		}
 	}
 
 	ctx.Data["FilesContent"] = FilesContent
 	ctx.Data["FilesFilename"] = FilesFilename
+	ctx.Data["FilesNotHandled"] = FilesNotHandled
 
 	ctx.Success(EDIT)
 }
@@ -539,7 +546,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		}
 
 		// Check if empty content
-		if len(strings.TrimSpace(f.FilesContent[i])) <= 0 {
+		if len(strings.TrimSpace(f.FilesContent[i])) <= 0 && !f.FilesNotHandled[i] {
 			ctx.Data[fmt.Sprintf("Err_FilesContent_%d", i)] = ctx.Tr("gitxt_new.error_files_content")
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_new.files_content_cannot_empty")
@@ -549,6 +556,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
+	ctx.Data["FilesNotHandled"] = f.FilesNotHandled
 	ctx.Data["ExpiryHours"] = f.ExpiryHours
 
 	// We got an error in the manual validation step, render with error
@@ -582,15 +590,23 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	}
 
 	// git whatever create blob
+	// If it's an unhandled file : we get the Oid from filename then use it as-is
+	// Else we create a blob and get his Oid
 	var blobs []*git.Oid
 	for i := range f.FilesFilename {
-		blob, err := repo.CreateBlobFromBuffer([]byte(f.FilesContent[i]))
-		if err != nil {
-			log.Warn("init_error_create_blob: %s", err)
-			ctx.Data["HasError"] = true
-			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
-			ctx.Success(NEW)
-			return
+		var blob *git.Oid
+
+		if f.FilesNotHandled[i] {
+			blob, _ = gite.GetTreeFileOid(repo, f.FilesFilename[i])
+		} else {
+			blob, err = repo.CreateBlobFromBuffer([]byte(f.FilesContent[i]))
+			if err != nil {
+				log.Warn("init_error_create_blob: %s", err)
+				ctx.Data["HasError"] = true
+				ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
+				ctx.Success(NEW)
+				return
+			}
 		}
 		blobs = append(blobs, blob)
 	}
@@ -611,9 +627,11 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		indexEntry := &git.IndexEntry{
 			Path: f.FilesFilename[i],
 			Mode: git.FilemodeBlob,
-			Id: blobs[i],
+			Id:   blobs[i],
 		}
-		if repoIndex.Add(indexEntry) != nil {
+		log.Trace("Add blob %s fname %s", indexEntry.Id.String(), indexEntry.Path)
+
+		if err = repoIndex.Add(indexEntry); err != nil {
 			log.Warn("init_error_add_entry: %s", err)
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
