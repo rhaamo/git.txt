@@ -77,7 +77,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
-	ctx.Data["Expiry"] = f.ExpiryHours
+	ctx.Data["ExpiryHours"] = f.ExpiryHours
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
@@ -532,14 +532,13 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
 		}
+
+		// No extension, forces .txt
 		if len(filepath.Ext(f.FilesFilename[i])) == 0 {
-			// No extension, forces .txt
 			f.FilesFilename[i] = fmt.Sprintf("%s.txt", f.FilesFilename[i])
 		}
-	}
 
-
-	for i := range f.FilesContent {
+		// Check if empty content
 		if len(strings.TrimSpace(f.FilesContent[i])) <= 0 {
 			ctx.Data[fmt.Sprintf("Err_FilesContent_%d", i)] = ctx.Tr("gitxt_new.error_files_content")
 			ctx.Data["HasError"] = true
@@ -550,7 +549,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	// Since the validation of slices doesn't works in bindings, manually update context
 	ctx.Data["FilesFilename"] = f.FilesFilename
 	ctx.Data["FilesContent"] = f.FilesContent
-	ctx.Data["Expiry"] = f.ExpiryHours
+	ctx.Data["ExpiryHours"] = f.ExpiryHours
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
