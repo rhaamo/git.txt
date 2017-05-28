@@ -242,7 +242,9 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 
 	treeFile.IsBinary = isBinary(blob.Contents())
 
-	if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
+	if len(blob.Contents()) <= 0 {
+		treeFile.MimeType = "text/plain"
+	} else if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
 		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:RAW_CONTENT_CHECK_SIZE])
 	} else {
 		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:])
