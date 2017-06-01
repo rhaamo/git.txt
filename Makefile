@@ -5,7 +5,7 @@ OS := $(shell uname)
 
 DATA_FILES := $(shell find conf | sed 's/ /\\ /g')
 
-BUILD_FLAGS=-o git_txt -v
+BUILD_FLAGS:=-o git_txt -v
 TAGS=sqlite
 NOW=$(shell date -u '+%Y%m%d%I%M%S')
 GOVET=go tool vet -composites=false -methods=false -structtags=false
