@@ -3,7 +3,7 @@ package form
 import (
 	"reflect"
 	"github.com/go-macaron/binding"
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 	"github.com/Unknwon/com"
 	"strings"
 	"regexp"

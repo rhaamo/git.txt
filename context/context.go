@@ -1,7 +1,7 @@
 package context
 
 import (
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/session"
 	"github.com/go-macaron/cache"

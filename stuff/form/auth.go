@@ -2,7 +2,7 @@ package form
 
 import (
 	"github.com/go-macaron/binding"
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 )
 
 // Register

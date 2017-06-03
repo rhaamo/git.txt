@@ -1,7 +1,7 @@
 package form
 
 import (
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 	"github.com/go-macaron/binding"
 )
 

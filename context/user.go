@@ -1,7 +1,7 @@
 package context
 
 import (
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 )

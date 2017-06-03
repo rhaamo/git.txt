@@ -4,7 +4,7 @@
 package repo
 
 import (
-	"gopkg.in/macaron.v1"
+	"github.com/go-macaron/macaron"
 	"dev.sigpipe.me/dashie/git.txt/context"
 	"strings"
 	"dev.sigpipe.me/dashie/git.txt/models"
