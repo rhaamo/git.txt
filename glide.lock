@@ -1,5 +1,5 @@
-hash: 88ee83b40345d43a57418bd97b00ef2c2eb634e7548f8c845448dc4d1a119914
-updated: 2017-06-03T22:36:45.440112819+02:00
+hash: 5679f4c213ae5ac73bd7dfc86f1f5efe8a2979e67e34d8086275d5824ef3ea8b
+updated: 2017-06-03T22:47:39.021162572+02:00
 imports:
 - name: github.com/certifi/gocertifi
   version: a9c833d2837d3b16888d55d5aafa9ffe9afb22b0
@@ -32,7 +32,7 @@ imports:
 - name: github.com/go-xorm/xorm
   version: 3c8314e91603f0bfa6a228c1a0fea8a9e298f6d9
 - name: github.com/gogits/cron
-  version: b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4
+  version: c803a08f3bd6f5d5f0281e5ef6a5e09b28488ed7
 - name: github.com/jaytaylor/html2text
   version: 7c7a33a7a158a5ce395c803d2b6a209b2bbc14c8
 - name: github.com/lib/pq

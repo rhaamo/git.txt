@@ -18,7 +18,7 @@ import:
 - package: github.com/go-xorm/xorm
   version: ^0.6.2
 - package: github.com/gogits/cron
-  version: ^1.0.0
+  version: master
 - package: github.com/jaytaylor/html2text
 - package: github.com/lib/pq
 - package: github.com/mattn/go-sqlite3
@@ -36,14 +36,14 @@ import:
   subpackages:
   - html
 - package: gopkg.in/clog.v1
-  version: ^1.1.1
+  version: master
 - package: gopkg.in/gomail.v2
-  version: ^2.0.0
+  version: master
 - package: gopkg.in/ini.v1
-  version: ^1.27.2
+  version: master
 - package: gopkg.in/libgit2/git2go.v25
 - package: gopkg.in/macaron.v1
-  version: ^1.2.1
+  version: master
 testImport:
 - package: github.com/smartystreets/goconvey
   version: ^1.6.2
