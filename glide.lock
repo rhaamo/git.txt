@@ -1,5 +1,5 @@
-hash: 3afbbe49742604cde6ab28b05cb5075e343ebdc1f676e5ca62fa153414c18ac2
-updated: 2017-06-03T22:23:12.591734079+02:00
+hash: 88ee83b40345d43a57418bd97b00ef2c2eb634e7548f8c845448dc4d1a119914
+updated: 2017-06-03T22:36:45.440112819+02:00
 imports:
 - name: github.com/certifi/gocertifi
   version: a9c833d2837d3b16888d55d5aafa9ffe9afb22b0
@@ -62,7 +62,7 @@ imports:
 - name: github.com/ssor/bom
   version: 6ed919a936d5ab554e4b40bc51f7c522488122c6
 - name: github.com/Unknwon/com
-  version: 28b053d5a2923b87ce8c5a08f3af779894a72758
+  version: 0db4a625e949e956314d7d1adea9bf82384cc10c
 - name: github.com/Unknwon/i18n
   version: 8372b908b5876d26cfa46a85fc4851b981dad102
 - name: github.com/Unknwon/paginater

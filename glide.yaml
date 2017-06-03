@@ -1,6 +1,7 @@
 package: dev.sigpipe.me/dashie/git.txt
 import:
 - package: github.com/Unknwon/com
+  version: master
 - package: github.com/Unknwon/paginater
 - package: github.com/denisenkom/go-mssqldb
 - package: github.com/getsentry/raven-go
