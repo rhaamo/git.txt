@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/urfave/cli"
-	"github.com/go-macaron/macaron"
+	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/context"
 	"dev.sigpipe.me/dashie/git.txt/bindata"

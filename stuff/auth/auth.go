@@ -11,7 +11,7 @@ import (
 
 	"github.com/go-macaron/session"
 	log "gopkg.in/clog.v1"
-	"github.com/go-macaron/macaron"
+	"gopkg.in/macaron.v1"
 )
 
 func IsAPIPath(url string) bool {

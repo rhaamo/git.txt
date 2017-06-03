@@ -10,7 +10,7 @@ import (
 
 	log "gopkg.in/clog.v1"
 	"gopkg.in/gomail.v2"
-	"github.com/go-macaron/macaron"
+	"gopkg.in/macaron.v1"
 )
 
 const (
