@@ -40,7 +40,7 @@ clean-mac: clean
 	find . -name ".DS_Store" -delete
 
 test:
-	go test -cover -race ./...
+	go test -cover ./...
 
 bindata: bindata/bindata.go
 
