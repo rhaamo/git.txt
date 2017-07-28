@@ -1,0 +1,42 @@
+workspace:
+  base: /srv/app
+  path: src/dev.sigpipe.me/dashie/git.txt
+
+pipeline:
+  clone:
+    image: plugins/git
+    depth: 50
+    tags: true
+  build:
+    image: webhippie/golang:edge
+    pull: true
+    environment:
+      TAGS: bindata sqlite
+      GOPATH: /srv/app
+    commands:
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
+      - go get github.com/Masterminds/glide
+      - glide install
+      - make clean
+      - make build
+    when:
+      event: [ push, tag, pull_request ]
+  test:
+    image: webhippie/golang:edge
+    pull: true
+    environment:
+      TAGS: bindata sqlite
+      GOPATH: /srv/app
+    commands:
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
+      - make test
+    when:
+      event: [ push, tag, pull_request ]
+  notify:
+    image: plugins/slack
+    channel: gitea
+    secrets:
+      - SLACK_WEBHOOK
+    when:
+      event: [ push, tag, pull_request ]
+      status: [ changed, failure, success ]
