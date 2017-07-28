@@ -10,6 +10,8 @@ TAGS=sqlite
 NOW=$(shell date -u '+%Y%m%d%I%M%S')
 GOVET=go tool vet -composites=false -methods=false -structtags=false
 
+PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
+
 GENERATED := bindata/bindata.go
 
 .PHONY: build clean
@@ -40,7 +42,7 @@ clean-mac: clean
 	find . -name ".DS_Store" -delete
 
 test:
-	go test -cover ./...
+	go test -cover -v $(PACKAGES)
 
 bindata: bindata/bindata.go
 
