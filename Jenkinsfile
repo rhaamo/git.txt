@@ -20,8 +20,7 @@ node('linux && x86_64 && go') {
 
             sh 'go get -u github.com/golang/lint/golint'
             sh 'go get -u github.com/tebeka/go2xunit'
-            sh 'go get -u github.com/jteeuwen/go-bindata/...'
-            sh 'go get github.com/Masterminds/glide'
+            sh 'go get -u github.com/golang/dep/cmd/dep'
         }
 
         stage('Checkout') {
@@ -37,7 +36,7 @@ node('linux && x86_64 && go') {
         String buildNumber = "${appVersion}-${env.BUILD_NUMBER}"
 
         stage('Install dependencies') {
-            sh 'glide install'
+            sh 'dep ensure'
         }
 
         stage('Test') {
