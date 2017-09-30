@@ -1,6 +1,8 @@
 git.txt
 =======
 
+[![Build Status](https://drone.sigpipe.me/api/badges/dashie/git.txt/status.svg)](https://drone.sigpipe.me/dashie/git.txt)
+
 # What
 
 It's a Pastebin where all pastes are backed in is own Git repository.
