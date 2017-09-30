@@ -11,7 +11,7 @@ pipeline:
     image: webhippie/golang:edge
     pull: true
     environment:
-      TAGS: bindata sqlite
+      TAGS: sqlite
       GOPATH: /srv/app
     commands:
       - apk -U add libmagic file-dev libgit2 libgit2-dev
@@ -25,7 +25,7 @@ pipeline:
     image: webhippie/golang:edge
     pull: true
     environment:
-      TAGS: bindata sqlite
+      TAGS: sqlite
       GOPATH: /srv/app
     commands:
       - apk -U add libmagic file-dev libgit2 libgit2-dev

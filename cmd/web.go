@@ -5,7 +5,6 @@ import (
 	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"dev.sigpipe.me/dashie/git.txt/bindata"
 	"dev.sigpipe.me/dashie/git.txt/stuff/template"
 	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"path"
@@ -70,14 +69,6 @@ func newMacaron() *macaron.Macaron {
 	}))
 	mailer.InitMailRender(path.Join(setting.StaticRootPath, "templates/mail"), funcMap)
 
-	localeNames, err := bindata.AssetDir("conf/locale")
-	if err != nil {
-		log.Fatal(4, "Fail to list locale files: %v", err)
-	}
-	localFiles := make(map[string][]byte)
-	for _, name := range localeNames {
-		localFiles[name] = bindata.MustAsset("conf/locale/" + name)
-	}
 	m.Use(i18n.I18n(i18n.Options{
 		SubURL:          setting.AppSubURL,
 		//Files:           localFiles,

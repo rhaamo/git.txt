@@ -29,7 +29,6 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 # Use or build
 
     Install or build libgit2 0.25.x ONLY. NO Version less than 0.25 (hello Debian Stable)
-    go get -u github.com/jteeuwen/go-bindata/...
     go get -v -insecure -u dev.sigpipe.me/dashie/git.txt
 
 # Contact, issues

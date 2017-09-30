@@ -12,8 +12,6 @@ GOVET=go tool vet -composites=false -methods=false -structtags=false
 
 PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
 
-GENERATED := bindata/bindata.go
-
 .PHONY: build clean
 
 all: build
@@ -26,13 +24,13 @@ web: build
 govet:
 	$(GOVET) git.txt.go
 
-build: $(GENERATED)
+build:
 	go build $(BUILD_FLAGS) -ldflags '$(LDFLAGS)' -tags '$(TAGS)'
 
-build-dev: $(GENERATED) govet
+build-dev: govet
 	go build $(BUILD_FLAGS) -tags '$(TAGS)'
 
-build-dev-race: $(GENERATED) govet
+build-dev-race: govet
 	go build $(BUILD_FLAGS) -race -tags '$(TAGS)'
 
 clean:
@@ -43,11 +41,3 @@ clean-mac: clean
 
 test:
 	go test -cover -v $(PACKAGES)
-
-bindata: bindata/bindata.go
-
-bindata/bindata.go: $(DATA_FILES)
-	@hash go-bindata > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/jteeuwen/go-bindata/...; \
-		fi
-	go-bindata -o=$@ -ignore="\\.DS_Store|README.md|TRANSLATORS" -pkg=bindata conf/...
