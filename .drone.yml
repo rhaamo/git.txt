@@ -7,6 +7,17 @@ pipeline:
     image: plugins/git
     depth: 50
     tags: true
+  test:
+    image: webhippie/golang:edge
+    pull: true
+    environment:
+      TAGS: sqlite
+      GOPATH: /srv/app
+    commands:
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
+      - make test
+    when:
+      event: [ push, tag, pull_request ]
   build:
     image: webhippie/golang:edge
     pull: true
@@ -22,17 +33,6 @@ pipeline:
       - make lint
       - make misspell-check
       - make build
-    when:
-      event: [ push, tag, pull_request ]
-  test:
-    image: webhippie/golang:edge
-    pull: true
-    environment:
-      TAGS: sqlite
-      GOPATH: /srv/app
-    commands:
-      - apk -U add libmagic file-dev libgit2 libgit2-dev
-      - make test
     when:
       event: [ push, tag, pull_request ]
   notify:
