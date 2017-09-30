@@ -7,23 +7,25 @@ import (
 )
 
 const (
-	SETTINGS_PROFILE = "user/settings/profile"
+	tmplSettingsProfile = "user/settings/profile"
 )
 
+// Settings GET
 func Settings(ctx *context.Context) {
 	ctx.Title("settings.title")
 	ctx.PageIs("SettingsProfile")
 	ctx.Data["email"] = ctx.User.Email
-	ctx.Success(SETTINGS_PROFILE)
+	ctx.Success(tmplSettingsProfile)
 }
 
+// SettingsPost POST
 func SettingsPost(ctx *context.Context, f form.UpdateSettingsProfile) {
 	ctx.Title("settings.title")
 	ctx.PageIs("SettingsProfile")
 	ctx.Data["origin_name"] = ctx.User.UserName
 
 	if ctx.HasError() {
-		ctx.Success(SETTINGS_PROFILE)
+		ctx.Success(tmplSettingsProfile)
 		return
 	}
 

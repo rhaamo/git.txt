@@ -6,14 +6,15 @@ import (
 	"path"
 )
 
-// Builds a repository path
-func RepoPath(username string, repo_name string) string {
-	return path.Join(setting.RepositoryRoot, username, repo_name) + ".git"
+// RepoPath will builds a repository path
+func RepoPath(username string, repoName string) string {
+	return path.Join(setting.RepositoryRoot, username, repoName) + ".git"
 }
 
-func InitRepository(username string, repo_name string) (*git.Repository, error) {
+// InitRepository will init a repository with given informations
+func InitRepository(username string, repoName string) (*git.Repository, error) {
 	// Join the final path of the repository
-	repoPath := RepoPath(username, repo_name)
+	repoPath := RepoPath(username, repoName)
 
 	// Create the repository, bare type
 	repo, err := git.InitRepository(repoPath, true)

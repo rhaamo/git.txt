@@ -31,6 +31,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 )
 
+// Web command
 var Web = cli.Command{
 	Name: "web",
 	Usage: "Start web server",
@@ -50,7 +51,7 @@ func newMacaron() *macaron.Macaron {
 
 	m.Use(macaron.Recovery())
 
-	if setting.Protocol == setting.SCHEME_FCGI {
+	if setting.Protocol == setting.SchemeFCGI {
 		m.SetURLPrefix(setting.AppSubURL)
 	}
 
@@ -212,7 +213,7 @@ func runWeb(ctx *cli.Context) error {
 	}
 
 	var listenAddr string
-	if setting.Protocol == setting.SCHEME_UNIX_SOCKET {
+	if setting.Protocol == setting.SchemeUnixSocket {
 		listenAddr = fmt.Sprintf("%s", setting.HTTPAddr)
 	} else {
 		listenAddr = fmt.Sprintf("%s:%s", setting.HTTPAddr, setting.HTTPPort)
@@ -221,13 +222,13 @@ func runWeb(ctx *cli.Context) error {
 
 	var err error
 	switch setting.Protocol {
-	case setting.SCHEME_HTTP:
+	case setting.SchemeHTTP:
 		err = http.ListenAndServe(listenAddr, m)
-	case setting.SCHEME_HTTPS:
+	case setting.SchemeHTTPS:
 		log.Fatal(2, "https not supported")
-	case setting.SCHEME_FCGI:
+	case setting.SchemeFCGI:
 		err = fcgi.Serve(nil, m)
-	case setting.SCHEME_UNIX_SOCKET:
+	case setting.SchemeUnixSocket:
 		os.Remove(listenAddr)
 
 		var listener *net.UnixListener

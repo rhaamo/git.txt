@@ -6,6 +6,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
 )
 
+// AssignUser to context
 func AssignUser() macaron.Handler {
 	return func(ctx *Context) {
 		userName := ctx.Params("user")

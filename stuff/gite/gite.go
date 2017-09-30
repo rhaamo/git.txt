@@ -103,6 +103,7 @@ func getEntriesPaths(entries *[]TreeEntry, target string) git.TreeWalkCallback {
 		return 0
 	}
 }
+
 func getJustRawContent(repo *git.Repository, path string) (content []byte, size int64, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
@@ -116,6 +117,8 @@ func getJustRawContent(repo *git.Repository, path string) (content []byte, size 
 	}
 	return blob.Contents(), blob.Size(), err
 }
+
+// WriteTarArchiveFromRepository because yes
 func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (err error) {
 	archiveFile, err := os.Create(archivePath)
 	if err != nil {
@@ -157,6 +160,7 @@ func WriteTarArchiveFromRepository(repo *git.Repository, archivePath string) (er
 	return
 }
 
+// WriteZipArchiveFromRepository as said
 func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (err error) {
 	archiveFile, err := os.Create(archivePath)
 	if err != nil {
@@ -194,31 +198,30 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 }
 
 
-// Get root tree without depth and contents
-
+// TreeFiles struct to get root tree without depth and contents
 type TreeFiles struct {
-	Id		string
-	Path		string
-	Content		string
-	ContentB	[]byte
-	ContentH	gotemplate.HTML
-	Size		int64	// bytes
-	OverSize	bool
-	IsBinary	bool
-	OverPageSize	bool
-	MimeType	string
-	LineNos		gotemplate.HTML
+	ID           string
+	Path         string
+	Content      string
+	ContentB     []byte
+	ContentH     gotemplate.HTML
+	Size         int64	// bytes
+	OverSize     bool
+	IsBinary     bool
+	OverPageSize bool
+	MimeType     string
+	LineNos      gotemplate.HTML
 }
 
 // Content helpers
-const RAW_CONTENT_CHECK_SIZE = 5000
+const rawContentCheckSize = 5000
 
 // isBinary returns true if data's format is binary.
-// This function will only check the first RAW_CONTENT_CHECK_SIZE bytes
+// This function will only check the first rawContentCheckSize bytes
 // so it may give false positives even if it is unlikely.
 func isBinary(data []byte) bool {
-	if len(data) > RAW_CONTENT_CHECK_SIZE {
-		data = data[:RAW_CONTENT_CHECK_SIZE]
+	if len(data) > rawContentCheckSize {
+		data = data[:rawContentCheckSize]
 	}
 	for _, b := range data {
 		if b == byte(0x0) {
@@ -244,8 +247,8 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 
 	if len(blob.Contents()) <= 0 {
 		treeFile.MimeType = "text/plain"
-	} else if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
-		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:RAW_CONTENT_CHECK_SIZE])
+	} else if len(blob.Contents()) > rawContentCheckSize {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:rawContentCheckSize])
 	} else {
 		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:])
 	}
@@ -276,11 +279,12 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 
 	treeFile.Size = blob.Size()
 	treeFile.Path = path
-	treeFile.Id = blob.Id().String()
+	treeFile.ID = blob.Id().String()
 
 	return treeFile, err
 }
 
+// GetTreeFileNoLimit yeah
 func GetTreeFileNoLimit(repo *git.Repository, path string) (treeFile TreeFiles, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
@@ -302,8 +306,8 @@ func GetTreeFileNoLimit(repo *git.Repository, path string) (treeFile TreeFiles, 
 
 	treeFile.IsBinary = isBinary(blob.Contents())
 
-	if len(blob.Contents()) > RAW_CONTENT_CHECK_SIZE {
-		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:RAW_CONTENT_CHECK_SIZE])
+	if len(blob.Contents()) > rawContentCheckSize {
+		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:rawContentCheckSize])
 	} else {
 		treeFile.MimeType, err = magicmime.TypeByBuffer(blob.Contents()[:])
 	}
@@ -318,12 +322,12 @@ func GetTreeFileNoLimit(repo *git.Repository, path string) (treeFile TreeFiles, 
 
 	treeFile.Size = blob.Size()
 	treeFile.Path = path
-	treeFile.Id = blob.Id().String()
+	treeFile.ID = blob.Id().String()
 
 	return treeFile, err
 }
 
-// TreeFiles.Content will be nil if size is too big
+// GetWalkTreeWithContent TreeFiles.Content will be nil if size is too big
 func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []TreeFiles, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {
@@ -358,7 +362,7 @@ func GetWalkTreeWithContent(repo *git.Repository, path string) (finalEntries []T
 	return finalEntries, nil
 }
 
-// We just want the OID
+// GetTreeFileOid returns the OID of the Tree File
 func GetTreeFileOid(repo *git.Repository, path string) (oid *git.Oid, err error) {
 	tree, err := getRepositoryTree(repo)
 	if err != nil {

@@ -23,12 +23,13 @@ import (
 )
 
 const (
-	NEW = "gitxt/new"
-	VIEW = "gitxt/view"
-	LIST = "gitxt/list"
-	EDIT = "gitxt/edit"
+	tmplNew  = "gitxt/new"
+	tmplView = "gitxt/view"
+	tmplList = "gitxt/list"
+	tmplEdit = "gitxt/edit"
 )
 
+// New GET
 func New(ctx *context.Context) {
 	ctx.Title("gitxt_new.title")
 	ctx.PageIs("GitxtNew")
@@ -40,9 +41,10 @@ func New(ctx *context.Context) {
 	// Initial expiry
 	ctx.Data["ExpiryHours"] = 0
 
-	ctx.Success(NEW)
+	ctx.Success(tmplNew)
 }
 
+// NewPost POST
 func NewPost(ctx *context.Context, f form.Gitxt) {
 	// Reject-redirect if not logged-in and anonymous create is deactivated
 	if !setting.AnonymousCreate && !ctx.IsLogged {
@@ -55,7 +57,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
-		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
+		f.FilesFilename[i] = sanitize.Filename(f.FilesFilename[i])
 		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
@@ -81,7 +83,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -113,7 +115,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 		log.Trace("Repository deleted: %s for %s", repositoryName, repositoryUser)
 
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -130,7 +132,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 			log.Warn("init_error_create_blob: %s", err)
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
-			ctx.Success(NEW)
+			ctx.Success(tmplNew)
 			return
 		}
 		blobs = append(blobs, blob)
@@ -142,7 +144,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		log.Warn("init_error_get_index: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_index")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -158,7 +160,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 			log.Warn("init_error_add_entry: %s", err)
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
-			ctx.Success(NEW)
+			ctx.Success(tmplNew)
 			return
 		}
 	}
@@ -170,7 +172,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		log.Warn("init_error_index_write_tree: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_index_write_tree")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}
@@ -181,7 +183,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		log.Warn("init_error_lookup_tree: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_lookup_tree")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}
@@ -196,7 +198,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		log.Warn("init_error_commit: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_commit")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}
@@ -224,7 +226,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		switch {
 		case models.IsErrHashAlreadyExist(err):
 			ctx.Data["Err_Hash"] = true
-			ctx.RenderWithErr(ctx.Tr("gitxt_new.hash_been_taken"), NEW, &f)
+			ctx.RenderWithErr(ctx.Tr("gitxt_new.hash_been_taken"), tmplNew, &f)
 		default:
 			ctx.Handle(500, "NewPost", err)
 		}
@@ -310,10 +312,10 @@ func View(ctx *context.Context) {
 		ctx.Data["IsOwner"] = false
 	}
 
-	ctx.Success(VIEW)
+	ctx.Success(tmplView)
 }
 
-
+// RawFile GET
 func RawFile(ctx *context.Context) {
 	file := ctx.Params("path")
 
@@ -356,7 +358,7 @@ func RawFile(ctx *context.Context) {
 	}
 }
 
-// List uploads, manage auth'ed user or not and from /:user too
+// ListUploads manage auth'ed user or not and from /:user too
 func ListUploads(ctx *context.Context) {
 	ctx.Title("gitxt_list.title")
 	ctx.PageIs("GitxtList")
@@ -409,9 +411,10 @@ func ListUploads(ctx *context.Context) {
 	ctx.Data["Total"] = gitxtsCount
 	ctx.Data["Page"] = paginater.New(int(gitxtsCount), opts.PageSize, page, 5)
 
-	ctx.Success(LIST)
+	ctx.Success(tmplList)
 }
 
+// DeletePost GET
 func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 	if ctx.HasError() {
 		ctx.JSONSuccess(map[string]interface{}{
@@ -446,6 +449,7 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 	return
 }
 
+// Edit git.txt
 func Edit(ctx *context.Context) {
 	ctx.Title("gitxt_edit.title")
 	ctx.PageIs("GitxtEdit")
@@ -514,9 +518,10 @@ func Edit(ctx *context.Context) {
 	ctx.Data["FilesFilename"] = FilesFilename
 	ctx.Data["FilesNotHandled"] = FilesNotHandled
 
-	ctx.Success(EDIT)
+	ctx.Success(tmplEdit)
 }
 
+// EditPost POST
 func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	if !ctx.IsLogged {
 		ctx.Redirect(setting.AppSubURL + "/")
@@ -534,7 +539,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
-		f.FilesFilename[i] = sanitize.SanitizeFilename(f.FilesFilename[i])
+		f.FilesFilename[i] = sanitize.Filename(f.FilesFilename[i])
 		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
@@ -561,7 +566,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// We got an error in the manual validation step, render with error
 	if ctx.HasError() {
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -604,7 +609,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 				log.Warn("init_error_create_blob: %s", err)
 				ctx.Data["HasError"] = true
 				ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_create_blob")
-				ctx.Success(NEW)
+				ctx.Success(tmplNew)
 				return
 			}
 		}
@@ -617,7 +622,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("init_error_get_index: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_index")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -635,7 +640,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 			log.Warn("init_error_add_entry: %s", err)
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
-			ctx.Success(NEW)
+			ctx.Success(tmplNew)
 			return
 		}
 	}
@@ -647,7 +652,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("init_error_index_write_tree: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_index_write_tree")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}
@@ -658,7 +663,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("init_error_lookup_tree: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_lookup_tree")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}
@@ -669,7 +674,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("git_error_get_head: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_head")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -679,7 +684,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("git_error_get_head_commit: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_get_head_commit")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 	}
 
@@ -693,7 +698,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 		log.Warn("init_error_commit: %s", err)
 		ctx.Data["HasError"] = true
 		ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_commit")
-		ctx.Success(NEW)
+		ctx.Success(tmplNew)
 		return
 
 	}

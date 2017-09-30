@@ -301,7 +301,7 @@ func (stream *OdbWriteStream) Write(data []byte) (int, error) {
 }
 
 // Close signals that all the data has been written and stores the
-// resulting object id in the stream's Id field.
+// resulting object id in the stream's ID field.
 func (stream *OdbWriteStream) Close() error {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()

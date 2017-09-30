@@ -1068,13 +1068,13 @@ const (
 	// 20-7E = one byte ASCII
 	// A1-FE = two byte PRC Kanji
 	// See GB 2312-80
-	// PCL Symbol Set Id: 18C
+	// PCL Symbol Set ID: 18C
 	GB2312 MIB = 2025
 
 	// Big5 is the MIB identifier with IANA name Big5 (MIME: Big5).
 	//
 	// Chinese for Taiwan Multi-byte set.
-	// PCL Symbol Set Id: 18T
+	// PCL Symbol Set ID: 18T
 	Big5 MIB = 2026
 
 	// Macintosh is the MIB identifier with IANA name macintosh.

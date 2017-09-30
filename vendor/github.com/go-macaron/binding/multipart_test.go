@@ -46,7 +46,7 @@ var multipartFormTestCases = []multipartFormTestCase{
 		inputAndExpected: BlogPost{},
 	},
 	{
-		description:      "Missing required field (Id)",
+		description:      "Missing required field (ID)",
 		shouldSucceed:    false,
 		inputAndExpected: BlogPost{Post: Post{Title: "Glorious Post Title"}, Author: Person{Name: "Matt Holt"}},
 	},

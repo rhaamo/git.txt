@@ -17,21 +17,26 @@ import (
 	"net/mail"
 )
 
+// Scheme type
 type Scheme string
 
+// Schemes
 const (
-	SCHEME_HTTP        Scheme = "http"
-	SCHEME_HTTPS       Scheme = "https"
-	SCHEME_FCGI        Scheme = "fcgi"
-	SCHEME_UNIX_SOCKET Scheme = "unix"
+	SchemeHTTP       Scheme = "http"
+	SchemeHTTPS      Scheme = "https"
+	SchemeFCGI       Scheme = "fcgi"
+	SchemeUnixSocket Scheme = "unix"
 )
 
+
+// Settings
 var (
 	// Build infos added by -ldflags
 	BuildTime	string
 	BuildGitHash 	string
 
 	// App Settings
+
 	AppVer		string
 	AppPath		string
 	AppName         string
@@ -53,6 +58,7 @@ var (
 	}
 
 	// Server settings
+
 	Protocol		Scheme
 	UnixSocketPermission	uint32
 	Domain			string
@@ -66,12 +72,14 @@ var (
 	}
 
 	// Database Settings
+
 	UseSQLite3	bool
 	UseMySQL	bool
 	UsePostgreSQL	bool
 	UseMSSQL	bool
 
 	// Global setting objects
+
 	CustomConf	string
 	IsWindows	bool
 	Cfg		*ini.File
@@ -79,20 +87,24 @@ var (
 	RobotsTxtPath	string
 
 	// Log settings
+
 	LogRootPath	string
 	LogModes	[]string
 	LogConfigs	[]interface{}
 
 	// Repository settings
-	RepositoryRoot	string
-	DisableHttpGit	bool
-	GitBinary	string
+
+	RepositoryRoot string
+	DisableHTTPGit bool
+	GitBinary      string
 
 	// Session settings
+
 	SessionConfig  session.Options
 	CSRFCookieName string
 
 	// Security settings
+
 	InstallLock             bool
 	SecretKey               string
 	LoginRememberDays       int
@@ -103,11 +115,12 @@ var (
 	LoginStatusCookieName string
 
 	// Cache settings
+
 	CacheAdapter  string
 	CacheInterval int
 	CacheConn string
 
-	// I18n settings
+	// Langs settings
 	Langs     []string
 	Names     []string
 	dateLangs map[string]string
@@ -128,7 +141,7 @@ var (
 	    AngledQuotes bool
 	}
 
-	// Static settings
+	// Bloby struct for static limitations
 	Bloby struct {
 		MaxSizeDisplay	int64
 		MaxPageDisplay  int64
@@ -188,6 +201,7 @@ func forcePathSeparator(path string) {
 	}
 }
 
+// InitConfig from file
 func InitConfig() {
 	workDir, err := WorkDir()
 	if err != nil {
@@ -221,27 +235,27 @@ func InitConfig() {
 	}
 
 	// Check if has app suburl.
-	appUrl, err := url.Parse(AppURL)
+	appURL, err := url.Parse(AppURL)
 	if err != nil {
 		log.Fatal(2, "Invalid ROOT_URL '%s': %s", AppURL, err)
 	}
 	// Suburl should start with '/' and end without '/', such as '/{subpath}'.
 	// This value is empty if site does not have sub-url.
-	AppSubURL = strings.TrimSuffix(appUrl.Path, "/")
+	AppSubURL = strings.TrimSuffix(appURL.Path, "/")
 	AppSubURLDepth = strings.Count(AppSubURL, "/")
 
 	CanRegister = Cfg.Section("").Key("CAN_REGISTER").MustBool(true)
 	AnonymousCreate = Cfg.Section("").Key("ANONYMOUS_CREATE").MustBool(true)
 
-	Protocol = SCHEME_HTTP
+	Protocol = SchemeHTTP
 	if sec.Key("PROTOCOL").String() == "https" {
-		Protocol = SCHEME_HTTPS
+		Protocol = SchemeHTTPS
 		log.Warn("https not supported")
 	} else if sec.Key("PROTOCOL").String() == "fcgi" {
-		Protocol = SCHEME_FCGI
+		Protocol = SchemeFCGI
 		log.Warn("fcgi not supported")
 	} else if sec.Key("PROTOCOL").String() == "unix" {
-		Protocol = SCHEME_UNIX_SOCKET
+		Protocol = SchemeUnixSocket
 		log.Warn("socket not supported")
 		UnixSocketPermissionRaw := sec.Key("UNIX_SOCKET_PERMISSION").MustString("666")
 		UnixSocketPermissionParsed, err := strconv.ParseUint(UnixSocketPermissionRaw, 8, 32)
@@ -258,7 +272,7 @@ func InitConfig() {
 
 	sec = Cfg.Section("repository")
 	RepositoryRoot = sec.Key("ROOT").MustString(path.Join(homeDir, "gitxt-repositories"))
-	DisableHttpGit = sec.Key("DISABLE_HTTP_GIT").MustBool(false)
+	DisableHTTPGit = sec.Key("DISABLE_HTTP_GIT").MustBool(false)
 	GitBinary = sec.Key("GIT_BINARY").MustString("git")
 
 	sec = Cfg.Section("security")
@@ -437,6 +451,7 @@ type Mailer struct {
 }
 
 var (
+	// MailService Mailer
 	MailService *Mailer
 )
 

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DASHBOARD = "admin/dashboard"
+	tmplDashboard = "admin/dashboard"
 )
 
 var (
@@ -96,6 +96,7 @@ func updateSystemStatus() {
 	sysStatus.NumGC = m.NumGC
 }
 
+// Dashboard GET
 func Dashboard(ctx *context.Context) {
 	ctx.Title("admin.dashboard.title")
 	ctx.PageIs("AdminDashboard")
@@ -105,5 +106,5 @@ func Dashboard(ctx *context.Context) {
 	updateSystemStatus()
 	ctx.Data["SysStatus"] = sysStatus
 	ctx.Data["Entries"] = cron.ListTasks()
-	ctx.HTML(200, DASHBOARD)
+	ctx.HTML(200, tmplDashboard)
 }

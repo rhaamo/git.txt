@@ -11,11 +11,12 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"github.com/microcosm-cc/bluemonday"
-	"container/list"
 	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
 	"dev.sigpipe.me/dashie/git.txt/stuff/template/highlight"
+	"container/list"
 )
 
+// NewFuncMap initialize the Functions Map
 func NewFuncMap() []template.FuncMap {
 	return []template.FuncMap{map[string]interface{}{
 		"GoVer": func() string {
@@ -46,9 +47,9 @@ func NewFuncMap() []template.FuncMap {
 			return fmt.Sprint(time.Since(startTime).Nanoseconds()/1e6) + "ms"
 		},
 		"FileSize": 	tool.FileSize,
-		"Safe":         Safe,
+		"Safe":         safe,
 		"Sanitize":     bluemonday.UGCPolicy().Sanitize,
-		"Str2html": Str2html,
+		"Str2html": str2html,
 		"Add": func(a, b int) int {
 			return a + b
 		},
@@ -58,7 +59,7 @@ func NewFuncMap() []template.FuncMap {
 			"DateFmtShort": func(t time.Time) string {
 			return t.Format("Jan 02, 2006")
 		},
-		"List": List,
+		"List": listWhatever,
 		"SubStr": func(str string, start, length int) string {
 			if len(str) == 0 {
 				return ""
@@ -73,10 +74,10 @@ func NewFuncMap() []template.FuncMap {
 			return str[start:end]
 		},
 		"Join":                  strings.Join,
-		"Sha1":                  Sha1,
+		"Sha1":                  sha1,
 		"ShortSHA1":             tool.ShortSHA1,
 		"MD5":                   tool.MD5,
-		"EscapePound":           EscapePound,
+		"EscapePound":           escapePound,
 		"FilenameIsImage": func(filename string) bool {
 			mimeType := mime.TypeByExtension(filepath.Ext(filename))
 			return strings.HasPrefix(mimeType, "image/")
@@ -96,11 +97,11 @@ func NewFuncMap() []template.FuncMap {
 	}}
 }
 
-func Safe(raw string) template.HTML {
+func safe(raw string) template.HTML {
 	return template.HTML(raw)
 }
 
-func List(l *list.List) chan interface{} {
+func listWhatever(l *list.List) chan interface{} {
 	e := l.Front()
 	c := make(chan interface{})
 	go func() {
@@ -113,14 +114,14 @@ func List(l *list.List) chan interface{} {
 	return c
 }
 
-func Sha1(str string) string {
+func sha1(str string) string {
 	return tool.SHA1(str)
 }
 
-func EscapePound(str string) string {
+func escapePound(str string) string {
 	return strings.NewReplacer("%", "%25", "#", "%23", " ", "%20", "?", "%3F").Replace(str)
 }
 
-func Str2html(raw string) template.HTML {
+func str2html(raw string) template.HTML {
 	return template.HTML(markup.Sanitize(raw))
 }

@@ -26,16 +26,17 @@ import (
 )
 
 const (
-	ENV_AUTH_USER_ID           = "GITXT_AUTH_USER_ID"
-	ENV_AUTH_USER_NAME         = "GITXT_AUTH_USER_NAME"
-	ENV_AUTH_USER_EMAIL        = "GITXT_AUTH_USER_EMAIL"
-	ENV_REPO_OWNER_NAME        = "GITXT_REPO_OWNER_NAME"
-	ENV_REPO_OWNER_SALT_MD5    = "GITXT_REPO_OWNER_SALT_MD5"
-	ENV_REPO_ID                = "GITXT_REPO_ID"
-	ENV_REPO_NAME              = "GITXT_REPO_NAME"
-	ENV_REPO_CUSTOM_HOOKS_PATH = "GITXT_REPO_CUSTOM_HOOKS_PATH"
+	envAuthUserID          = "GITXT_AUTH_USER_ID"
+	envAuthUserName        = "GITXT_AUTH_USER_NAME"
+	envAuthUserEmail       = "GITXT_AUTH_USER_EMAIL"
+	envRepoOwnerName       = "GITXT_REPO_OWNER_NAME"
+	envRepoOwnerSaltMd5    = "GITXT_REPO_OWNER_SALT_MD5"
+	envRepoID              = "GITXT_REPO_ID"
+	envRepoName            = "GITXT_REPO_NAME"
+	envRepoCustomHooksPath = "GITXT_REPO_CUSTOM_HOOKS_PATH"
 )
 
+// HTTPContext struct
 type HTTPContext struct {
 	*context.Context
 	OwnerName	string
@@ -51,6 +52,7 @@ func askCredentials(ctx *context.Context, status int, text string) {
 	ctx.HandleText(status, text)
 }
 
+// HTTPContexter magic
 func HTTPContexter() macaron.Handler {
 	return func(ctx *context.Context) {
 		ownerName := ctx.Params(":user")
@@ -181,6 +183,7 @@ func (h *serviceHandler) sendFile(contentType string) {
 	http.ServeFile(h.w, h.r, reqFile)
 }
 
+// ComposeHookEnvsOptions struct
 type ComposeHookEnvsOptions struct {
 	AuthUser  *models.User
 	OwnerName string
@@ -190,17 +193,18 @@ type ComposeHookEnvsOptions struct {
 	RepoPath  string
 }
 
+// ComposeHookEnvs magic
 func ComposeHookEnvs(opts ComposeHookEnvsOptions) []string {
 	envs := []string{
 		"SSH_ORIGINAL_COMMAND=1",
-		ENV_AUTH_USER_ID + "=" + com.ToStr(opts.AuthUser.ID),
-		ENV_AUTH_USER_NAME + "=" + opts.AuthUser.UserName,
-		ENV_AUTH_USER_EMAIL + "=" + opts.AuthUser.Email,
-		ENV_REPO_OWNER_NAME + "=" + opts.OwnerName,
-		ENV_REPO_OWNER_SALT_MD5 + "=" + tool.MD5(opts.OwnerSalt),
-		ENV_REPO_ID + "=" + com.ToStr(opts.RepoID),
-		ENV_REPO_NAME + "=" + opts.RepoName,
-		ENV_REPO_CUSTOM_HOOKS_PATH + "=" + path.Join(opts.RepoPath, "custom_hooks"),
+		envAuthUserID + "=" + com.ToStr(opts.AuthUser.ID),
+		envAuthUserName + "=" + opts.AuthUser.UserName,
+		envAuthUserEmail + "=" + opts.AuthUser.Email,
+		envRepoOwnerName + "=" + opts.OwnerName,
+		envRepoOwnerSaltMd5 + "=" + tool.MD5(opts.OwnerSalt),
+		envRepoID + "=" + com.ToStr(opts.RepoID),
+		envRepoName + "=" + opts.RepoName,
+		envRepoCustomHooksPath + "=" + path.Join(opts.RepoPath, "custom_hooks"),
 	}
 	return envs
 }
@@ -364,6 +368,7 @@ func getGitRepoPath(repoDir string) (string, error) {
 	return filename, nil
 }
 
+// HTTP Context
 func HTTP(ctx *HTTPContext) {
 	for _, route := range routes {
 		reqPath := strings.ToLower(ctx.Req.URL.Path)
@@ -375,7 +380,7 @@ func HTTP(ctx *HTTPContext) {
 		// We perform check here because routes matched in cmd/web.go is wider than needed,
 		// but we only want to output this message only if user is really trying to access
 		// Git HTTP endpoints.
-		if setting.DisableHttpGit {
+		if setting.DisableHTTPGit {
 			ctx.HandleText(http.StatusForbidden, "Interacting with repositories by HTTP protocol is not disabled")
 			return
 		}

@@ -174,7 +174,7 @@ func TimeSincePro(then time.Time) string {
 	return strings.TrimPrefix(timeStr, ", ")
 }
 
-// verify time limit code
+// VerifyTimeLimitCode verify time limit code
 func VerifyTimeLimitCode(data string, minutes int, code string) bool {
 	if len(code) <= 18 {
 		return false
@@ -201,9 +201,10 @@ func VerifyTimeLimitCode(data string, minutes int, code string) bool {
 	return false
 }
 
-const TIME_LIMIT_CODE_LENGTH = 12 + 6 + 40
+// TimeLimitCodeLength for Time Verification
+const TimeLimitCodeLength = 12 + 6 + 40
 
-// create a time limit code
+// CreateTimeLimitCode create a time limit code
 // code format: 12 length date time string + 6 minutes string + 40 sha1 encoded string
 func CreateTimeLimitCode(data string, minutes int, startInf interface{}) string {
 	format := "200601021504"

@@ -9,6 +9,7 @@ import (
 	"math"
 )
 
+// const for bytes sizes
 const (
 	Byte  = 1
 	KByte = Byte * 1024

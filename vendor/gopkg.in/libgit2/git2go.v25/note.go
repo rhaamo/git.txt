@@ -153,7 +153,7 @@ func (n *Note) Author() *Signature {
 	return newSignatureFromC(ptr)
 }
 
-// Id returns the note object's id
+// ID returns the note object's id
 func (n *Note) Id() *Oid {
 	ptr := C.git_note_id(n.ptr)
 	return newOidFromC(ptr)

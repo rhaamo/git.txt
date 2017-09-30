@@ -5,7 +5,7 @@ import (
 	"github.com/go-macaron/binding"
 )
 
-/* New Gitxt */
+// Gitxt form struct
 type Gitxt struct {
 	Description string `binding:"MaxSize(255)"`
 	IsPublic    bool   `binding:"Default:1"`
@@ -18,21 +18,23 @@ type Gitxt struct {
 	ExpiryHours	int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
 }
 
+// Validate func
 func (f *Gitxt) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }
 
-/* Delete Gitxt */
+// GitxtDelete form
 type GitxtDelete struct {
 	Hash    string   `binding:"Required"`
 	Owner    string   `binding:"Required"`
 }
 
+// Validate func
 func (f *GitxtDelete) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }
 
-/* Edit Gitxt */
+// GitxtEdit form
 type GitxtEdit struct {
 	Description string `binding:"MaxSize(255)"`
 	// Validation builtin into Macaron/Binding doesn't validates theses slices
@@ -45,6 +47,7 @@ type GitxtEdit struct {
 	ExpiryHours	int64	`binding:"In(0,1,4,24,48,72,96,120,144,168,730,8760);Default(0)"`
 }
 
+// Validate struct
 func (f *GitxtEdit) Validate(ctx *macaron.Context, errs binding.Errors) binding.Errors {
 	return validate(errs, ctx.Data, f, ctx.Locale)
 }

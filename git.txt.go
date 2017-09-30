@@ -9,10 +9,10 @@ import (
 	"fmt"
 )
 
-const APP_VER = "0.2"
+const appVersion = "0.2"
 
 func init() {
-	setting.AppVer = APP_VER
+	setting.AppVer = appVersion
 	if os.Getenv("USE_RAVEN") == "true" {
 		raven.SetDSN(os.Getenv("RAVEN_DSN"))
 		fmt.Printf("Using Raven with DSN: %s\r\n", os.Getenv("RAVEN_DSN"))
@@ -25,7 +25,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "git.txt"
 	app.Usage = "paste stuff to the interweb with git backend"
-	app.Version = APP_VER
+	app.Version = appVersion
 	app.Commands = []cli.Command{
 		cmd.Web,
 	}

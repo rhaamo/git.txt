@@ -1,8 +1,11 @@
 package models
 
 import (
+	// msssql
 	_ "github.com/denisenkom/go-mssqldb"
+	// mysql
 	_ "github.com/go-sql-driver/mysql"
+	// Postgresql
 	_ "github.com/lib/pq"
 	"github.com/go-xorm/xorm"
 	"database/sql"
@@ -33,6 +36,7 @@ type Engine interface {
 	Where(interface{}, ...interface{}) *xorm.Session
 }
 
+// Vars
 var (
 	x         *xorm.Engine
 	tables    []interface{}
@@ -47,7 +51,7 @@ var (
 
 func init() {
 	tables = append(tables,
-		new(User), new(SshKey), new(Gitxt))
+		new(User), new(SSHKey), new(Gitxt))
 
 	gonicNames := []string{"SSL"}
 	for _, name := range gonicNames {
@@ -55,6 +59,7 @@ func init() {
 	}
 }
 
+// LoadConfigs to init db
 func LoadConfigs() {
 	sec := setting.Cfg.Section("database")
 	DbCfg.Type = sec.Key("DB_TYPE").String()
@@ -109,7 +114,7 @@ func parseMSSQLHostPort(info string) (string, string) {
 
 func getEngine() (*xorm.Engine, error) {
 	connStr := ""
-	var Param string = "?"
+	var Param = "?"
 	if strings.Contains(DbCfg.Name, Param) {
 		Param = "&"
 	}
@@ -136,32 +141,34 @@ func getEngine() (*xorm.Engine, error) {
 		connStr = fmt.Sprintf("server=%s; port=%s; database=%s; user id=%s; password=%s;", host, port, DbCfg.Name, DbCfg.User, DbCfg.Passwd)
 	case "sqlite3":
 		if !EnableSQLite3 {
-			return nil, errors.New("This binary version does not build support for SQLite3.")
+			return nil, errors.New("this binary version does not build support for SQLite3")
 		}
 		if err := os.MkdirAll(path.Dir(DbCfg.Path), os.ModePerm); err != nil {
-			return nil, fmt.Errorf("Fail to create directories: %v", err)
+			return nil, fmt.Errorf("fail to create directories: %v", err)
 		}
 		connStr = "file:" + DbCfg.Path + "?cache=shared&mode=rwc"
 	default:
-		return nil, fmt.Errorf("Unknown database type: %s", DbCfg.Type)
+		return nil, fmt.Errorf("unknown database type: %s", DbCfg.Type)
 	}
 	return xorm.NewEngine(DbCfg.Type, connStr)
 }
 
+// NewTestEngine to test
 func NewTestEngine(x *xorm.Engine) (err error) {
 	x, err = getEngine()
 	if err != nil {
-		return fmt.Errorf("Connect to database: %v", err)
+		return fmt.Errorf("connect to database: %v", err)
 	}
 
 	x.SetMapper(core.GonicMapper{})
 	return x.StoreEngine("InnoDB").Sync2(tables...)
 }
 
+// SetEngine to use
 func SetEngine() (err error) {
 	x, err = getEngine()
 	if err != nil {
-		return fmt.Errorf("Fail to connect to database: %v", err)
+		return fmt.Errorf("fail to connect to database: %v", err)
 	}
 
 	x.SetMapper(core.GonicMapper{})
@@ -177,7 +184,7 @@ func SetEngine() (err error) {
 			MaxDays: sec.Key("MAX_DAYS").MustInt64(3),
 		})
 	if err != nil {
-		return fmt.Errorf("Fail to create 'xorm.log': %v", err)
+		return fmt.Errorf("fail to create 'xorm.log': %v", err)
 	}
 
 	x.SetLogger(xorm.NewSimpleLogger3(logger, xorm.DEFAULT_LOG_PREFIX, xorm.DEFAULT_LOG_FLAG, core.LOG_DEBUG))
@@ -185,6 +192,7 @@ func SetEngine() (err error) {
 	return nil
 }
 
+// NewEngine to use
 func NewEngine() (err error) {
 	if err = SetEngine(); err != nil {
 		return err
@@ -193,16 +201,18 @@ func NewEngine() (err error) {
 	// TODO: here do migrations if any
 
 	if err = x.StoreEngine("InnoDB").Sync2(tables...); err != nil {
-		return fmt.Errorf("sync database struct error: %v\n", err)
+		return fmt.Errorf("sync database struct error: %v", err)
 	}
 
 	return nil
 }
 
+// Ping pong
 func Ping() error {
 	return x.Ping()
 }
 
+// InitDb from config
 func InitDb() {
 	LoadConfigs()
 

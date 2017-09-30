@@ -16,6 +16,7 @@ import (
 	"os/exec"
 )
 
+// Gitxt struct
 type Gitxt struct {
 	ID          int64        `xorm:"pk autoincr"`
 	Hash        string        `xorm:"UNIQUE NOT NULL"`
@@ -23,7 +24,7 @@ type Gitxt struct {
 	Anonymous   bool
 	Description string        `xorm:"TEXT"`
 
-	// Choosen expiry in hours
+	// Chosen expiry in hours
 	ExpiryHours		int64  `xorm:"INDEX"`
 	// Calculated expiry unix timestamp from the time of creation/update
 	ExpiryUnix	int64
@@ -41,26 +42,30 @@ type Gitxt struct {
 	// 	UserID
 }
 
+// BeforeInsert hooks
 func (gitxt *Gitxt) BeforeInsert() {
 	gitxt.CreatedUnix = time.Now().Unix()
 	gitxt.UpdatedUnix = gitxt.CreatedUnix
 }
 
+// BeforeUpdate hooks
 func (gitxt *Gitxt) BeforeUpdate() {
 	gitxt.UpdatedUnix = time.Now().Unix()
 }
 
-func (g *Gitxt) AfterSet(colName string, _ xorm.Cell) {
+// AfterSet hooks
+func (gitxt *Gitxt) AfterSet(colName string, _ xorm.Cell) {
 	switch colName {
 	case "created_unix":
-		g.Created = time.Unix(g.CreatedUnix, 0).Local()
+		gitxt.Created = time.Unix(gitxt.CreatedUnix, 0).Local()
 	case "updated_unix":
-		g.Updated = time.Unix(g.UpdatedUnix, 0).Local()
+		gitxt.Updated = time.Unix(gitxt.UpdatedUnix, 0).Local()
 	case "expiry_unix":
-		g.Expiry = time.Unix(g.ExpiryUnix, 0).Local()
+		gitxt.Expiry = time.Unix(gitxt.ExpiryUnix, 0).Local()
 	}
 }
 
+// GitxtWithUser struct
 type GitxtWithUser struct {
 	User        `xorm:"extends"`
 	Gitxt        `xorm:"extends"`
@@ -70,8 +75,8 @@ type GitxtWithUser struct {
 var taskStatusTable = sync.NewStatusTable()
 
 const (
-	_CLEAN_OLD_ARCHIVES = "clean_old_archives"
-	_DELETE_EXPIRED_REPOSITORIES = "delete_expired_repositories"
+	cleanOldArchives          = "clean_old_archives"
+	deleteExpiredRepositories = "delete_expired_repositories"
 )
 
 // IsHashUsed checks if given hash exist,
@@ -82,7 +87,7 @@ func IsHashUsed(uid int64, hash string) (bool, error) {
 	return x.Get(&Gitxt{Hash: hash})
 }
 
-// Create a new gitxt
+// CreateGitxt Create a new gitxt
 func CreateGitxt(g *Gitxt) (err error) {
 	isExist, err := IsHashUsed(0, g.Hash)
 	if err != nil {
@@ -131,6 +136,7 @@ func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 	return repo, nil
 }
 
+// GitxtOptions struct
 type GitxtOptions struct {
 	UserID      int64
 	WithPrivate bool
@@ -139,7 +145,7 @@ type GitxtOptions struct {
 	PageSize    int
 }
 
-// Get gitxts
+// GetGitxts Get gitxts
 func GetGitxts(opts *GitxtOptions) (gitxts []*GitxtWithUser, _ int64, _ error) {
 	if opts.Page <= 0 {
 		opts.Page = 1
@@ -176,23 +182,24 @@ func updateGitxt(e Engine, u *Gitxt) error {
 	return err
 }
 
+// UpdateGitxt with infos
 func UpdateGitxt(u *Gitxt) error {
 	return updateGitxt(x, u)
 }
 
-// Delete expired
+// DeleteExpiredRepositories Delete expired
 func DeleteExpiredRepositories() {
-	if taskStatusTable.IsRunning(_DELETE_EXPIRED_REPOSITORIES) {
+	if taskStatusTable.IsRunning(deleteExpiredRepositories) {
 		return
 	}
-	taskStatusTable.Start(_DELETE_EXPIRED_REPOSITORIES)
-	defer taskStatusTable.Stop(_DELETE_EXPIRED_REPOSITORIES)
+	taskStatusTable.Start(deleteExpiredRepositories)
+	defer taskStatusTable.Stop(deleteExpiredRepositories)
 
 	log.Trace("Doing: DeleteExpiredRepositories")
 
 	type GitxtExpired struct {
-		userId int64
-		repoId int64
+		userID int64
+		repoID int64
 		hash   string
 	}
 	expired := []GitxtExpired{}
@@ -211,9 +218,9 @@ func DeleteExpiredRepositories() {
 	}
 
 	for _, tc := range expired {
-		err := DeleteRepository(tc.userId, tc.repoId)
+		err := DeleteRepository(tc.userID, tc.repoID)
 		if err != nil {
-			log.Warn("Error removing repository %i/%i: %v", tc.userId, tc.repoId, err)
+			log.Warn("Error removing repository %i/%i: %v", tc.userID, tc.repoID, err)
 		} else {
 			log.Trace("Deleted repository %s", tc.hash)
 		}
@@ -221,13 +228,13 @@ func DeleteExpiredRepositories() {
 	}
 }
 
-// Archive deletion
+// DeleteOldRepositoryArchives Archive deletion
 func DeleteOldRepositoryArchives() {
-	if taskStatusTable.IsRunning(_CLEAN_OLD_ARCHIVES) {
+	if taskStatusTable.IsRunning(cleanOldArchives) {
 		return
 	}
-	taskStatusTable.Start(_CLEAN_OLD_ARCHIVES)
-	defer taskStatusTable.Stop(_CLEAN_OLD_ARCHIVES)
+	taskStatusTable.Start(cleanOldArchives)
+	defer taskStatusTable.Stop(cleanOldArchives)
 
 	log.Trace("Doing: DeleteOldRepositoryArchives")
 
@@ -296,7 +303,7 @@ func removeRepository(path string) {
 	}
 }
 
-// Delete repository :'(
+// DeleteRepository Delete repository :'(
 func DeleteRepository(ownerID int64, repoID int64) error {
 	repo := &Gitxt{ID: repoID, UserID: ownerID}
 	has, err := x.Get(repo)

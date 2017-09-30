@@ -8,6 +8,7 @@ import (
 	log "gopkg.in/clog.v1"
 )
 
+// ToggleOptions struct
 type ToggleOptions struct {
 	SignInRequired  bool
 	SignOutRequired bool
@@ -16,6 +17,7 @@ type ToggleOptions struct {
 	AnonymousCreate bool
 }
 
+// Toggle options
 func Toggle(options *ToggleOptions) macaron.Handler {
 	return func(ctx *Context) {
 		// Redirect non-login pages from logged in user

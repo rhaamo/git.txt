@@ -304,7 +304,7 @@ func (engine *Engine) logSQLExecutionTime(sqlStr string, args []interface{}, exe
 }
 
 // Sql provides raw sql input parameter. When you have a complex SQL statement
-// and cannot use Where, Id, In and etc. Methods to describe, you can use SQL.
+// and cannot use Where, ID, In and etc. Methods to describe, you can use SQL.
 //
 // Deprecated: use SQL instead.
 func (engine *Engine) Sql(querystring string, args ...interface{}) *Session {
@@ -580,7 +580,7 @@ func (engine *Engine) Where(query interface{}, args ...interface{}) *Session {
 	return session.Where(query, args...)
 }
 
-// Id will be deprecated, please use ID instead
+// ID will be deprecated, please use ID instead
 func (engine *Engine) Id(id interface{}) *Session {
 	session := engine.NewSession()
 	session.isAutoClose = true

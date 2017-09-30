@@ -66,6 +66,7 @@ var (
 	}
 )
 
+// NewContext initialize the highlight mappin from config
 func NewContext() {
 	keys := setting.Cfg.Section("highlight.mapping").Keys()
 	for i := range keys {

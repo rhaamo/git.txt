@@ -14,6 +14,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
 )
 
+// DownloadArchive of repository
 func DownloadArchive(ctx *context.Context) {
 	var (
 		uri			= ctx.Params("*")

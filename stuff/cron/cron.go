@@ -10,6 +10,7 @@ import (
 
 var c = cron.New()
 
+// NewContext initialize Cron stuff
 func NewContext() {
 	var (
 		entry	*cron.Entry

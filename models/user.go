@@ -19,6 +19,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 )
 
+// User struct
 type User struct {
 	ID		int64	`xorm:"pk autoincr"`
 	UserName	string	`xorm:"UNIQUE NOT NULL"`
@@ -43,11 +44,13 @@ type User struct {
 	// 	SshKeys
 }
 
+// BeforeInsert hooks
 func (user *User) BeforeInsert() {
 	user.CreatedUnix = time.Now().Unix()
 	user.UpdatedUnix = user.CreatedUnix
 }
 
+// BeforeUpdate hooks
 func (user *User) BeforeUpdate() {
 	user.UpdatedUnix = time.Now().Unix()
 }
@@ -153,21 +156,22 @@ func isUsableName(names, patterns []string, name string) error {
 	return nil
 }
 
+// IsUsableUsername or not
 func IsUsableUsername(name string) error {
 	return isUsableName(reservedUsernames, reservedUserPatterns, name)
 }
 
 // EncodePasswd encodes password to safe format.
-func (u *User) EncodePasswd() {
-	newPasswd := pbkdf2.Key([]byte(u.Password), []byte(u.Salt), 10000, 50, sha256.New)
-	u.Password = fmt.Sprintf("%x", newPasswd)
+func (user *User) EncodePasswd() {
+	newPasswd := pbkdf2.Key([]byte(user.Password), []byte(user.Salt), 10000, 50, sha256.New)
+	user.Password = fmt.Sprintf("%x", newPasswd)
 }
 
 // ValidatePassword checks if given password matches the one belongs to the user.
-func (u *User) ValidatePassword(passwd string) bool {
-	newUser := &User{Password: passwd, Salt: u.Salt}
+func (user *User) ValidatePassword(passwd string) bool {
+	newUser := &User{Password: passwd, Salt: user.Salt}
 	newUser.EncodePasswd()
-	return subtle.ConstantTimeCompare([]byte(u.Password), []byte(newUser.Password)) == 1
+	return subtle.ConstantTimeCompare([]byte(user.Password), []byte(newUser.Password)) == 1
 }
 
 // GetUserSalt returns a ramdom user salt token.
@@ -180,7 +184,7 @@ func UserPath(userName string) string {
 	return filepath.Join(setting.RepositoryRoot, strings.ToLower(userName))
 }
 
-// Create a new user and do some validation
+// CreateUser and do some validation
 func CreateUser(u *User) (err error) {
 	if err = IsUsableUsername(u.UserName); err != nil {
 		return err
@@ -227,11 +231,12 @@ func updateUser(e Engine, u *User) error {
 	return err
 }
 
+// UpdateUser with datas
 func UpdateUser(u *User) error {
 	return updateUser(x, u)
 }
 
-// Login validates user name and password.
+// UserLogin validates user name and password.
 func UserLogin(username, password string) (*User, error) {
 	var user *User
 	if strings.Contains(username, "@") {
@@ -258,12 +263,12 @@ func UserLogin(username, password string) (*User, error) {
 
 // get user by verify code
 func getVerifyUser(code string) (user *User) {
-	if len(code) <= tool.TIME_LIMIT_CODE_LENGTH {
+	if len(code) <= tool.TimeLimitCodeLength {
 		return nil
 	}
 
 	// use tail hex username query user
-	hexStr := code[tool.TIME_LIMIT_CODE_LENGTH:]
+	hexStr := code[tool.TimeLimitCodeLength:]
 	if b, err := hex.DecodeString(hexStr); err == nil {
 		if user, err = GetUserByName(string(b)); user != nil {
 			return user
@@ -275,14 +280,14 @@ func getVerifyUser(code string) (user *User) {
 	return nil
 }
 
-// verify active code when active account
+// VerifyUserActiveCode when active account
 func VerifyUserActiveCode(code string) (user *User) {
 	// HARDCODED
 	minutes := 180
 
 	if user = getVerifyUser(code); user != nil {
 		// time limit code
-		prefix := code[:tool.TIME_LIMIT_CODE_LENGTH]
+		prefix := code[:tool.TimeLimitCodeLength]
 		data := com.ToStr(user.ID) + user.Email + user.LowerName + user.Password + user.Rands
 
 		if tool.VerifyTimeLimitCode(data, minutes, prefix) {
@@ -293,18 +298,18 @@ func VerifyUserActiveCode(code string) (user *User) {
 }
 
 // GenerateEmailActivateCode generates an activate code based on user information and given e-mail.
-func (u *User) GenerateEmailActivateCode(email string) string {
+func (user *User) GenerateEmailActivateCode(email string) string {
 	code := tool.CreateTimeLimitCode(
-		com.ToStr(u.ID)+email+u.LowerName+u.Password+u.Rands,180, nil)
+		com.ToStr(user.ID)+email+user.LowerName+user.Password+user.Rands,180, nil)
 
 	// Add tail hex username
-	code += hex.EncodeToString([]byte(u.LowerName))
+	code += hex.EncodeToString([]byte(user.LowerName))
 	return code
 }
 
 // GenerateActivateCode generates an activate code based on user information.
-func (u *User) GenerateActivateCode() string {
-	return u.GenerateEmailActivateCode(u.Email)
+func (user *User) GenerateActivateCode() string {
+	return user.GenerateEmailActivateCode(user.Email)
 }
 
 // mailerUser is a wrapper for satisfying mailer.User interface.
@@ -312,26 +317,32 @@ type mailerUser struct {
 	user *User
 }
 
-func (this mailerUser) ID() int64 {
-	return this.user.ID
+// ID id
+func (mUser mailerUser) ID() int64 {
+	return mUser.user.ID
 }
 
-func (this mailerUser) Email() string {
-	return this.user.Email
+// Email func
+func (mUser mailerUser) Email() string {
+	return mUser.user.Email
 }
 
-func (this mailerUser) DisplayName() string {
-	return this.user.UserName
+// DisplayName func
+func (mUser mailerUser) DisplayName() string {
+	return mUser.user.UserName
 }
 
-func (this mailerUser) GenerateActivateCode() string {
-	return this.user.GenerateActivateCode()
+// GenerateActivateCode func
+func (mUser mailerUser) GenerateActivateCode() string {
+	return mUser.user.GenerateActivateCode()
 }
 
-func (this mailerUser) GenerateEmailActivateCode(email string) string {
-	return this.user.GenerateEmailActivateCode(email)
+// GenerateEmailActivateCode func
+func (mUser mailerUser) GenerateEmailActivateCode(email string) string {
+	return mUser.user.GenerateEmailActivateCode(email)
 }
 
+// NewMailerUser mail user
 func NewMailerUser(u *User) mailer.User {
 	return mailerUser{u}
 }

@@ -4,7 +4,8 @@ import (
 	"time"
 )
 
-type SshKey struct {
+// SSHKey struct
+type SSHKey struct {
 	ID		int64	`xorm:"pk autoincr"`
 	UserID		int64	`xorm:"INDEX NOT NULL"`
 
@@ -23,11 +24,13 @@ type SshKey struct {
 	// 	UserID
 }
 
-func (ssh_key *SshKey) BeforeInsert() {
-	ssh_key.CreatedUnix = time.Now().Unix()
-	ssh_key.UpdatedUnix = ssh_key.CreatedUnix
+// BeforeInsert hooks
+func (sshKey *SSHKey) BeforeInsert() {
+	sshKey.CreatedUnix = time.Now().Unix()
+	sshKey.UpdatedUnix = sshKey.CreatedUnix
 }
 
-func (ssh_key *SshKey) BeforeUpdate() {
-	ssh_key.UpdatedUnix = time.Now().Unix()
+// BeforeUpdate hooks
+func (sshKey *SSHKey) BeforeUpdate() {
+	sshKey.UpdatedUnix = time.Now().Unix()
 }

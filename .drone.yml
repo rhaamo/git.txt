@@ -18,6 +18,9 @@ pipeline:
       - go get -u github.com/golang/dep/cmd/dep
       - dep ensure
       - make clean
+      - make vet
+      - make lint
+      - make misspell-check
       - make build
     when:
       event: [ push, tag, pull_request ]
