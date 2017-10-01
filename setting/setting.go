@@ -369,7 +369,7 @@ func initLogging() {
 			}
 
 		case log.FILE:
-			logPath := path.Join(LogRootPath, "gogs.log")
+			logPath := path.Join(LogRootPath, "git.txt.log")
 			if err = os.MkdirAll(path.Dir(logPath), os.ModePerm); err != nil {
 				log.Fatal(2, "Fail to create log directory '%s': %v", path.Dir(logPath), err)
 			}
