@@ -208,7 +208,7 @@ func DeleteExpiredRepositories() {
 		func(idx int, bean interface{}) error {
 			repo := bean.(*Gitxt)
 
-			log.Trace("Deleting expired repository: %i/%s", repo.UserID, repo.Hash)
+			log.Trace("Deleting expired repository: %d/%s", repo.UserID, repo.Hash)
 
 			expired = append(expired, GitxtExpired{repo.UserID, repo.ID, repo.Hash})
 
@@ -220,7 +220,7 @@ func DeleteExpiredRepositories() {
 	for _, tc := range expired {
 		err := DeleteRepository(tc.userID, tc.repoID)
 		if err != nil {
-			log.Warn("Error removing repository %i/%i: %v", tc.userID, tc.repoID, err)
+			log.Warn("Error removing repository %d/%d: %v", tc.userID, tc.repoID, err)
 		} else {
 			log.Trace("Deleted repository %s", tc.hash)
 		}
@@ -313,9 +313,15 @@ func DeleteRepository(ownerID int64, repoID int64) error {
 		return errors.RepoNotExist{repoID, ownerID, ""}
 	}
 
-	repoUser, err := GetUserByID(ownerID)
-	if err != nil {
-		return fmt.Errorf("GetUserByID: %v", err)
+	// By defaults use anonymoyus
+	username := "anonymous"
+	if ownerID > 0 {
+		// If it's a non-anonymous used, fetch it and set username to the user username
+		repoUser, err := GetUserByID(ownerID)
+		if err != nil {
+			return fmt.Errorf("GetUserByID: %v", err)
+		}
+		username = repoUser.UserName
 	}
 
 	sess := x.NewSession()
@@ -332,7 +338,7 @@ func DeleteRepository(ownerID int64, repoID int64) error {
 		return fmt.Errorf("Commit: %v", err)
 	}
 
-	pathRepo := repository.RepoPath(repoUser.UserName, repo.Hash)
+	pathRepo := repository.RepoPath(username, repo.Hash)
 	removeRepository(pathRepo)
 
 	return nil
