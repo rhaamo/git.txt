@@ -32,6 +32,9 @@ func NewFuncMap() []template.FuncMap {
 			return setting.AppURL
 		},
 		"AppVer": func() string {
+			if len(setting.BuildGitHash) > 0 {
+				return fmt.Sprintf("%s - %s", setting.AppVer, setting.BuildGitHash)
+			}
 			return setting.AppVer
 		},
 		"AppDomain": func() string {
