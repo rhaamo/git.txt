@@ -29,8 +29,6 @@ pipeline:
       GOPATH: /srv/app
     commands:
       - apk -U add libmagic file-dev libgit2 libgit2-dev
-      - go get -u github.com/golang/dep/cmd/dep
-      - dep ensure
       - make clean
       - make vet
       - make lint
