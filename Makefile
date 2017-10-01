@@ -22,7 +22,7 @@ GO ?= go
 
 GOFILES := $(shell find . -name "*.go" -type f ! -path "./vendor/*" ! -path "*/bindata.go")
 PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
-XGO_DEPS = "--deps=ftp://ftp.astron.com/pub/file/file-5.32.tar.gz"
+XGO_DEPS = "--deps=http://download.openpkg.org/components/cache/file/file-5.32.tar.gz"
 #XGO_DEPS += "--deps=https://github.com/libgit2/libgit2/archive/maint/v0.25.zip"
 
 ifneq ($(DRONE_TAG),)
