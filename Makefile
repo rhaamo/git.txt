@@ -22,6 +22,8 @@ GO ?= go
 
 GOFILES := $(shell find . -name "*.go" -type f ! -path "./vendor/*" ! -path "*/bindata.go")
 PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
+XGO_DEPS = "--deps=ftp://ftp.astron.com/pub/file/file-5.32.tar.gz"
+#XGO_DEPS += "--deps=https://github.com/libgit2/libgit2/archive/maint/v0.25.zip"
 
 ifneq ($(DRONE_TAG),)
 	VERSION ?= $(subst v,,$(DRONE_TAG))
@@ -86,7 +88,7 @@ misspell:
 	misspell -w -i unknwon $(GOFILES)
 
 .PHONY: release
-release: release-dirs release-windows release-linux release-darwin release-copy release-check
+release: release-dirs release-windows release-linux release-copy release-check
 
 .PHONY: release-dirs
 release-dirs:
@@ -97,7 +99,7 @@ release-windows:
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/karalabe/xgo; \
 	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out git.txt-$(VERSION) .
+	xgo $(XGO_DEPS) --image=xgo-git2go-windows -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out git.txt-$(VERSION) .
 ifeq ($(CI),drone)
 	mv /build/* $(DIST)/binaries
 endif
@@ -107,17 +109,18 @@ release-linux:
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/karalabe/xgo; \
 	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'linux/*' -out git.txt-$(VERSION) .
+	xgo $(XGO_DEPS) --image=xgo-git2go-linux -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'linux/*' -out git.txt-$(VERSION) .
 ifeq ($(CI),drone)
 	mv /build/* $(DIST)/binaries
 endif
 
+# No git2go image available for the moment
 .PHONY: release-darwin
 release-darwin:
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/karalabe/xgo; \
 	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out git.txt-$(VERSION) .
+	xgo $(XGO_DEPS) -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out git.txt-$(VERSION) .
 ifeq ($(CI),drone)
 	mv /build/* $(DIST)/binaries
 endif
