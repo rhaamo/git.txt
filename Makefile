@@ -119,7 +119,7 @@ release-darwin:
 	fi
 	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out git.txt-$(VERSION) .
 ifeq ($(CI),drone)
-        mv /build/* $(DIST)/binaries
+	mv /build/* $(DIST)/binaries
 endif
 
 .PHONY: release-copy
