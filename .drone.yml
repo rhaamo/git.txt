@@ -7,6 +7,7 @@ pipeline:
     image: plugins/git
     depth: 50
     tags: true
+
   test:
     image: webhippie/golang:edge
     pull: true
@@ -18,6 +19,7 @@ pipeline:
       - make test
     when:
       event: [ push, tag, pull_request ]
+
   build:
     image: webhippie/golang:edge
     pull: true
@@ -35,6 +37,45 @@ pipeline:
       - make build
     when:
       event: [ push, tag, pull_request ]
+
+  static:
+    image: karalabe/xgo-latest:latest
+    pull: true
+    environment:
+      TAGS: sqlite
+      GOPATH: /srv/app
+    commands:
+      - make release
+    when:
+      event: [ push, tag ]
+
+  release:
+    image: plugins/s3:1
+    pull: true
+    secrets: [ s3_ak, s3_sk ]
+    bucket: drone-git.txt
+    endpoint: https://s3.sigpipe.me
+    path_style: true
+    strip_prefix: dist/release/
+    source: dist/release/*
+    target: /git.txt/${DRONE_TAG##v}
+    when:
+      event: [ tag ]
+
+  release:
+    image: plugins/s3:1
+    pull: true
+    secrets: [ s3_ak, s3_sk ]
+    bucket: releases
+    endpoint: https://s3.sigpipe.me
+    path_style: true
+    strip_prefix: dist/release/
+    source: dist/release/*
+    target: /git.txt/master
+    when:
+      event: [ push ]
+      branch: [ master ]
+
   notify:
     image: plugins/slack
     channel: gitea
