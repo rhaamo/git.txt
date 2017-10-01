@@ -22,8 +22,7 @@ GO ?= go
 
 GOFILES := $(shell find . -name "*.go" -type f ! -path "./vendor/*" ! -path "*/bindata.go")
 PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
-XGO_DEPS = "--deps=https://s3.sigpipe.me/tarballs/mingw-libgnurx-2.5.1-src.tar.gz"
-XGO_DEPS += "--deps=https://s3.sigpipe.me/tarballs/file-5.32.tar.gz"
+XGO_DEPS = "--deps=https://s3.sigpipe.me/tarballs/mingw-libgnurx-2.5.1-src.tar.gz https://s3.sigpipe.me/tarballs/file-5.32.tar.gz"
 #XGO_DEPS += "--deps=https://github.com/libgit2/libgit2/archive/maint/v0.25.zip"
 
 ifneq ($(DRONE_TAG),)
