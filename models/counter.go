@@ -13,7 +13,7 @@ type Counter struct {
 
 // Don't change them !
 const (
-	currentGitxts = "currentGitxts"
+	currentGitxts = "current_gitxts"
 	managedGitxts = "total_gitxts"
 )
 
