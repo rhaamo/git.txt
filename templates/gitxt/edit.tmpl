@@ -7,13 +7,13 @@
         <div class="col-lg-10 col-lg-offset-1">
             <div class="content">
                 <div class="row">
-                    <div class="col-lg-10">
+                    <div class="col-lg-9">
                         <div class="description form-group {{if .Err_Description}}has-error{{end}}">
                             <label for="description" class="sr-only">{{.i18n.Tr "gitxt.description"}}</label>
                             <input type="text" name="description" id="description" class="form-control" value="{{.description}}" placeholder='{{.i18n.Tr "gitxt.description_placeholder"}}'>
                         </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-3">
                         <label for="expiry_hours">{{.i18n.Tr "gitxt_edit.expiry"}}</label>
                         <select id="expiry_hours" name="expiry_hours">
                             <option value="0" {{if eq .ExpiryHours 0}}selected{{end}} >{{.i18n.Tr "gitxt.expiry.never"}}</option>
