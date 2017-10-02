@@ -1,15 +1,15 @@
 package main
 
 import (
-	"os"
-	"github.com/urfave/cli"
 	"dev.sigpipe.me/dashie/git.txt/cmd"
 	"dev.sigpipe.me/dashie/git.txt/setting"
-	"github.com/getsentry/raven-go"
 	"fmt"
+	"github.com/getsentry/raven-go"
+	"github.com/urfave/cli"
+	"os"
 )
 
-const appVersion = "0.2"
+const appVersion = "0.3"
 
 func init() {
 	setting.AppVer = appVersion
