@@ -13,13 +13,15 @@ type Counter struct {
 
 // Don't change them !
 const (
-	current_gitxts = "current_gitxts"
-	managed_gitxts = "total_gitxts"
+	currentGitxts = "currentGitxts"
+	managedGitxts = "total_gitxts"
 )
 
 /* Counter for Gitxts [current number] */
+
+// GetCounterGitxts get it
 func GetCounterGitxts() (*Counter, error) {
-	c := &Counter{Name: current_gitxts}
+	c := &Counter{Name: currentGitxts}
 	has, err := x.Get(c)
 	if err != nil || !has {
 		c.Count = 0
@@ -28,10 +30,10 @@ func GetCounterGitxts() (*Counter, error) {
 	return c, nil
 }
 
-// Update an user
+// Update a counter
 func updateCounterGitxts(e Engine, count int64) error {
 	c := &Counter{
-		Name: current_gitxts,
+		Name:  currentGitxts,
 		Count: count,
 	}
 	// Try to get the Counter and create if not existent
@@ -58,14 +60,16 @@ func updateCounterGitxts(e Engine, count int64) error {
 	return err
 }
 
-// UpdateUser with datas
+// UpdateCounterGitxts with count
 func UpdateCounterGitxts(u int64) error {
 	return updateCounterGitxts(x, u)
 }
 
 /* Counter for Gitxts [total managed number] */
+
+// GetCounterGitxtsManaged get it
 func GetCounterGitxtsManaged() (*Counter, error) {
-	c := &Counter{Name: managed_gitxts}
+	c := &Counter{Name: managedGitxts}
 	has, err := x.Get(c)
 	if err != nil || !has {
 		c.Count = 0
@@ -74,10 +78,10 @@ func GetCounterGitxtsManaged() (*Counter, error) {
 	return c, nil
 }
 
-// Update an user
+// Update a counter
 func updateCounterGitxtsManaged(e Engine, count int64) error {
 	c := &Counter{
-		Name: managed_gitxts,
+		Name:  managedGitxts,
 		Count: count,
 	}
 	// Try to get the Counter and create if not existent
@@ -104,7 +108,7 @@ func updateCounterGitxtsManaged(e Engine, count int64) error {
 	return err
 }
 
-// UpdateUser with datas
+// UpdateCounterGitxtsManaged with count
 func UpdateCounterGitxtsManaged(c int64) error {
 	return updateCounterGitxtsManaged(x, c)
 }
