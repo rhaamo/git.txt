@@ -25,12 +25,31 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{{AppSubURL}}/js/jquery-3.2.1.min.js"></script>
 <script src="{{AppSubURL}}/js/bootstrap.min.js"></script>
+<script src="{{AppSubURL}}/js/jquery.bootstrap-growl.min.js"></script>
 
 <script>
     var csrf;
     var suburl;
     csrf = $('meta[name=_csrf]').attr("content");
     suburl = $('meta[name=_suburl]').attr("content");
+
+    function show_alert(type, title, message) {
+        console.log('Alert: ' + type + ' - ' + title + ' - ' + message);
+        // type null, danger, info, success
+        msg = title + "<br/><small>" + message + "</small>";
+        $.bootstrapGrowl(msg, {type: type})
+    }
+
+    $(document).ajaxError(function (event, request, settings) {
+        console.log('triggered');
+        if (request.status === 500) {
+            return show_alert("danger", "Ajax query failed", "Error 500 :(");
+        }
+        if (request.responseJSON) {
+            return show_alert("danger", "Ajax query failed", request.responseJSON.message);
+        }
+        show_alert("danger", "Ajax query failed", "Unknown error");
+    });
 </script>
 
 {{if (or .PageIsGitxtNewPost .PageIsGitxtNew .PageIsGitxtEdit .PageIsGitxtEditPost)}}
