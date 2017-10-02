@@ -222,6 +222,13 @@ func DeleteExpiredRepositories() {
 		if err != nil {
 			log.Warn("Error removing repository %d/%d: %v", tc.userID, tc.repoID, err)
 		} else {
+			counter, _ := GetCounterGitxts()
+			if counter.Count <= 0 {
+				// This should not happens but well, anyway
+				UpdateCounterGitxts(counter.Count)
+			} else {
+				UpdateCounterGitxts(counter.Count - 1)
+			}
 			log.Trace("Deleted repository %s", tc.hash)
 		}
 

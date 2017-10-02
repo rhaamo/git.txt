@@ -14,6 +14,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
 	"dev.sigpipe.me/dashie/git.txt/stuff/template/highlight"
 	"container/list"
+	"dev.sigpipe.me/dashie/git.txt/models"
 )
 
 // NewFuncMap initialize the Functions Map
@@ -96,6 +97,14 @@ func NewFuncMap() []template.FuncMap {
 		},
 		"IsPdf": func(mime string) bool {
 			return strings.EqualFold(mime, "application/pdf")
+		},
+		"CounterGitxt": func() int64 {
+			c, _ := models.GetCounterGitxts()
+			return c.Count
+		},
+		"CounterGitxtManaged": func() int64 {
+			c, _ := models.GetCounterGitxtsManaged()
+			return c.Count
 		},
 	}}
 }

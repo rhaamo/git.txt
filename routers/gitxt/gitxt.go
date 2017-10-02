@@ -233,8 +233,12 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		return
 	}
 
-	// 5. Return render to gitxt view page
+	counter, _ := models.GetCounterGitxts()
+	counterManaged, _ := models.GetCounterGitxtsManaged()
+	models.UpdateCounterGitxts(counter.Count + 1)
+	models.UpdateCounterGitxtsManaged(counterManaged.Count + 1)
 
+	// 5. Return render to gitxt view page
 	log.Trace("Pushed repository %s to database as %i", repositoryName, u.ID)
 	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + repositoryName)
 }
@@ -440,6 +444,14 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 			"redirect": false,
 		})
 		return
+	}
+
+	counter, _ := models.GetCounterGitxts()
+	if counter.Count <= 0 {
+		// This should not happens but well, anyway
+		models.UpdateCounterGitxts(counter.Count)
+	} else {
+		models.UpdateCounterGitxts(counter.Count - 1)
 	}
 
 	ctx.JSONSuccess(map[string]interface{}{

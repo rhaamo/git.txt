@@ -7,6 +7,8 @@
     <div>
         <div class="left">
             © 2017 git.txt - {{.i18n.Tr "footer.version"}}: {{AppVer}} - {{.i18n.Tr "footer.page"}}: <strong>{{LoadTimes .PageStartTime}}</strong> - {{.i18n.Tr "footer.template"}}: <strong>{{call .TmplLoadTimes}}</strong>
+            <br/>
+            {{.i18n.Tr "footer.gitxts"}}: {{CounterGitxt}}, {{.i18n.Tr "footer.managed"}}: {{CounterGitxtManaged}}
         </div>
         <div class="right">
             <a target="_blank" href="https://dev.sigpipe.me/dashie/git.txt">{{.i18n.Tr "footer.sources"}}</a>
