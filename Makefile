@@ -132,3 +132,13 @@ release-copy:
 .PHONY: release-check
 release-check:
 	cd $(DIST)/release; $(foreach file,$(wildcard $(DIST)/release/$(EXECUTABLE)-*),sha256sum $(notdir $(file)) > $(notdir $(file)).sha256;)
+
+# This is an ugly hack, we will not need that when xgo will support cmake and sources-order
+release-lx64: release-dirs release-build-lx64 release-copy release-check release-pack-lx64
+
+release-build-lx64:
+	cp $(EXECUTABLE) $(DIST)/binaries/$(EXECUTABLE)-linux-x86_64
+	cp -r conf $(DIST)/release/
+
+release-pack-lx64:
+	cd $(DIST)/release; tar czvf git.txt_$(VERSION).tgz $(EXECUTABLE)-linux-x86_64 conf

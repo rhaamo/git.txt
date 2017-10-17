@@ -37,6 +37,33 @@ pipeline:
     when:
       event: [ push, tag, pull_request ]
 
+  static_Linux_x86_64:
+    image: webhippie/golang:edge
+    pull: true
+    environment:
+      TAGS: sqlite
+      GOPATH: /srv/app
+    commands:
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
+      - make clean
+      - make build
+      - make release-lx64
+    when:
+      event: [ push, tag ]
+
+  release:
+    image: plugins/s3:1
+    pull: true
+    secrets: [ s3_ak, s3_sk ]
+    bucket: drone-git.txt
+    endpoint: https://s3.sigpipe.me
+    path_style: true
+    strip_prefix: dist/release/
+    source: dist/release/*.tgz
+    target: /git.txt/${DRONE_TAG##v}
+    when:
+      event: [ tag ]
+
 #  static:
 #    image: karalabe/xgo-latest:latest
 #    pull: true
