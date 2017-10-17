@@ -139,6 +139,7 @@ release-lx64: release-dirs release-build-lx64 release-copy release-check release
 release-build-lx64:
 	cp $(EXECUTABLE) $(DIST)/binaries/$(EXECUTABLE)-linux-x86_64
 	cp -r conf $(DIST)/release/
+	cp README.md LICENSE* $(DIST)/release/
 
 release-pack-lx64:
-	cd $(DIST)/release; tar czvf git.txt_$(VERSION).tgz $(EXECUTABLE)-linux-x86_64 conf
+	cd $(DIST)/release; tar czvf git.txt_$(VERSION).tgz $(EXECUTABLE)-linux-x86_64 conf README.md LICENSE*
