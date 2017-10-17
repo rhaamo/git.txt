@@ -28,10 +28,15 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - API for third party tools
 - More tests coverage
 
-# Use or build
+# Build
 
     Install or build libgit2 0.25.x ONLY. NO Version less than 0.25 (hello Debian Stable) or higher.
+    You also needs libmagic
     go get -v -insecure -u dev.sigpipe.me/dashie/git.txt
+
+# Static build
+
+    TBD
 
 # Contact, issues
 - Main contact: Dashie: dashie (at) sigpipe (dot) me
