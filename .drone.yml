@@ -67,7 +67,9 @@ pipeline:
   release:
       image: plugins/s3:1
       pull: true
-      secrets: [ s3_ak, s3_sk ]
+      secrets:
+        - S3_AK
+        - S3_SK
       bucket: drone-git.txt
       endpoint: https://s3.sigpipe.me
       path_style: true
