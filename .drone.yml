@@ -54,7 +54,7 @@ pipeline:
   release:
     image: plugins/s3:1
     pull: true
-    secrets: [ s3_ak, s3_sk ]
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
     bucket: drone-git.txt
     endpoint: https://s3.sigpipe.me
     path_style: true
@@ -67,9 +67,7 @@ pipeline:
   release:
       image: plugins/s3:1
       pull: true
-      secrets:
-        - S3_AK
-        - S3_SK
+      secrets: [ aws_access_key_id, aws_secret_access_key ]
       bucket: drone-git.txt
       endpoint: https://s3.sigpipe.me
       path_style: true
