@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-const appVersion = "0.4"
+const appVersion = "0.4.1"
 
 func init() {
 	setting.AppVer = appVersion
