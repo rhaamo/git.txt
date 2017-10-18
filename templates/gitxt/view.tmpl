@@ -38,10 +38,11 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="gitxt_description">
+            {{.i18n.Tr "gitxt_view.created_on"}} <time datetime="{{DateFmtLong .createdOn}}">{{DateFmtLong .createdOn}}</time>
             {{if .expiry}}
                 {{if eq .expiry 0}}
                 {{else}}
-                    {{.i18n.Tr "gitxt_view.expiry_on"}} <time datetime="{{DateFmtLong .expiryOn}}">{{DateFmtLong .expiryOn}}</time>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{.i18n.Tr "gitxt_view.expiry_on"}} <time datetime="{{DateFmtLong .expiryOn}}">{{DateFmtLong .expiryOn}}</time>
                 {{end}}
             {{end}}
         </div>
