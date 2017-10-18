@@ -34,9 +34,10 @@ It's a Pastebin where all pastes are backed in is own Git repository.
     You also needs libmagic
     go get -v -insecure -u dev.sigpipe.me/dashie/git.txt
 
-# Static build
+# Release build
 
-    TBD
+- Get last release from https://sigpipe.me/projet:git.txt#binary_releases
+- You still need to install libgit2 0.25.x ONLY, and libmagic
 
 # Contact, issues
 - Main contact: Dashie: dashie (at) sigpipe (dot) me
