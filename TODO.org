@@ -15,3 +15,6 @@
 ** DONE Count of current gitxt
 ** DONE Count of total managed gitxt
 ** DONE Show this on footer and admin
+
+** TODO Upgrade git2go to v26
+*** Blocked by https://github.com/libgit2/git2go/issues/407
