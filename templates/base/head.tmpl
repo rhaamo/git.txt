@@ -40,8 +40,8 @@
         <meta content="{{.repoDescription}}" property="og:title" />
         <meta content="{{.repoDescription}}" property="og:description" />
         {{else}}
-        <meta content="Repository {{.repoHash}} or {{.repoOwnerUsername}}" property="og:title" />
-        <meta content="Repository {{.repoHash}} or {{.repoOwnerUsername}}" property="og:description" />
+        <meta content="Repository {{.repoHash}} of {{.repoOwnerUsername}}" property="og:title" />
+        <meta content="Repository {{.repoHash}} of {{.repoOwnerUsername}}" property="og:description" />
         {{end}}
         <meta content="{{AppURL}}{{.repoOwnerUsername}}/{{.repoHash}}" property="og:url" />
     {{else if .PageIsGitxtListUser}}
