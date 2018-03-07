@@ -1,25 +1,25 @@
 package gitxt
 
 import (
+	"bytes"
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"dev.sigpipe.me/dashie/git.txt/stuff/form"
-	"dev.sigpipe.me/dashie/git.txt/stuff/sanitize"
-	"fmt"
-	"strings"
-	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
-	"time"
-	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
-	"os"
-	log "gopkg.in/clog.v1"
-	"gopkg.in/libgit2/git2go.v25"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
-	"path/filepath"
-	"bytes"
-	gotemplate "html/template"
 	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
+	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
+	"dev.sigpipe.me/dashie/git.txt/stuff/sanitize"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
+	"fmt"
 	"github.com/Unknwon/paginater"
+	log "gopkg.in/clog.v1"
+	"gopkg.in/libgit2/git2go.v25"
+	gotemplate "html/template"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 const (
@@ -58,7 +58,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.Filename(f.FilesFilename[i])
-		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
+		if len(f.FilesFilename[i]) == 0 || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
 		}
@@ -154,7 +154,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 		indexEntry := &git.IndexEntry{
 			Path: f.FilesFilename[i],
 			Mode: git.FilemodeBlob,
-			Id: blobs[i],
+			Id:   blobs[i],
 		}
 		if repoIndex.Add(indexEntry) != nil {
 			log.Warn("init_error_add_entry: %s", err)
@@ -190,7 +190,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	// NEW_COMMIT=$(echo "My commit message" | git commit-tree "$TREE_ID" -p "$PARENT_COMMIT")
 	ruAuthor := &git.Signature{
-		Name: repositoryUser,
+		Name:  repositoryUser,
 		Email: "autocommit@git.txt",
 	}
 	_, err = repo.CreateCommit("HEAD", ruAuthor, ruAuthor, "First autocommit from git.txt", repoTree)
@@ -207,11 +207,11 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 
 	// 4. Insert info in database
 	u := &models.Gitxt{
-		Hash: repositoryName,
+		Hash:        repositoryName,
 		Description: f.Description,
-		IsPrivate: !f.IsPublic,
+		IsPrivate:   !f.IsPublic,
 		ExpiryHours: f.ExpiryHours,
-		ExpiryUnix: time.Now().Add(time.Hour * time.Duration(f.ExpiryHours)).Unix(),
+		ExpiryUnix:  time.Now().Add(time.Hour * time.Duration(f.ExpiryHours)).Unix(),
 	}
 
 	if ctx.IsLogged {
@@ -264,13 +264,14 @@ func View(ctx *context.Context) {
 	repo, err := git.OpenRepository(repoPath)
 	if err != nil {
 		log.Warn("Could not open repository %s: %s", ctx.Gitxt.Gitxt.Hash, err)
+		// TODO: The Flash isn't rendered
 		ctx.Flash.Error(ctx.Tr("gitxt_git.could_not_open"))
 		ctx.Handle(500, "GitxtView", err)
 		return
 	}
 
 	// Test if repository is empty
-	isEmpty, err := repo.IsEmpty();
+	isEmpty, err := repo.IsEmpty()
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
@@ -333,7 +334,7 @@ func RawFile(ctx *context.Context) {
 	}
 
 	// Test if repository is empty
-	isEmpty, err := repo.IsEmpty();
+	isEmpty, err := repo.IsEmpty()
 	if err != nil || isEmpty {
 		ctx.ServerError("Repository empty or corrupted", err)
 		return
@@ -352,7 +353,7 @@ func RawFile(ctx *context.Context) {
 	}
 
 	// download if isBinary
-	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") && !(treeFile.MimeType == "application/pdf"){
+	if treeFile.IsBinary && !(treeFile.MimeType == "image/png") && !(treeFile.MimeType == "application/pdf") {
 		ctx.ServeContent(file, bytes.NewReader(treeFile.ContentB))
 	} else {
 		if strings.HasPrefix(treeFile.MimeType, "text/") {
@@ -375,8 +376,8 @@ func ListUploads(ctx *context.Context) {
 	ctx.Data["PageNumber"] = page
 
 	opts := &models.GitxtOptions{
-		PageSize: 10,	// TODO: put this in config
-		Page: page,
+		PageSize: 10, // TODO: put this in config
+		Page:     page,
 	}
 
 	if ctx.Data["GetAll"] != nil {
@@ -423,7 +424,7 @@ func ListUploads(ctx *context.Context) {
 func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 	if ctx.HasError() {
 		ctx.JSONSuccess(map[string]interface{}{
-			"error": ctx.Data["ErrorMsg"],
+			"error":    ctx.Data["ErrorMsg"],
 			"redirect": false,
 		})
 		return
@@ -431,7 +432,7 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 
 	if ctx.Data["LoggedUserID"] != ctx.Gitxt.Gitxt.UserID {
 		ctx.JSONSuccess(map[string]interface{}{
-			"error": ctx.Tr("user.unauthorized"),
+			"error":    ctx.Tr("user.unauthorized"),
 			"redirect": false,
 		})
 	}
@@ -441,7 +442,7 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 		ctx.Flash.Error(ctx.Tr("gitxt_delete.error_deleting"))
 		log.Warn("DeletePost.DeleteRepository: %v", err)
 		ctx.JSONSuccess(map[string]interface{}{
-			"error": ctx.Tr("gitxt_delete.error_deleting"),
+			"error":    ctx.Tr("gitxt_delete.error_deleting"),
 			"redirect": false,
 		})
 		return
@@ -456,7 +457,7 @@ func DeletePost(ctx *context.Context, f form.GitxtDelete) {
 	}
 
 	ctx.JSONSuccess(map[string]interface{}{
-		"error": nil,
+		"error":    nil,
 		"redirect": setting.AppSubURL + "/",
 	})
 	return
@@ -493,7 +494,7 @@ func Edit(ctx *context.Context) {
 	}
 
 	// Test if repository is empty
-	isEmpty, err := repo.IsEmpty();
+	isEmpty, err := repo.IsEmpty()
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
@@ -553,7 +554,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.Filename(f.FilesFilename[i])
-		if len(f.FilesFilename[i]) == 0  || f.FilesFilename[i] == "." {
+		if len(f.FilesFilename[i]) == 0 || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
 		}
@@ -599,7 +600,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 	}
 
 	// Test if repository is empty
-	isEmpty, err := repo.IsEmpty();
+	isEmpty, err := repo.IsEmpty()
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))
@@ -703,7 +704,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// NEW_COMMIT=$(echo "My commit message" | git commit-tree "$TREE_ID" -p "$PARENT_COMMIT")
 	ruAuthor := &git.Signature{
-		Name: repositoryUser,
+		Name:  repositoryUser,
 		Email: "autocommit@git.txt",
 	}
 	_, err = repo.CreateCommit("HEAD", ruAuthor, ruAuthor, "Autocommit from git.txt", repoTree, headCommit)
