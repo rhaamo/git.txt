@@ -1,0 +1,17 @@
+#+TITLE: git dot txt TODO list
+
+* SSH Keys
+** TODO SSH keys management
+** TODO files generation
+** TODO clone using SSH (tool development)
+
+* Ways of improvement
+** TODO Merge AssignUser and AssignRepository ?
+** TODO Cleanup gogs imports of unused bits
+** TODO Add a field "filesystem filename" to add a real path to the gist file
+** TODO Should spawn an error if filename contains '/'
+** TODO _ shouldn't be stripped from filenames
+** TODO Creation date on gitxt view
+** DONE Count of current gitxt
+** DONE Count of total managed gitxt
+** DONE Show this on footer and admin
