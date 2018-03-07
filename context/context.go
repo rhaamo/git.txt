@@ -1,22 +1,22 @@
 package context
 
 import (
-	"gopkg.in/macaron.v1"
-	"github.com/go-macaron/csrf"
-	"github.com/go-macaron/session"
-	"github.com/go-macaron/cache"
-	log "gopkg.in/clog.v1"
-	"net/http"
-	"dev.sigpipe.me/dashie/git.txt/setting"
-	"fmt"
-	"io"
-	"time"
-	"strings"
-	"github.com/go-macaron/i18n"
-	"html/template"
 	"dev.sigpipe.me/dashie/git.txt/models"
-	"dev.sigpipe.me/dashie/git.txt/stuff/form"
+	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/auth"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
+	"fmt"
+	"github.com/go-macaron/cache"
+	"github.com/go-macaron/csrf"
+	"github.com/go-macaron/i18n"
+	"github.com/go-macaron/session"
+	log "gopkg.in/clog.v1"
+	"gopkg.in/macaron.v1"
+	"html/template"
+	"io"
+	"net/http"
+	"strings"
+	"time"
 )
 
 // Context represents context of a request.
@@ -27,13 +27,13 @@ type Context struct {
 	Flash   *session.Flash
 	Session session.Store
 
-	User	*models.User	// logged in user
-	Gitxt   *Gitxt
+	User  *models.User // logged in user
+	Gitxt *Gitxt
 
-	RepoOwnerUsername  string
+	RepoOwnerUsername string
 
-	IsLogged	bool
-	IsBasicAuth	bool
+	IsLogged    bool
+	IsBasicAuth bool
 }
 
 // Title sets "Title" field in template data.
@@ -89,7 +89,7 @@ func (c *Context) Handle(status int, title string, err error) {
 	case http.StatusNotFound:
 		c.Data["Title"] = c.Tr("error.page_not_found")
 	case http.StatusInternalServerError:
-		c.Data["Title"] = c.Tr("internal_server_error")
+		c.Data["Title"] = c.Tr("error.internal_server_error")
 		log.Error(2, "%s: %v", title, err)
 	}
 	c.HTML(status, fmt.Sprintf("status/%d", status))
@@ -172,7 +172,7 @@ func Contexter() macaron.Handler {
 			csrf:    x,
 			Flash:   f,
 			Session: sess,
-			Gitxt: &Gitxt{},
+			Gitxt:   &Gitxt{},
 		}
 
 		if len(setting.HTTP.AccessControlAllowOrigin) > 0 {
