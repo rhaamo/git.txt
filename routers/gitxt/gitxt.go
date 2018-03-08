@@ -160,6 +160,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 			log.Warn("init_error_add_entry: %s", err)
 			ctx.Data["HasError"] = true
 			ctx.Data["ErrorMsg"] = ctx.Tr("gitxt_git.error_add_entry")
+			ctx.Flash.Error(ctx.Tr("gitxt_git.error_add_entry"), true)
 			ctx.Success(tmplNew)
 			return
 		}
