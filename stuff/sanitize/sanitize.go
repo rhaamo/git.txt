@@ -6,10 +6,10 @@ package sanitize
  */
 
 import (
-	"strings"
+	"bytes"
 	"path"
 	"regexp"
-	"bytes"
+	"strings"
 )
 
 // A very limited list of transliterations to catch common european names translated to urls.
@@ -133,7 +133,7 @@ func cleanString(s string, r *regexp.Regexp) string {
 }
 
 // We are very restrictive as this could be intended for ascii url slugs
-var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\./]`)
+var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\_\./]`)
 
 // Filename will clean illegal characters
 func Filename(s string) string {
