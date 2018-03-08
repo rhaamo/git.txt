@@ -8,8 +8,8 @@
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
 ** TODO Cleanup gogs imports of unused bits
-** TODO Add a field "filesystem filename" to add a real path to the gist file
-** DONE Should spawn an error if filename contains '/'
+** TODO Correctly handle filenames with a /, like raw view
+** DONE strip '/' from filenames
 ** DONE _ shouldn't be stripped from filenames
 ** DONE Creation date on gitxt view
 ** DONE Count of current gitxt
