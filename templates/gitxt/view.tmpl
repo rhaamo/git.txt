@@ -55,7 +55,7 @@
         {{range $entryFile := .repoFiles}}
         <div class="gitxt_file">
             <div class="header clearfix" id="file_{{$entryFile.Path}}">
-                <div class="left"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span> <small>({{$entryFile.MimeType}})</small></div>
+                <div class="left"><i class="fa fa-file-code-o" aria-hidden="true"></i> <a href="#file_{{$entryFile.Path}}">/{{$entryFile.Path}}</a> <span class="file_size">{{FileSize $entryFile.Size}}</span> <small>({{$entryFile.MimeType}})</small></div>
                 <div class="right"><a class="btn btn-xs btn-default" href="{{AppSubURL}}/{{$.repoOwnerUsername}}/{{$.repoHash}}/raw/{{$entryFile.Path}}">{{$.i18n.Tr "gitxt_view.raw_file"}}</a></div>
             </div>
             <div class="gitxt_content">

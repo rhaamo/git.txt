@@ -133,7 +133,9 @@ func cleanString(s string, r *regexp.Regexp) string {
 }
 
 // We are very restrictive as this could be intended for ascii url slugs
-var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\_\./]`)
+var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\_\.]/`)
+
+var slashes = regexp.MustCompile(`^[/]+`)
 
 // Filename will clean illegal characters
 func Filename(s string) string {
@@ -145,4 +147,9 @@ func Filename(s string) string {
 
 	// NB this may be of length 0, caller must check
 	return filePath
+}
+
+// RemoveFirstSlash remove the firstS slashes of filename
+func RemoveFirstSlash(s string) string {
+	return slashes.ReplaceAllString(s, "")
 }

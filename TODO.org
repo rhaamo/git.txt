@@ -8,7 +8,7 @@
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
 ** TODO Cleanup gogs imports of unused bits
-** TODO Can't add files with filename "/some/thing/foo.bar"
+** DONE Can't add files with filename "/some/thing/foo.bar"
 ** DONE Investigate the non-working context.Flash when not using a redirect
 ** DONE Correctly handle filenames with a /, like raw view
 ** DONE strip '/' from filenames

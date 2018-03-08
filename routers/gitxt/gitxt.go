@@ -58,6 +58,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	for i := range f.FilesFilename {
 		// For each filename sanitize it
 		f.FilesFilename[i] = sanitize.Filename(f.FilesFilename[i])
+		f.FilesFilename[i] = sanitize.RemoveFirstSlash(f.FilesFilename[i])
 		if len(f.FilesFilename[i]) == 0 || f.FilesFilename[i] == "." {
 			// If length is zero, use default filename
 			f.FilesFilename[i] = fmt.Sprintf("gitxt%d.txt", i)
