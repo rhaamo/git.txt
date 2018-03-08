@@ -8,7 +8,7 @@
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
 ** TODO Cleanup gogs imports of unused bits
-** TODO Correctly handle filenames with a /, like raw view
+** DONE Correctly handle filenames with a /, like raw view
 ** DONE strip '/' from filenames
 ** DONE _ shouldn't be stripped from filenames
 ** DONE Creation date on gitxt view

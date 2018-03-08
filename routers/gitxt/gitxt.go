@@ -317,7 +317,7 @@ func View(ctx *context.Context) {
 
 // RawFile GET
 func RawFile(ctx *context.Context) {
-	file := ctx.Params("path")
+	file := ctx.Params("*")
 
 	repoPath := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Gitxt.Hash)
 
