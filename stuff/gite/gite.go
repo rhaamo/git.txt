@@ -1,15 +1,15 @@
 package gite
 
 import (
-	"gopkg.in/libgit2/git2go.v25"
-	"strings"
-	"path/filepath"
-	"archive/zip"
 	"archive/tar"
-	"os"
+	"archive/zip"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"github.com/rakyll/magicmime"
+	"gopkg.in/libgit2/git2go.v25"
 	gotemplate "html/template"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type errorString struct {
@@ -22,7 +22,6 @@ func (e *errorString) Error() string {
 
 // Some stuff to play with git because easy things are not always easy
 // Some of theses functions comes from https://git.nurupoga.org/kr/_discorde/src/master/discorde/tree.go
-
 
 // A TreeEntry represents a file of a git repository.
 type TreeEntry struct {
@@ -197,7 +196,6 @@ func WriteZipArchiveFromRepository(repo *git.Repository, archivePath string) (er
 	return
 }
 
-
 // TreeFiles struct to get root tree without depth and contents
 type TreeFiles struct {
 	ID           string
@@ -205,7 +203,7 @@ type TreeFiles struct {
 	Content      string
 	ContentB     []byte
 	ContentH     gotemplate.HTML
-	Size         int64	// bytes
+	Size         int64 // bytes
 	OverSize     bool
 	IsBinary     bool
 	OverPageSize bool
@@ -267,7 +265,7 @@ func getTreeFile(repo *git.Repository, path string, curSize int64) (treeFile Tre
 			treeFile.OverSize = true
 		} else {
 			// If we still are in the limits, check the page display size
-			if curSize + blob.Size() > setting.Bloby.MaxPageDisplay {
+			if curSize+blob.Size() > setting.Bloby.MaxPageDisplay {
 				treeFile.OverPageSize = true
 				treeFile.Content = ""
 			} else {
@@ -295,9 +293,14 @@ func GetTreeFileNoLimit(repo *git.Repository, path string) (treeFile TreeFiles, 
 	}
 	defer magicmime.Close()
 
-
 	var entry git.TreeEntry
 	tree.Walk(getTreeEntryByPath(&entry, path))
+
+	// If we don't get an entry, the file does not exist!
+	if entry.Id == nil {
+		return
+	}
+
 	blob, err := repo.LookupBlob(entry.Id)
 	if err != nil {
 		return

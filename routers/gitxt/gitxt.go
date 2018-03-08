@@ -351,6 +351,12 @@ func RawFile(ctx *context.Context) {
 		return
 	}
 
+	// File not found
+	if treeFile.ID == "" {
+		ctx.Error(404)
+		return
+	}
+
 	if treeFile.Size > setting.Bloby.MaxRawSize {
 		ctx.Handle(500, "MaxRawSize", nil)
 		return
