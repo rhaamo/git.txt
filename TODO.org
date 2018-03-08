@@ -8,6 +8,7 @@
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
 ** TODO Cleanup gogs imports of unused bits
+** TODO Non existant file in git for raw file: git_object_lookup_prefix: Assertion `repo && object_out && id' failed.
 ** DONE Can't add files with filename "/some/thing/foo.bar"
 ** DONE Investigate the non-working context.Flash when not using a redirect
 ** DONE Correctly handle filenames with a /, like raw view
