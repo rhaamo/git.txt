@@ -9,7 +9,7 @@
 ** TODO Merge AssignUser and AssignRepository ?
 ** TODO Cleanup gogs imports of unused bits
 ** TODO Add a field "filesystem filename" to add a real path to the gist file
-** TODO Should spawn an error if filename contains '/'
+** DONE Should spawn an error if filename contains '/'
 ** DONE _ shouldn't be stripped from filenames
 ** DONE Creation date on gitxt view
 ** DONE Count of current gitxt

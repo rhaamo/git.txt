@@ -133,7 +133,7 @@ func cleanString(s string, r *regexp.Regexp) string {
 }
 
 // We are very restrictive as this could be intended for ascii url slugs
-var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\_\./]`)
+var illegalPath = regexp.MustCompile(`[^[:alnum:]\~\-\_\.]`)
 
 // Filename will clean illegal characters
 func Filename(s string) string {

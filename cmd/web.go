@@ -1,42 +1,42 @@
 package cmd
 
 import (
-	"github.com/urfave/cli"
-	"gopkg.in/macaron.v1"
-	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"dev.sigpipe.me/dashie/git.txt/stuff/template"
-	"dev.sigpipe.me/dashie/git.txt/stuff/form"
-	"path"
-	"github.com/go-macaron/session"
-	"github.com/go-macaron/csrf"
-	"github.com/go-macaron/cache"
-	"github.com/go-macaron/i18n"
-	"github.com/go-macaron/binding"
-	"github.com/go-macaron/toolbox"
-	"strings"
-	"fmt"
-	log "gopkg.in/clog.v1"
-	"net/http"
-	"net"
-	"net/http/fcgi"
-	"os"
 	"dev.sigpipe.me/dashie/git.txt/models"
-	"dev.sigpipe.me/dashie/git.txt/routers/user"
-	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
-	"dev.sigpipe.me/dashie/git.txt/routers/repo"
-	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
 	"dev.sigpipe.me/dashie/git.txt/routers"
 	"dev.sigpipe.me/dashie/git.txt/routers/admin"
+	"dev.sigpipe.me/dashie/git.txt/routers/gitxt"
+	"dev.sigpipe.me/dashie/git.txt/routers/repo"
+	"dev.sigpipe.me/dashie/git.txt/routers/user"
+	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/cron"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
+	"dev.sigpipe.me/dashie/git.txt/stuff/template"
+	"fmt"
+	"github.com/go-macaron/binding"
+	"github.com/go-macaron/cache"
+	"github.com/go-macaron/csrf"
+	"github.com/go-macaron/i18n"
+	"github.com/go-macaron/session"
+	"github.com/go-macaron/toolbox"
+	"github.com/urfave/cli"
+	log "gopkg.in/clog.v1"
+	"gopkg.in/macaron.v1"
+	"net"
+	"net/http"
+	"net/http/fcgi"
+	"os"
+	"path"
+	"strings"
 )
 
 // Web command
 var Web = cli.Command{
-	Name: "web",
-	Usage: "Start web server",
+	Name:        "web",
+	Usage:       "Start web server",
 	Description: "It starts a web server, great no ?",
-	Action: runWeb,
+	Action:      runWeb,
 	Flags: []cli.Flag{
 		stringFlag("port, p", "3000", "Server port"),
 		stringFlag("config, c", "config/app.ini", "Custom config file path"),
@@ -64,19 +64,19 @@ func newMacaron() *macaron.Macaron {
 
 	funcMap := template.NewFuncMap()
 	m.Use(macaron.Renderer(macaron.RenderOptions{
-		Directory:         path.Join(setting.StaticRootPath, "templates"),
-		Funcs:		   funcMap,
-		IndentJSON:        macaron.Env != macaron.PROD,
+		Directory:  path.Join(setting.StaticRootPath, "templates"),
+		Funcs:      funcMap,
+		IndentJSON: macaron.Env != macaron.PROD,
 	}))
 	mailer.InitMailRender(path.Join(setting.StaticRootPath, "templates/mail"), funcMap)
 
 	m.Use(i18n.I18n(i18n.Options{
-		SubURL:          setting.AppSubURL,
+		SubURL: setting.AppSubURL,
 		//Files:           localFiles,
-		Langs:           setting.Langs,
-		Names:           setting.Names,
-		DefaultLang:     "en-US",
-		Redirect:        true,
+		Langs:       setting.Langs,
+		Names:       setting.Names,
+		DefaultLang: "en-US",
+		Redirect:    true,
 	}))
 
 	m.Use(cache.Cacher(cache.Options{
