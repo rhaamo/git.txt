@@ -116,6 +116,7 @@ func runWeb(ctx *cli.Context) error {
 	}
 
 	setting.InitConfig()
+	markup.NewSanitizer()
 	models.InitDb()
 	cron.NewContext()
 	mailer.NewContext()
