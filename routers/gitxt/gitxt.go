@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"github.com/Unknwon/paginater"
 	log "gopkg.in/clog.v1"
-	"gopkg.in/libgit2/git2go.v26"
+	"gopkg.in/libgit2/git2go.v27"
 	gotemplate "html/template"
 	"os"
 	"path/filepath"

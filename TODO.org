@@ -6,8 +6,6 @@
 ** xorm update, breaking changes
 *** migrate to gorm ?
 
-** TODO Upgrade git2go to v26 (.3)
-*** Blocked by https://github.com/libgit2/git2go/issues/407
 ** TODO Add edit time on view gist
 ** TODO Add line-break option
 ** TODO Cleanup gogs imports of unused bits

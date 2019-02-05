@@ -16,9 +16,7 @@ pipeline:
       TAGS: sqlite
       GOPATH: /srv/app
     commands:
-      - echo 'http://dl-cdn.alpinelinux.org/alpine/v3.7/main' >> /etc/apk/repositories
-      - apk update
-      - apk -U add libmagic file-dev libgit2=0.25.1-r4 libgit2-dev=0.25.1-r4
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
       - make test
     when:
       event: [ push, tag, pull_request ]
@@ -30,9 +28,7 @@ pipeline:
       TAGS: sqlite
       GOPATH: /srv/app
     commands:
-      - echo 'http://dl-cdn.alpinelinux.org/alpine/v3.7/main' >> /etc/apk/repositories
-      - apk update
-      - apk -U add libmagic file-dev libgit2=0.25.1-r4 libgit2-dev=0.25.1-r4
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
       - make clean
       - make vet
       - make lint
@@ -48,9 +44,8 @@ pipeline:
       TAGS: sqlite
       GOPATH: /srv/app
     commands:
-      - echo 'http://dl-cdn.alpinelinux.org/alpine/v3.7/main' >> /etc/apk/repositories
       - apk update
-      - apk -U add libmagic file-dev libgit2=0.25.1-r4 libgit2-dev=0.25.1-r4
+      - apk -U add libmagic file-dev libgit2 libgit2-dev
       - make clean
       - make build
       - make release-lx64

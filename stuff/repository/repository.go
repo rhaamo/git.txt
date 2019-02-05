@@ -2,7 +2,7 @@ package repository
 
 import (
 	"dev.sigpipe.me/dashie/git.txt/setting"
-	git "gopkg.in/libgit2/git2go.v26"
+	git "gopkg.in/libgit2/git2go.v27"
 	"path"
 )
 

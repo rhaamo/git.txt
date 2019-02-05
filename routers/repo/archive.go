@@ -8,7 +8,7 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
 	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"github.com/Unknwon/com"
-	"gopkg.in/libgit2/git2go.v26"
+	"gopkg.in/libgit2/git2go.v27"
 	"os"
 	"path"
 	"strings"
