@@ -1,14 +1,14 @@
 package models
 
 import (
-	// msssql
-	_ "github.com/denisenkom/go-mssqldb"
-	// mysql
-	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"errors"
 	"fmt"
+	// msssql
+	_ "github.com/denisenkom/go-mssqldb"
+	// mysql
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	// Postgresql
