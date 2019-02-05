@@ -2,13 +2,12 @@
 
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
-** blackfriday dependency update to 2.x, breaking changes
-** xorm update, breaking changes
+** TODO blackfriday dependency update to 2.x, breaking changes
+** TODO xorm update, breaking changes
 *** migrate to gorm ?
 
 ** TODO Add edit time on view gist
 ** TODO Add line-break option
-** TODO Cleanup gogs imports of unused bits
 ** TODO Add more checks for <nil> fields wrongly used, like issue with non existant file
 ** TODO Add pictures from git with zz_.png; Edit web interface, and add file; wrong duplicate !!
 
