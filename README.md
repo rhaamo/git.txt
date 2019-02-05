@@ -29,14 +29,15 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 
 # Build
 
-    Install or build libgit2 0.25.x ONLY. NO Version less than 0.25 (hello Debian Stable) or higher.
+    Install or build libgit2 0.27.x ONLY.
+    This might be painful, and you might need to download manually .deb on older systems.
     You also needs libmagic
     go get -v -insecure -u dev.sigpipe.me/dashie/git.txt
 
 # Release build
 
 - Get last release from https://sigpipe.me/projet:git.txt#binary_releases
-- You still need to install libgit2 0.25.x ONLY, and libmagic
+- You still need to install libgit2 0.27.x ONLY, and libmagic
 
 # Contact, issues
 - Main contact: Dashie: dashie (at) sigpipe (dot) me
