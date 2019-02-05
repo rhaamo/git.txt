@@ -134,8 +134,8 @@
   version = "1.41.0"
 
 [[constraint]]
-  branch = "v26"
-  name = "gopkg.in/libgit2/git2go.v26"
+  branch = "v27"
+  name = "gopkg.in/libgit2/git2go.v27"
 
 [[constraint]]
   name = "gopkg.in/macaron.v1"

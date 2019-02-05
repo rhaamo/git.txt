@@ -395,12 +395,12 @@
   version = "v1.41.0"
 
 [[projects]]
-  branch = "v26"
-  digest = "1:79a5003bce9bc94ea61fe4b7a88382b5f367585400122ed3feb5e483031834b6"
-  name = "gopkg.in/libgit2/git2go.v26"
+  branch = "v27"
+  digest = "1:6af8f24e29863581ecaa0900389a20c5b7cd13506fb83c317494a4f92253d6d5"
+  name = "gopkg.in/libgit2/git2go.v27"
   packages = ["."]
   pruneopts = "UT"
-  revision = "c9f7fd544d3991bd26c400b3c227673bcada42cc"
+  revision = "ecaeb7a21d479b7966311760a2e8bd734f8f0eef"
 
 [[projects]]
   digest = "1:3d43a1d68f315a1c4c2cd20ee4d35c96695f17637502366341ac43b7813ea95f"
@@ -441,7 +441,7 @@
     "gopkg.in/clog.v1",
     "gopkg.in/gomail.v2",
     "gopkg.in/ini.v1",
-    "gopkg.in/libgit2/git2go.v26",
+    "gopkg.in/libgit2/git2go.v27",
     "gopkg.in/macaron.v1",
   ]
   solver-name = "gps-cdcl"
