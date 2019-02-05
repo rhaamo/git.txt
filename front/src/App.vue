@@ -29,3 +29,13 @@
   color: #42b983;
 }
 </style>
+
+<script>
+    export default {
+        name: 'App',
+        metaInfo: {
+            title: 'git.txt',
+            titleTemplate: '%s | git.txt'
+        }
+    }
+</script>
