@@ -4,14 +4,14 @@
 [![Build Status](https://travis-ci.org/jaytaylor/html2text.svg?branch=master)](https://travis-ci.org/jaytaylor/html2text)
 [![Report Card](https://goreportcard.com/badge/github.com/jaytaylor/html2text)](https://goreportcard.com/report/github.com/jaytaylor/html2text)
 
-### Converts HTML into text
+### Converts HTML into text of the markdown-flavored variety
 
 
 ## Introduction
 
 Ensure your emails are readable by all!
 
-Turns HTML into raw text, useful for sending fancy HTML emails with a equivalently nicely formatted TXT document as a fallback (e.g. for people who don't allow HTML emails or have other display issues).
+Turns HTML into raw text, useful for sending fancy HTML emails with an equivalently nicely formatted TXT document as a fallback (e.g. for people who don't allow HTML emails or have other display issues).
 
 html2text is a simple golang package for rendering HTML into plaintext.
 
@@ -23,7 +23,7 @@ It requires go 1.x or newer ;)
 ## Download the package
 
 ```bash
-go get github.com/jaytaylor/html2text
+go get jaytaylor.com/html2text
 ```
 
 ## Example usage
@@ -34,7 +34,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/jaytaylor/html2text"
+	"jaytaylor.com/html2text"
 )
 
 func main() {
@@ -78,7 +78,7 @@ func main() {
   </body>
 </html>`
 
-	text, err := FromString(inputHTML, Options{PrettyTables: true})
+	text, err := html2text.FromString(inputHTML, html2text.Options{PrettyTables: true})
 	if err != nil {
 		panic(err)
 	}

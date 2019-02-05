@@ -2,284 +2,447 @@
 
 
 [[projects]]
+  digest = "1:b62a3c5b37db602bf1158e921da1a762315a4c37855fd418a14498aa87a342d5"
+  name = "cloud.google.com/go"
+  packages = ["civil"]
+  pruneopts = "UT"
+  revision = "28a4bc8c44b3acbcc482cff0cdf7de29a4688b61"
+  version = "v0.35.1"
+
+[[projects]]
   branch = "master"
+  digest = "1:b67d9fb93495f20c1650448395a35d8c8a05cc1744bdd9986f5bc69d5d114f22"
   name = "github.com/Unknwon/com"
   packages = ["."]
-  revision = "7677a1d7c1137cd3dd5ba7a076d0c898a1ef4520"
+  pruneopts = "UT"
+  revision = "41959bdd855fb7db467f78865d5f9044507df1cd"
 
 [[projects]]
   branch = "master"
+  digest = "1:bd9a1730dc16cc1f04700999f3d324204e0a1971920e7b2f7989927a7467537e"
   name = "github.com/Unknwon/i18n"
   packages = ["."]
-  revision = "8372b908b5876d26cfa46a85fc4851b981dad102"
+  pruneopts = "UT"
+  revision = "b64d336589669d317928070e70ba0ae558f16633"
 
 [[projects]]
   branch = "master"
+  digest = "1:4a44e85c894774bc6adde2d64de85a97e9cb30ba7084eece33248c570d461c49"
   name = "github.com/Unknwon/paginater"
   packages = ["."]
+  pruneopts = "UT"
   revision = "45e5d631308ea359946e761484147982c978d0df"
 
 [[projects]]
+  digest = "1:fed1f537c2f1269fe475a8556c393fe466641682d73ef8fd0491cd3aa1e47bad"
   name = "github.com/certifi/gocertifi"
   packages = ["."]
-  revision = "3fd9e1adb12b72d2f3f82191d49be9b93c69f67c"
-  version = "2017.07.27"
+  pruneopts = "UT"
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
 
 [[projects]]
   branch = "master"
+  digest = "1:cf0505eb7d4704d5ab445353dc64122acf56d13937e20dac5570b995cb21232c"
   name = "github.com/denisenkom/go-mssqldb"
-  packages = ["."]
-  revision = "c7ee4153c0fc40206bde939f96eefa1f501cbcaa"
+  packages = [
+    ".",
+    "internal/cp",
+  ]
+  pruneopts = "UT"
+  revision = "df6d76eb92899e4dfe4db66d53b187c89d34be37"
 
 [[projects]]
+  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
   name = "github.com/fatih/color"
   packages = ["."]
-  revision = "570b54cabe6b8eb0bc2dfce68d964677d63b5260"
-  version = "v1.5.0"
+  pruneopts = "UT"
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
 
 [[projects]]
-  branch = "master"
+  digest = "1:d18f6f088d7d8365df47f49dfa24b6ff6701a941118ffda30c589d1bd954074b"
   name = "github.com/getsentry/raven-go"
   packages = ["."]
-  revision = "1452f6376ddb15c546b6d7567e1d9518765391b5"
+  pruneopts = "UT"
+  revision = "f04e7487e9a6b9d9837d52743fb5f40576c56411"
+  version = "v0.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:2c70cb4f416b5badad7248e6a169047657c9288db3966b15eb1ddf75ca1cf3cd"
   name = "github.com/go-macaron/binding"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ac54ee249c27dca7e76fad851a4a04b73bd1b183"
 
 [[projects]]
   branch = "master"
+  digest = "1:2e2b2c8b2803b8d62aa8eb58285de5e7039ae603999f70bfe6ffc83a6779aa0c"
   name = "github.com/go-macaron/cache"
   packages = ["."]
+  pruneopts = "UT"
   revision = "56173531277692bc2925924d51fda1cd0a6b8178"
 
 [[projects]]
   branch = "master"
+  digest = "1:cf7ea39f8fc3684b759962a8bdd630c541870e9be94a6c655437938f19982cb3"
   name = "github.com/go-macaron/csrf"
   packages = ["."]
-  revision = "428b7c62d7d0034b048b1cd43ba60d87857f5253"
+  pruneopts = "UT"
+  revision = "3751b136073c3ebaf8b5c85b418472a19e61c15f"
 
 [[projects]]
   branch = "master"
+  digest = "1:d405e6f5c6d1e1bc57a771ef5a4554851cee3ef8540ea76a6ddbe24fe0d37ee2"
   name = "github.com/go-macaron/i18n"
   packages = ["."]
-  revision = "ef57533c3b0fc2d8581deda14937e52f11a203ab"
+  pruneopts = "UT"
+  revision = "56731837a73b0165c93fe7779d0c1669d5a49e36"
 
 [[projects]]
   branch = "master"
+  digest = "1:bdb17865b13e720add16eaa212872b4306c8521f367c7a7ff2c10cef1e7afdb1"
   name = "github.com/go-macaron/inject"
   packages = ["."]
+  pruneopts = "UT"
   revision = "d8a0b8677191f4380287cfebd08e462217bac7ad"
 
 [[projects]]
   branch = "master"
+  digest = "1:c86c37eebd36c97a761d7f756dbf3c69e9349b095efffa13f5eb54eac505eede"
   name = "github.com/go-macaron/session"
   packages = ["."]
-  revision = "b8e286a0dba8f4999042d6b258daf51b31d08938"
+  pruneopts = "UT"
+  revision = "0a0a789bf1934e55fde19629869caa015a40c525"
 
 [[projects]]
   branch = "master"
+  digest = "1:ffbec58b40e72acdab27dcba73bf1ecaf9f9a11a21901b74257748023ede3a8b"
   name = "github.com/go-macaron/toolbox"
   packages = ["."]
-  revision = "6766b8f16d1b135b250f09ba4dc4e24ab65b1107"
+  pruneopts = "UT"
+  revision = "a77f45a7ce909c0ff14b28279fa1a2b674acb70f"
 
 [[projects]]
+  digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
+  pruneopts = "UT"
+  revision = "72cd26f257d44c1114970e19afddcd812016007e"
+  version = "v1.4.1"
 
 [[projects]]
-  branch = "master"
+  digest = "1:43c0f7d28e1d4359041ef2d2ed2e37f599a6c623b1c59aac0d04da2fda29bbb3"
   name = "github.com/go-xorm/builder"
   packages = ["."]
-  revision = "c8871c857d2555fbfbd8524f895be5386d3d8836"
+  pruneopts = "UT"
+  revision = "1d658d7596c25394aab557ef5b50ef35bf706384"
+  version = "v0.3.4"
 
 [[projects]]
+  digest = "1:ee0b218753df985dd6633b13a894a69f0c1ea385f092f4afa093d407bb165cc5"
   name = "github.com/go-xorm/core"
   packages = ["."]
-  revision = "da1adaf7a28ca792961721a34e6e04945200c890"
-  version = "v0.5.7"
+  pruneopts = "UT"
+  revision = "f43c33d9a48db006417a7ac4c16b08897e3e1458"
+  version = "v0.5.8"
 
 [[projects]]
+  digest = "1:6ff42d216e382408d6a16831014cd95298fdaaf988adf471289924c591d47603"
   name = "github.com/go-xorm/xorm"
   packages = ["."]
-  revision = "d7f04c3cecff8d8c9321b2c39940e1992ce9f01a"
-  version = "v0.6.3"
+  pruneopts = "UT"
+  revision = "fc1b13e0d8e240788213230aa5747eb557f80f41"
+  version = "v0.6.6"
 
 [[projects]]
   branch = "master"
+  digest = "1:feda45e0c87eb025dac4ad8c9c769dddcd06e161f36e77ce24372956928275e5"
   name = "github.com/gogits/cron"
   packages = ["."]
-  revision = "c803a08f3bd6f5d5f0281e5ef6a5e09b28488ed7"
+  pruneopts = "UT"
+  revision = "9f6c956d3e147cf00f540e31a13bce128fd2fe2d"
 
 [[projects]]
   branch = "master"
+  digest = "1:f14d1b50e0075fb00177f12a96dd7addf93d1e2883c25befd17285b779549795"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
-  revision = "415225646bb92c4449bb484646f2c95a98402f6f"
+  pruneopts = "UT"
+  revision = "d547d1d9531ed93dbdebcbff7f83e7c876a1e0ee"
 
 [[projects]]
   branch = "master"
+  digest = "1:8bacc2118e6cc6a207eb144656537ff7ee0397f8bc8c1f7639519b0de2bb949a"
   name = "github.com/jaytaylor/html2text"
   packages = ["."]
-  revision = "0ee88d3006305456b84cad14a24b2576f9411965"
+  pruneopts = "UT"
+  revision = "57d518f124b0cf46ea2021f25a01396b3522e6fb"
 
 [[projects]]
+  digest = "1:4b63210654b1f2b664f74ec434a1bb1cb442b3d75742cc064a10808d1cca6361"
   name = "github.com/jtolds/gls"
   packages = ["."]
-  revision = "77f18212c9c7edc9bd6a33d383a7b545ce62f064"
-  version = "v4.2.1"
+  pruneopts = "UT"
+  revision = "b4936e06046bbecbb94cae9c18127ebe510a2cb9"
+  version = "v4.20"
 
 [[projects]]
-  branch = "master"
+  digest = "1:8ef506fc2bb9ced9b151dafa592d4046063d744c646c1bbe801982ce87e4bc24"
   name = "github.com/lib/pq"
-  packages = [".","oid"]
-  revision = "b77235e3890a962fe8a6f8c4c7198679ca7814e7"
+  packages = [
+    ".",
+    "oid",
+  ]
+  pruneopts = "UT"
+  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
+  version = "v1.0.0"
 
 [[projects]]
+  digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
+  pruneopts = "UT"
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
+  pruneopts = "UT"
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
 
 [[projects]]
+  digest = "1:0356f3312c9bd1cbeda81505b7fd437501d8e778ab66998ef69f00d7f9b3a0d7"
   name = "github.com/mattn/go-runewidth"
   packages = ["."]
-  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
-  version = "v0.0.2"
+  pruneopts = "UT"
+  revision = "3ee7d812e62a0804a7d0a324e0249ca2db3476d3"
+  version = "v0.0.4"
 
 [[projects]]
+  digest = "1:4a49346ca45376a2bba679ca0e83bec949d780d4e927931317904bad482943ec"
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
-  revision = "ca5e3819723d8eeaf170ad510e7da1d6d2e94a08"
-  version = "v1.2.0"
+  pruneopts = "UT"
+  revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
+  version = "v1.10.0"
 
 [[projects]]
-  branch = "master"
+  digest = "1:6ff1026b8d873d074ddec82ad60bb0eb537dc013f456ef26b63d30beba2f99e7"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "68fecaef60268522d2ac3f0123cec9d3bcab7b6e"
+  pruneopts = "UT"
+  revision = "506f3da9b7c86d737e91f16b7431df8635871552"
+  version = "v1.0.2"
 
 [[projects]]
-  branch = "master"
+  digest = "1:abcdbf03ca6ca13d3697e2186edc1f33863bbdac2b3a44dfa39015e8903f7409"
   name = "github.com/olekukonko/tablewriter"
   packages = ["."]
-  revision = "a7a4c189eb47ed33ce7b35f2880070a0c82a67d4"
+  pruneopts = "UT"
+  revision = "e6d60cf7ba1f42d86d54cdf5508611c4aafb3970"
+  version = "v0.0.1"
 
 [[projects]]
-  branch = "master"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
+  digest = "1:1090c43442963716e8f440ca37bd9e7804bc656e669662ab30995fad2f8dbd33"
   name = "github.com/rakyll/magicmime"
   packages = ["."]
+  pruneopts = "UT"
   revision = "9b99294d6b2216897632b9734769d8ce4568681e"
+  version = "v0.1.0"
 
 [[projects]]
+  digest = "1:b36a0ede02c4c2aef7df7f91cbbb7bb88a98b5d253509d4f997dda526e50c88c"
   name = "github.com/russross/blackfriday"
   packages = ["."]
-  revision = "4048872b16cc0fc2c5fd9eacf0ed2c2fedaa0c8c"
-  version = "v1.5"
+  pruneopts = "UT"
+  revision = "05f3235734ad95d0016f6a23902f06461fcf567a"
+  version = "v1.5.2"
 
 [[projects]]
+  digest = "1:cc1c574c9cb5e99b123888c12b828e2d19224ab6c2244bda34647f230bf33243"
   name = "github.com/smartystreets/assertions"
-  packages = [".","internal/go-render/render","internal/oglematchers"]
-  revision = "ff1918e1e5a13a74014644ae7c1e0ba2f791364d"
-  version = "1.8.0"
+  packages = [
+    ".",
+    "internal/go-render/render",
+    "internal/oglematchers",
+  ]
+  pruneopts = "UT"
+  revision = "7678a5452ebea5b7090a6b163f844c133f523da2"
+  version = "1.8.3"
 
 [[projects]]
+  digest = "1:a3e081e593ee8e3b0a9af6a5dcac964c67a40c4f2034b5345b2ad78d05920728"
   name = "github.com/smartystreets/goconvey"
-  packages = ["convey","convey/gotest","convey/reporting"]
+  packages = [
+    "convey",
+    "convey/gotest",
+    "convey/reporting",
+  ]
+  pruneopts = "UT"
   revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
   version = "1.6.3"
 
 [[projects]]
   branch = "master"
+  digest = "1:362b269942e8508aed33025593090ad4cdbd9077de4b1cd505e6124728e9e856"
   name = "github.com/ssor/bom"
   packages = ["."]
+  pruneopts = "UT"
   revision = "6386211fdfcf24c0bfbdaceafd02849ed9a8a509"
 
 [[projects]]
+  digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "github.com/urfave/cli"
   packages = ["."]
+  pruneopts = "UT"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:706aaf5e43c7dc00fe3fe91015cf8ef07e50736356c8acf924a061ccb1845237"
   name = "golang.org/x/crypto"
-  packages = ["md4","pbkdf2"]
-  revision = "34d0413e1bf9c8d5ccc42391da5c92d16c595f74"
+  packages = [
+    "md4",
+    "pbkdf2",
+  ]
+  pruneopts = "UT"
+  revision = "b8fe1690c61389d7d2a8074a507d1d40c5d30448"
 
 [[projects]]
   branch = "master"
+  digest = "1:1235bd185006c1bbdc4292ec1942974469ba1a37ab6bbb73850d75b2bd952efc"
   name = "golang.org/x/net"
-  packages = ["context","html","html/atom"]
-  revision = "0a9397675ba34b2845f758fe3cd68828369c6517"
+  packages = [
+    "html",
+    "html/atom",
+  ]
+  pruneopts = "UT"
+  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
 
 [[projects]]
   branch = "master"
+  digest = "1:969c44c96e9866e912a16e282a362cf045b64202107424983fe8abc3373d1eab"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "314a259e304ff91bd6985da2a7149bbf91237993"
+  pruneopts = "UT"
+  revision = "41f3e6584952bb034a481797859f6ab34b6803bd"
 
 [[projects]]
-  branch = "master"
+  digest = "1:17ad89bd57485e11f306d41b703f53089fb0803682707b21fe9b3b29467d37a0"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/tag","language","unicode/cldr"]
-  revision = "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
+  packages = [
+    "internal/gen",
+    "internal/tag",
+    "language",
+    "unicode/cldr",
+  ]
+  pruneopts = "UT"
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
+[[projects]]
+  digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  pruneopts = "UT"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
 
 [[projects]]
   branch = "v3"
+  digest = "1:7388652e2215a3f45d341d58766ed58317971030eb1cbd75f005f96ace8e9196"
   name = "gopkg.in/alexcesaro/quotedprintable.v3"
   packages = ["."]
+  pruneopts = "UT"
   revision = "2caba252f4dc53eaf6b553000885530023f54623"
 
 [[projects]]
+  digest = "1:ce0d683e17b7c249c081cf4f5e4a54dce8fedf7e72d2b56aa557ee33abe367f0"
   name = "gopkg.in/clog.v1"
   packages = ["."]
-  revision = "8492a6faa632c31ba82f562b53b4a6e5eacf2732"
-  version = "v1.1.1"
+  pruneopts = "UT"
+  revision = "3bc2eaba5fa35df0338549cc1180dc45f6fc2a16"
+  version = "v1.2.0"
 
 [[projects]]
+  digest = "1:eebd52aee67d9f1e0af1859a584e14b1817581dd5f90d4585418c27b6a93c966"
   name = "gopkg.in/gomail.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "41f3572897373c5538c50a2402db15db079fa4fd"
   version = "2.0.0"
 
 [[projects]]
+  digest = "1:8b4bb15de2e698d359eeec15c42453567c98972a70c8619946050360ec02ec32"
   name = "gopkg.in/ini.v1"
   packages = ["."]
-  revision = "20b96f641a5ea98f2f8619ff4f3e061cff4833bd"
-  version = "v1.28.2"
+  pruneopts = "UT"
+  revision = "6ed8d5f64cd79a498d1f3fab5880cc376ce41bbe"
+  version = "v1.41.0"
 
 [[projects]]
-  branch = "v24"
-  name = "gopkg.in/libgit2/git2go.v24"
+  branch = "v26"
+  digest = "1:79a5003bce9bc94ea61fe4b7a88382b5f367585400122ed3feb5e483031834b6"
+  name = "gopkg.in/libgit2/git2go.v26"
   packages = ["."]
-  revision = "22091886372e73de5d66168e8665775676ec13c5"
+  pruneopts = "UT"
+  revision = "c9f7fd544d3991bd26c400b3c227673bcada42cc"
 
 [[projects]]
-  branch = "v25"
-  name = "gopkg.in/libgit2/git2go.v25"
-  packages = ["."]
-  revision = "334260d743d713a55ff3c097ec6707f2bb39e9d5"
-
-[[projects]]
+  digest = "1:3d43a1d68f315a1c4c2cd20ee4d35c96695f17637502366341ac43b7813ea95f"
   name = "gopkg.in/macaron.v1"
   packages = ["."]
-  revision = "97f995df0bf34ca1a77c00704c9278476275566b"
-  version = "v1.2.2"
+  pruneopts = "UT"
+  revision = "dfcb80ca86e8534962c62812efd93209c7e600e7"
+  version = "v1.3.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "64a282e40d5479506dd2acfe0f5dd762a0369ea392ec692d6fe0f4fc15bb1b90"
+  input-imports = [
+    "github.com/Unknwon/com",
+    "github.com/Unknwon/paginater",
+    "github.com/denisenkom/go-mssqldb",
+    "github.com/getsentry/raven-go",
+    "github.com/go-macaron/binding",
+    "github.com/go-macaron/cache",
+    "github.com/go-macaron/csrf",
+    "github.com/go-macaron/i18n",
+    "github.com/go-macaron/session",
+    "github.com/go-macaron/toolbox",
+    "github.com/go-sql-driver/mysql",
+    "github.com/go-xorm/core",
+    "github.com/go-xorm/xorm",
+    "github.com/gogits/cron",
+    "github.com/jaytaylor/html2text",
+    "github.com/lib/pq",
+    "github.com/mattn/go-sqlite3",
+    "github.com/microcosm-cc/bluemonday",
+    "github.com/rakyll/magicmime",
+    "github.com/russross/blackfriday",
+    "github.com/smartystreets/goconvey/convey",
+    "github.com/urfave/cli",
+    "golang.org/x/crypto/pbkdf2",
+    "golang.org/x/net/html",
+    "gopkg.in/clog.v1",
+    "gopkg.in/gomail.v2",
+    "gopkg.in/ini.v1",
+    "gopkg.in/libgit2/git2go.v26",
+    "gopkg.in/macaron.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
