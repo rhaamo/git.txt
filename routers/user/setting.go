@@ -2,8 +2,8 @@ package user
 
 import (
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/stuff/form"
 )
 
 const (

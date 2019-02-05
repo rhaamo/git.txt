@@ -1,21 +1,21 @@
 package context
 
 import (
-	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
-	"strings"
 	"dev.sigpipe.me/dashie/git.txt/setting"
-	"time"
 	log "gopkg.in/clog.v1"
+	"gopkg.in/macaron.v1"
+	"strings"
+	"time"
 )
 
 // Gitxt struct
 type Gitxt struct {
-	User	*models.User
-	Gitxt	*models.Gitxt
-	Owner	bool		// Gitxt.Owner: "toto/repos" does "repos" belongs to "toto" ?
-	UserName	string
+	User     *models.User
+	Gitxt    *models.Gitxt
+	Owner    bool // Gitxt.Owner: "toto/repos" does "repos" belongs to "toto" ?
+	UserName string
 }
 
 // AssignRepository to context

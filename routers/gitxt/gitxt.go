@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"github.com/Unknwon/paginater"
 	log "gopkg.in/clog.v1"
-	"gopkg.in/libgit2/git2go.v25"
+	"gopkg.in/libgit2/git2go.v26"
 	gotemplate "html/template"
 	"os"
 	"path/filepath"
@@ -244,7 +244,7 @@ func NewPost(ctx *context.Context, f form.Gitxt) {
 	models.UpdateCounterGitxtsManaged(counterManaged.Count + 1)
 
 	// 5. Return render to gitxt view page
-	log.Trace("Pushed repository %s to database as %i", repositoryName, u.ID)
+	log.Trace("Pushed repository %s to database as %d", repositoryName, u.ID)
 	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + repositoryName)
 }
 
@@ -753,7 +753,7 @@ func EditPost(ctx *context.Context, f form.GitxtEdit) {
 
 	// 5. Return render to gitxt view page
 
-	log.Trace("Edit Pushed repository %s - %i", ctx.Gitxt.Gitxt.Hash, ctx.Gitxt.Gitxt.ID)
+	log.Trace("Edit Pushed repository %s - %d", ctx.Gitxt.Gitxt.Hash, ctx.Gitxt.Gitxt.ID)
 	ctx.Redirect(setting.AppSubURL + "/" + repositoryUser + "/" + ctx.Gitxt.Gitxt.Hash)
 
 }

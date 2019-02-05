@@ -1,41 +1,41 @@
 package models
 
 import (
-	"time"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
-	"github.com/go-xorm/xorm"
-	"fmt"
-	"os"
+	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
 	"dev.sigpipe.me/dashie/git.txt/stuff/sync"
-	"dev.sigpipe.me/dashie/git.txt/setting"
-	log "gopkg.in/clog.v1"
-	"path/filepath"
+	"fmt"
 	"github.com/Unknwon/com"
-	"strings"
+	"github.com/go-xorm/xorm"
+	log "gopkg.in/clog.v1"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 // Gitxt struct
 type Gitxt struct {
-	ID          int64        `xorm:"pk autoincr"`
-	Hash        string        `xorm:"UNIQUE NOT NULL"`
-	UserID      int64        `xorm:"INDEX"`
+	ID          int64  `xorm:"pk autoincr"`
+	Hash        string `xorm:"UNIQUE NOT NULL"`
+	UserID      int64  `xorm:"INDEX"`
 	Anonymous   bool
-	Description string        `xorm:"TEXT"`
+	Description string `xorm:"TEXT"`
 
 	// Chosen expiry in hours
-	ExpiryHours		int64  `xorm:"INDEX"`
+	ExpiryHours int64 `xorm:"INDEX"`
 	// Calculated expiry unix timestamp from the time of creation/update
-	ExpiryUnix	int64
-	Expiry		time.Time	`xorm:"-"`
+	ExpiryUnix int64
+	Expiry     time.Time `xorm:"-"`
 
 	// Permissions
-	IsPrivate bool        `xorm:"DEFAULT 0"`
+	IsPrivate bool `xorm:"DEFAULT 0"`
 
-	Created     time.Time        `xorm:"-"`
+	Created     time.Time `xorm:"-"`
 	CreatedUnix int64
-	Updated     time.Time        `xorm:"-"`
+	Updated     time.Time `xorm:"-"`
 	UpdatedUnix int64
 
 	// Relations
@@ -67,8 +67,8 @@ func (gitxt *Gitxt) AfterSet(colName string, _ xorm.Cell) {
 
 // GitxtWithUser struct
 type GitxtWithUser struct {
-	User        `xorm:"extends"`
-	Gitxt        `xorm:"extends"`
+	User  `xorm:"extends"`
+	Gitxt `xorm:"extends"`
 }
 
 // Preventing duplicate running tasks
@@ -131,7 +131,7 @@ func GetRepositoryByName(user string, name string) (*Gitxt, error) {
 	if err != nil {
 		return nil, err
 	} else if !has {
-		return nil, errors.RepoNotExist{0, repo.UserID, name}
+		return nil, errors.RepoNotExist{ID: 0, UserID: repo.UserID, Name: name}
 	}
 	return repo, nil
 }
@@ -317,7 +317,7 @@ func DeleteRepository(ownerID int64, repoID int64) error {
 	if err != nil {
 		return err
 	} else if !has {
-		return errors.RepoNotExist{repoID, ownerID, ""}
+		return errors.RepoNotExist{ID: repoID, UserID: ownerID, Name: ""}
 	}
 
 	// By defaults use anonymoyus

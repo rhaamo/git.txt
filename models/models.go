@@ -5,19 +5,19 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 	// mysql
 	_ "github.com/go-sql-driver/mysql"
-	// Postgresql
-	_ "github.com/lib/pq"
-	"github.com/go-xorm/xorm"
 	"database/sql"
-	"fmt"
-	"github.com/go-xorm/core"
-	"path"
-	"strings"
-	"net/url"
-	"os"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"errors"
+	"fmt"
+	"github.com/go-xorm/core"
+	"github.com/go-xorm/xorm"
+	// Postgresql
+	_ "github.com/lib/pq"
 	log "gopkg.in/clog.v1"
+	"net/url"
+	"os"
+	"path"
+	"strings"
 )
 
 // Engine represents a XORM engine or session.

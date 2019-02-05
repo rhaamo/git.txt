@@ -2,6 +2,9 @@
 
 * Ways of improvement
 ** TODO Merge AssignUser and AssignRepository ?
+** blackfriday dependency update to 2.x, breaking changes
+** xorm update, breaking changes
+*** migrate to gorm ?
 
 ** TODO Upgrade git2go to v26 (.3)
 *** Blocked by https://github.com/libgit2/git2go/issues/407

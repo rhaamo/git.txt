@@ -1,14 +1,14 @@
 package form
 
 import (
-	"reflect"
-	"github.com/go-macaron/binding"
-	"gopkg.in/macaron.v1"
-	"github.com/Unknwon/com"
-	"strings"
-	"regexp"
 	"fmt"
+	"github.com/Unknwon/com"
+	"github.com/go-macaron/binding"
 	log "gopkg.in/clog.v1"
+	"gopkg.in/macaron.v1"
+	"reflect"
+	"regexp"
+	"strings"
 )
 
 const errAlphaDashDotSlash = "AlphaDashDotSlashError"

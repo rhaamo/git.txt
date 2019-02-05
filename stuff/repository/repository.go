@@ -1,8 +1,8 @@
 package repository
 
 import (
-	git "gopkg.in/libgit2/git2go.v25"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	git "gopkg.in/libgit2/git2go.v26"
 	"path"
 )
 

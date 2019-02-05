@@ -97,7 +97,7 @@ func newMacaron() *macaron.Macaron {
 
 	m.Use(toolbox.Toolboxer(m, toolbox.Options{
 		HealthCheckFuncs: []*toolbox.HealthCheckFuncDesc{
-			&toolbox.HealthCheckFuncDesc{
+			{
 				Desc: "Database connection",
 				Func: models.Ping,
 			},
@@ -116,7 +116,7 @@ func runWeb(ctx *cli.Context) error {
 	}
 
 	setting.InitConfig()
-	markup.NewSanitizer()
+	//markup.NewSanitizer() // IDK what I wanted to do here
 	models.InitDb()
 	cron.NewContext()
 	mailer.NewContext()
@@ -233,7 +233,7 @@ func runWeb(ctx *cli.Context) error {
 		os.Remove(listenAddr)
 
 		var listener *net.UnixListener
-		listener, err = net.ListenUnix("unix", &net.UnixAddr{listenAddr, "unix"})
+		listener, err = net.ListenUnix("unix", &net.UnixAddr{Name: listenAddr, Net: "unix"})
 		if err != nil {
 			break // Handle error after switch
 		}

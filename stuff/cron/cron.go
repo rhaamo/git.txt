@@ -1,10 +1,10 @@
 package cron
 
 import (
-	log "gopkg.in/clog.v1"
-	"github.com/gogits/cron"
-	"dev.sigpipe.me/dashie/git.txt/setting"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/setting"
+	"github.com/gogits/cron"
+	log "gopkg.in/clog.v1"
 	"time"
 )
 
@@ -13,8 +13,8 @@ var c = cron.New()
 // NewContext initialize Cron stuff
 func NewContext() {
 	var (
-		entry	*cron.Entry
-		err	error
+		entry *cron.Entry
+		err   error
 	)
 
 	if setting.Cron.RepoArchiveCleanup.Enabled {
@@ -34,7 +34,7 @@ func NewContext() {
 	if err != nil {
 		log.Fatal(2, "Cron.(delete expired repositories): %v", err)
 	}
-	entry.Next = time.Now().Add(time.Minute*1)
+	entry.Next = time.Now().Add(time.Minute * 1)
 
 	c.Start()
 }

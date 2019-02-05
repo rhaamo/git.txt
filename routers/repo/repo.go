@@ -4,25 +4,25 @@
 package repo
 
 import (
-	"gopkg.in/macaron.v1"
+	"bytes"
+	"compress/gzip"
 	"dev.sigpipe.me/dashie/git.txt/context"
-	"strings"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
-	"net/http"
-	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"dev.sigpipe.me/dashie/git.txt/setting"
-	log "gopkg.in/clog.v1"
-	"regexp"
-	"time"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"fmt"
-	"path"
-	"os"
 	"github.com/Unknwon/com"
-	"compress/gzip"
-	"bytes"
+	log "gopkg.in/clog.v1"
+	"gopkg.in/macaron.v1"
+	"net/http"
+	"os"
 	"os/exec"
+	"path"
+	"regexp"
 	"strconv"
+	"strings"
+	"time"
 )
 
 const (
@@ -39,11 +39,11 @@ const (
 // HTTPContext struct
 type HTTPContext struct {
 	*context.Context
-	OwnerName	string
-	OwnerSalt	string
-	RepoID		int64
-	RepoName	string
-	AuthUser	*models.User
+	OwnerName string
+	OwnerSalt string
+	RepoID    int64
+	RepoName  string
+	AuthUser  *models.User
 }
 
 // askCredentials responses HTTP header and status which informs client to provide credentials
@@ -125,18 +125,18 @@ func HTTPContexter() macaron.Handler {
 		log.Trace("HTTPGit - Authenticated user: %s", authUser.UserName)
 
 		// Reject if not pulling and user doesn't match repo ID
-		if authUser.ID != repo.UserID  && !isPull {
+		if authUser.ID != repo.UserID && !isPull {
 			askCredentials(ctx, http.StatusForbidden, "User permission denied")
 			return
 		}
 
 		ctx.Map(&HTTPContext{
-			Context: ctx,
+			Context:   ctx,
 			OwnerName: ownerName,
 			OwnerSalt: owner.Salt,
-			RepoID: repo.ID,
-			RepoName: repoName,
-			AuthUser: authUser,
+			RepoID:    repo.ID,
+			RepoName:  repoName,
+			AuthUser:  authUser,
 		})
 
 	}
@@ -250,7 +250,7 @@ func serviceRPC(h serviceHandler, service string) {
 	cmd.Stderr = &stderr
 	cmd.Stdin = reqBody
 	if err = cmd.Run(); err != nil {
-		log.Error(2, "HTTP.serviceRPC: fail to serve RPC '%s': %v - %s", service, err, stderr)
+		log.Error(2, "HTTP.serviceRPC: fail to serve RPC '%s': %v - %q", service, err, stderr)
 		h.w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -413,6 +413,6 @@ func HTTP(ctx *HTTPContext) {
 		return
 	}
 
-	log.Trace("Not found %s", ctx.Req.Request)
+	log.Trace("Not found %s", ctx.Req.Request.URL.Path)
 	ctx.NotFound()
 }

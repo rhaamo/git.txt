@@ -16,14 +16,16 @@ BUILD_FLAGS:=-o $(EXECUTABLE) -v
 TAGS=sqlite
 NOW=$(shell date -u '+%Y%m%d%I%M%S')
 
-GOVET=go vet
-GOLINT=golint -set_exit_status
 GO ?= go
+GOVET=$(GO) vet
+GOLINT=golint -set_exit_status
+GOFMT ?= gofmt -s
 
 GOFILES := $(shell find . -name "*.go" -type f ! -path "./vendor/*" ! -path "*/bindata.go")
 PACKAGES ?= $(filter-out dev.sigpipe.me/dashie/git.txt/integrations,$(shell go list ./... | grep -v /vendor/))
+PACKAGES_ALL ?= $(shell go list ./... | grep -v /vendor/)
+SOURCES ?= $(shell find . -name "*.go" -type f)
 XGO_DEPS = "--deps=https://s3.sigpipe.me/tarballs/1-mingw-libgnurx-2.5.1-src.tar.gz https://s3.sigpipe.me/tarballs/2-file-5.32.tar.gz"
-#XGO_DEPS += "--deps=https://github.com/libgit2/libgit2/archive/maint/v0.25.zip"
 
 ifneq ($(DRONE_TAG),)
 	VERSION ?= $(subst v,,$(DRONE_TAG))
@@ -35,43 +37,39 @@ else
 	endif
 endif
 
-### Targets
+### Targets build and checks
 
 .PHONY: build clean
 
 all: build
 
-check: test
-
 web: build
 	./$(EXECUTABLE) web
 
 vet:
-	$(GOVET) git.txt.go
+	$(GOVET) $(PACKAGES_ALL)
 
 lint:
 	@hash golint > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/golang/lint/golint; \
 	fi
-	for PKG in $(PACKAGES); do golint -set_exit_status $$PKG || exit 1; done;
+	for PKG in $(PACKAGES_ALL); do golint -set_exit_status $$PKG || exit 1; done;
 
 build:
 	$(GO) build $(BUILD_FLAGS) -ldflags '$(LDFLAGS)' -tags '$(TAGS)'
 
-build-dev: govet
-	$(GO) build $(BUILD_FLAGS) -tags '$(TAGS)'
+build-dev: vet
+	$(GO) build $(BUILD_FLAGS) -ldflags '$(LDFLAGS)' -tags '$(TAGS)'
 
-build-dev-race: govet
-	$(GO) build $(BUILD_FLAGS) -race -tags '$(TAGS)'
+build-dev-race: vet
+	$(GO) build $(BUILD_FLAGS) -ldflags '$(LDFLAGS)' -race -tags '$(TAGS)'
 
-clean:
+clean: clean-mac
 	$(GO) clean -i ./...
+	rm -f $(EXECUTABLE)
 
-clean-mac: clean
+clean-mac:
 	find . -name ".DS_Store" -delete
-
-test:
-	$(GO) test -cover -v $(PACKAGES)
 
 .PHONY: misspell-check
 misspell-check:
@@ -87,8 +85,29 @@ misspell:
 	fi
 	misspell -w -i unknwon $(GOFILES)
 
+.PHONY: fmt
+fmt:
+	$(GOFMT) -w $(GOFILES)
+
+.PHONY: fmt-check
+fmt-check:
+	# get all go files and run go fmt on them
+	@diff=$$($(GOFMT) -d $(GOFILES)); \
+		if [ -n "$$diff" ]; then \
+			echo "Please run 'make fmt' and commit the result:"; \
+			echo "$${diff}"; \
+			exit 1; \
+		fi;
+
+### Targets for tests
+# Use PACKAGES instead of PACKAGES_ALL because the integrations tests are run separately
+
+test: fmt-check
+	$(GO) test -cover -v $(PACKAGES)
+
+### Targets for releases
 .PHONY: release
-release: release-dirs release-windows release-linux release-copy release-check
+release: release-dirs release-linux release-copy release-check
 
 .PHONY: release-dirs
 release-dirs:

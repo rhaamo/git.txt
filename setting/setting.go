@@ -1,20 +1,20 @@
 package setting
 
 import (
-	"os"
-	"strings"
-	"runtime"
-	"os/exec"
-	"path/filepath"
+	"github.com/Unknwon/com"
+	"github.com/go-macaron/session"
 	log "gopkg.in/clog.v1"
 	"gopkg.in/ini.v1"
-	"path"
-	"strconv"
-	"github.com/Unknwon/com"
-	"net/url"
-	"github.com/go-macaron/session"
-	"time"
 	"net/mail"
+	"net/url"
+	"os"
+	"os/exec"
+	"path"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
+	"time"
 )
 
 // Scheme type
@@ -28,44 +28,43 @@ const (
 	SchemeUnixSocket Scheme = "unix"
 )
 
-
 // Settings
 var (
 	// Build infos added by -ldflags
-	BuildTime	string
-	BuildGitHash 	string
+	BuildTime    string
+	BuildGitHash string
 
 	// App Settings
 
-	AppVer		string
-	AppPath		string
+	AppVer          string
+	AppPath         string
 	AppName         string
-	AppURL 		string
+	AppURL          string
 	AppSubURL       string
 	AppSubURLDepth  int // Number of slashes
-	CanRegister	bool
-	AnonymousCreate	bool
-	ProdMode	bool
+	CanRegister     bool
+	AnonymousCreate bool
+	ProdMode        bool
 
 	// Cron tasks
 	Cron struct {
 		RepoArchiveCleanup struct {
-			Enabled		bool
-			RunAtStart	bool
-			Schedule	string
-			OlderThan	time.Duration
+			Enabled    bool
+			RunAtStart bool
+			Schedule   string
+			OlderThan  time.Duration
 		} `ini:"cron.repo_archive_cleanup"`
 	}
 
 	// Server settings
 
-	Protocol		Scheme
-	UnixSocketPermission	uint32
-	Domain			string
-	HTTPAddr		string
-	HTTPPort		string
-	DisableRouterLog	bool
-	StaticRootPath		string
+	Protocol             Scheme
+	UnixSocketPermission uint32
+	Domain               string
+	HTTPAddr             string
+	HTTPPort             string
+	DisableRouterLog     bool
+	StaticRootPath       string
 
 	HTTP struct {
 		AccessControlAllowOrigin string
@@ -73,24 +72,24 @@ var (
 
 	// Database Settings
 
-	UseSQLite3	bool
-	UseMySQL	bool
-	UsePostgreSQL	bool
-	UseMSSQL	bool
+	UseSQLite3    bool
+	UseMySQL      bool
+	UsePostgreSQL bool
+	UseMSSQL      bool
 
 	// Global setting objects
 
-	CustomConf	string
-	IsWindows	bool
-	Cfg		*ini.File
-	HasRobotsTxt	bool
-	RobotsTxtPath	string
+	CustomConf    string
+	IsWindows     bool
+	Cfg           *ini.File
+	HasRobotsTxt  bool
+	RobotsTxtPath string
 
 	// Log settings
 
-	LogRootPath	string
-	LogModes	[]string
-	LogConfigs	[]interface{}
+	LogRootPath string
+	LogModes    []string
+	LogConfigs  []interface{}
 
 	// Repository settings
 
@@ -112,13 +111,13 @@ var (
 	CookieRememberName      string
 	CookieSecure            bool
 	EnableLoginStatusCookie bool
-	LoginStatusCookieName string
+	LoginStatusCookieName   string
 
 	// Cache settings
 
 	CacheAdapter  string
 	CacheInterval int
-	CacheConn string
+	CacheConn     string
 
 	// Langs settings
 	Langs     []string
@@ -127,25 +126,25 @@ var (
 
 	// Markdown sttings
 	Markdown struct {
-	    EnableHardLineBreak bool
-	    CustomURLSchemes    []string `ini:"CUSTOM_URL_SCHEMES"`
-	    FileExtensions      []string
+		EnableHardLineBreak bool
+		CustomURLSchemes    []string `ini:"CUSTOM_URL_SCHEMES"`
+		FileExtensions      []string
 	}
 
 	// Smartypants settings
 	Smartypants struct {
-	    Enabled      bool
-	    Fractions    bool
-	    Dashes       bool
-	    LatexDashes  bool
-	    AngledQuotes bool
+		Enabled      bool
+		Fractions    bool
+		Dashes       bool
+		LatexDashes  bool
+		AngledQuotes bool
 	}
 
 	// Bloby struct for static limitations
 	Bloby struct {
-		MaxSizeDisplay	int64
-		MaxPageDisplay  int64
-		MaxRawSize	int64
+		MaxSizeDisplay int64
+		MaxPageDisplay int64
+		MaxRawSize     int64
 	}
 )
 
@@ -205,7 +204,7 @@ func forcePathSeparator(path string) {
 func InitConfig() {
 	workDir, err := WorkDir()
 	if err != nil {
-		log.Fatal(2,"Fail to get work directory: %v", err)
+		log.Fatal(2, "Fail to get work directory: %v", err)
 	}
 
 	if len(CustomConf) == 0 {
@@ -489,4 +488,3 @@ func initMailer() {
 
 	log.Info("Mail Service Enabled")
 }
-

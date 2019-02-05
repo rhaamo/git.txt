@@ -1,20 +1,20 @@
 package template
 
 import (
-	"time"
-	"strings"
-	"mime"
-	"path/filepath"
-	"fmt"
-	"runtime"
-	"html/template"
-	"dev.sigpipe.me/dashie/git.txt/setting"
-	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
-	"github.com/microcosm-cc/bluemonday"
-	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
-	"dev.sigpipe.me/dashie/git.txt/stuff/template/highlight"
 	"container/list"
 	"dev.sigpipe.me/dashie/git.txt/models"
+	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/markup"
+	"dev.sigpipe.me/dashie/git.txt/stuff/template/highlight"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
+	"fmt"
+	"github.com/microcosm-cc/bluemonday"
+	"html/template"
+	"mime"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"time"
 )
 
 // NewFuncMap initialize the Functions Map
@@ -50,9 +50,9 @@ func NewFuncMap() []template.FuncMap {
 		"LoadTimes": func(startTime time.Time) string {
 			return fmt.Sprint(time.Since(startTime).Nanoseconds()/1e6) + "ms"
 		},
-		"FileSize": 	tool.FileSize,
-		"Safe":         safe,
-		"Sanitize":     bluemonday.UGCPolicy().Sanitize,
+		"FileSize": tool.FileSize,
+		"Safe":     safe,
+		"Sanitize": bluemonday.UGCPolicy().Sanitize,
 		"Str2html": str2html,
 		"Add": func(a, b int) int {
 			return a + b
@@ -60,7 +60,7 @@ func NewFuncMap() []template.FuncMap {
 		"DateFmtLong": func(t time.Time) string {
 			return t.Format(time.RFC1123Z)
 		},
-			"DateFmtShort": func(t time.Time) string {
+		"DateFmtShort": func(t time.Time) string {
 			return t.Format("Jan 02, 2006")
 		},
 		"List": listWhatever,
@@ -77,11 +77,11 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return str[start:end]
 		},
-		"Join":                  strings.Join,
-		"Sha1":                  sha1,
-		"ShortSHA1":             tool.ShortSHA1,
-		"MD5":                   tool.MD5,
-		"EscapePound":           escapePound,
+		"Join":        strings.Join,
+		"Sha1":        sha1,
+		"ShortSHA1":   tool.ShortSHA1,
+		"MD5":         tool.MD5,
+		"EscapePound": escapePound,
 		"FilenameIsImage": func(filename string) bool {
 			mimeType := mime.TypeByExtension(filepath.Ext(filename))
 			return strings.HasPrefix(mimeType, "image/")

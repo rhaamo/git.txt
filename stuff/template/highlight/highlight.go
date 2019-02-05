@@ -20,8 +20,8 @@ var (
 	// File names that are representing highlight classes.
 	highlightFileNames = map[string]bool{
 		"cmakelists.txt": true,
-		"dockerfile": true,
-		"makefile":   true,
+		"dockerfile":     true,
+		"makefile":       true,
 	}
 
 	// Extensions that are same as highlight classes.

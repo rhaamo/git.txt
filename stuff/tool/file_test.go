@@ -13,7 +13,7 @@ import (
 func Test_FileSize(t *testing.T) {
 	Convey("File size to human", t, func() {
 		testCases := []struct {
-			size int64
+			size  int64
 			human string
 		}{
 			{6, "6 B"},

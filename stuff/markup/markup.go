@@ -14,8 +14,8 @@ import (
 	"github.com/Unknwon/com"
 	"golang.org/x/net/html"
 
-	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 )
 
 // IsReadmeFile reports whether name looks like a README file based on its extension.

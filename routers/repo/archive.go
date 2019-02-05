@@ -5,23 +5,23 @@ import (
 	"dev.sigpipe.me/dashie/git.txt/stuff/repository"
 	log "gopkg.in/clog.v1"
 
-	"gopkg.in/libgit2/git2go.v25"
-	"strings"
-	"path"
-	"github.com/Unknwon/com"
-	"os"
-	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
 	"dev.sigpipe.me/dashie/git.txt/stuff/gite"
+	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
+	"github.com/Unknwon/com"
+	"gopkg.in/libgit2/git2go.v26"
+	"os"
+	"path"
+	"strings"
 )
 
 // DownloadArchive of repository
 func DownloadArchive(ctx *context.Context) {
 	var (
-		uri			= ctx.Params("*")
-		refName			string
-		ext			string
-		archivePath		string
-		archiveType		string
+		uri         = ctx.Params("*")
+		refName     string
+		ext         string
+		archivePath string
+		archiveType string
 	)
 
 	pathRepo := repository.RepoPath(ctx.RepoOwnerUsername, ctx.Gitxt.Gitxt.Hash)
@@ -40,7 +40,7 @@ func DownloadArchive(ctx *context.Context) {
 		ctx.Error(404)
 		return
 	}
-	
+
 	refName = strings.TrimSuffix(uri, ext)
 	if refName != "master" {
 		ctx.Handle(500, "Ref other than master not supported", nil)
@@ -65,7 +65,7 @@ func DownloadArchive(ctx *context.Context) {
 	}
 
 	// Test if repository is empty
-	isEmpty, err := repo.IsEmpty();
+	isEmpty, err := repo.IsEmpty()
 	if err != nil || isEmpty {
 		log.Warn("Empty repository or corrupted %s: %s", ctx.Gitxt.Gitxt.Hash, err)
 		ctx.Flash.Error(ctx.Tr("gitxt_git.repo_corrupt_or_empty"))

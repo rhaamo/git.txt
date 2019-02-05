@@ -5,7 +5,7 @@ import (
 	"archive/zip"
 	"dev.sigpipe.me/dashie/git.txt/setting"
 	"github.com/rakyll/magicmime"
-	"gopkg.in/libgit2/git2go.v25"
+	"gopkg.in/libgit2/git2go.v26"
 	gotemplate "html/template"
 	"os"
 	"path/filepath"

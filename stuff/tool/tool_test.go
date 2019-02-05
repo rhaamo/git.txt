@@ -13,7 +13,7 @@ import (
 func Test_MD5(t *testing.T) {
 	Convey("Validate MD5", t, func() {
 		testCases := []struct {
-			src string
+			src  string
 			hash string
 		}{
 			{"coincoin", "3dc6862aaced087142142587cba2123e"},
@@ -30,7 +30,7 @@ func Test_MD5(t *testing.T) {
 func Test_SHA1(t *testing.T) {
 	Convey("Validate SHA1", t, func() {
 		testCases := []struct {
-			src string
+			src  string
 			hash string
 		}{
 			{"coincoin", "0f78ee98759868a8b5d5aeb6b9dbd2106b14e965"},
@@ -47,7 +47,7 @@ func Test_SHA1(t *testing.T) {
 func Test_ShortSHA1(t *testing.T) {
 	Convey("Validate SHA1", t, func() {
 		testCases := []struct {
-			src string
+			src  string
 			hash string
 		}{
 			{"0aadb9081430eb80435b9a442484387f9a443a65", "0aadb90814"},
@@ -63,7 +63,7 @@ func Test_ShortSHA1(t *testing.T) {
 
 func Test_RandomString(t *testing.T) {
 	Convey("Test random string size 5", t, func() {
-		for i := 0; i<10; i++ {
+		for i := 0; i < 10; i++ {
 			r1, _ := RandomString(5)
 			r2, _ := RandomString(5)
 			So(r1, ShouldNotEqual, r2)
@@ -71,7 +71,7 @@ func Test_RandomString(t *testing.T) {
 	})
 
 	Convey("Test random string size 10", t, func() {
-		for i := 0; i<10; i++ {
+		for i := 0; i < 10; i++ {
 			r1, _ := RandomString(10)
 			r2, _ := RandomString(10)
 			So(r1, ShouldNotEqual, r2)
@@ -79,7 +79,7 @@ func Test_RandomString(t *testing.T) {
 	})
 
 	Convey("Test random string size 20", t, func() {
-		for i := 0; i<10; i++ {
+		for i := 0; i < 10; i++ {
 			r1, _ := RandomString(20)
 			r2, _ := RandomString(20)
 			So(r1, ShouldNotEqual, r2)

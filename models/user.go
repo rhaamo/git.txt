@@ -1,43 +1,43 @@
 package models
 
 import (
-	"time"
-	"strings"
-	"unicode/utf8"
-	"dev.sigpipe.me/dashie/git.txt/models/errors"
-	"golang.org/x/crypto/pbkdf2"
 	"crypto/sha256"
-	"fmt"
 	"crypto/subtle"
+	"dev.sigpipe.me/dashie/git.txt/models/errors"
+	"dev.sigpipe.me/dashie/git.txt/setting"
+	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
 	"dev.sigpipe.me/dashie/git.txt/stuff/tool"
+	"encoding/hex"
+	"fmt"
+	"github.com/Unknwon/com"
+	"golang.org/x/crypto/pbkdf2"
+	log "gopkg.in/clog.v1"
 	"os"
 	"path/filepath"
-	"dev.sigpipe.me/dashie/git.txt/setting"
-	"encoding/hex"
-	"github.com/Unknwon/com"
-	log "gopkg.in/clog.v1"
-	"dev.sigpipe.me/dashie/git.txt/stuff/mailer"
+	"strings"
+	"time"
+	"unicode/utf8"
 )
 
 // User struct
 type User struct {
-	ID		int64	`xorm:"pk autoincr"`
-	UserName	string	`xorm:"UNIQUE NOT NULL"`
-	LowerName	string	`xorm:"UNIQUE NOT NULL"`
-	Email		string	`xorm:"NOT NULL"`
+	ID        int64  `xorm:"pk autoincr"`
+	UserName  string `xorm:"UNIQUE NOT NULL"`
+	LowerName string `xorm:"UNIQUE NOT NULL"`
+	Email     string `xorm:"NOT NULL"`
 
-	Password	string	`xorm:"NOT NULL"`
-	Rands		string	`xorm:"VARCHAR(10)"`
-	Salt		string	`xorm:"VARCHAR(10)"`
+	Password string `xorm:"NOT NULL"`
+	Rands    string `xorm:"VARCHAR(10)"`
+	Salt     string `xorm:"VARCHAR(10)"`
 
 	// Permissions
-	IsAdmin		bool	`xorm:"DEFAULT 0"`
-	IsActive	bool	`xorm:"DEFAULT 0"`
+	IsAdmin  bool `xorm:"DEFAULT 0"`
+	IsActive bool `xorm:"DEFAULT 0"`
 
-	Created		time.Time	`xorm:"-"`
-	CreatedUnix	int64
-	Updated		time.Time	`xorm:"-"`
-	UpdatedUnix	int64
+	Created     time.Time `xorm:"-"`
+	CreatedUnix int64
+	Updated     time.Time `xorm:"-"`
+	UpdatedUnix int64
 
 	// Relations
 	// 	Gitxts
@@ -71,7 +71,7 @@ func getUserByID(e Engine, id int64) (*User, error) {
 	if err != nil {
 		return nil, err
 	} else if !has {
-		return nil, errors.UserNotExist{id, ""}
+		return nil, errors.UserNotExist{UserID: id, Name: ""}
 	}
 	return u, nil
 }
@@ -84,14 +84,14 @@ func GetUserByID(id int64) (*User, error) {
 // GetUserByName returns user by given name.
 func GetUserByName(name string) (*User, error) {
 	if len(name) == 0 {
-		return nil, errors.UserNotExist{0, name}
+		return nil, errors.UserNotExist{UserID: 0, Name: name}
 	}
 	u := &User{LowerName: strings.ToLower(name)}
 	has, err := x.Get(u)
 	if err != nil {
 		return nil, err
 	} else if !has {
-		return nil, errors.UserNotExist{0, name}
+		return nil, errors.UserNotExist{UserID: 0, Name: name}
 	}
 	return u, nil
 }
@@ -99,7 +99,7 @@ func GetUserByName(name string) (*User, error) {
 // GetUserByEmail returns the user object by given e-mail if exists.
 func GetUserByEmail(email string) (*User, error) {
 	if len(email) == 0 {
-		return nil, errors.UserNotExist{0, "email"}
+		return nil, errors.UserNotExist{UserID: 0, Name: "email"}
 	}
 
 	email = strings.ToLower(email)
@@ -112,7 +112,7 @@ func GetUserByEmail(email string) (*User, error) {
 		return user, nil
 	}
 
-	return nil, errors.UserNotExist{0, email}
+	return nil, errors.UserNotExist{UserID: 0, Name: email}
 }
 
 // IsUserExist checks if given user name exist,
@@ -255,10 +255,10 @@ func UserLogin(username, password string) (*User, error) {
 			return user, nil
 		}
 
-		return nil, errors.UserNotExist{user.ID, user.UserName}
+		return nil, errors.UserNotExist{UserID: user.ID, Name: user.UserName}
 	}
 
-	return nil, errors.UserNotExist{user.ID, user.UserName}
+	return nil, errors.UserNotExist{UserID: user.ID, Name: user.UserName}
 }
 
 // get user by verify code
@@ -300,7 +300,7 @@ func VerifyUserActiveCode(code string) (user *User) {
 // GenerateEmailActivateCode generates an activate code based on user information and given e-mail.
 func (user *User) GenerateEmailActivateCode(email string) string {
 	code := tool.CreateTimeLimitCode(
-		com.ToStr(user.ID)+email+user.LowerName+user.Password+user.Rands,180, nil)
+		com.ToStr(user.ID)+email+user.LowerName+user.Password+user.Rands, 180, nil)
 
 	// Add tail hex username
 	code += hex.EncodeToString([]byte(user.LowerName))

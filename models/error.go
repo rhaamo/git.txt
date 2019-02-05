@@ -239,7 +239,6 @@ func (err ErrDeployKeyNameAlreadyUsed) Error() string {
 	return fmt.Sprintf("public key already exists [repo_id: %d, name: %s]", err.RepoID, err.Name)
 }
 
-
 // ErrHashAlreadyExist struct
 type ErrHashAlreadyExist struct {
 	Hash string

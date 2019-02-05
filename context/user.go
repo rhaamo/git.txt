@@ -1,9 +1,9 @@
 package context
 
 import (
-	"gopkg.in/macaron.v1"
 	"dev.sigpipe.me/dashie/git.txt/models"
 	"dev.sigpipe.me/dashie/git.txt/models/errors"
+	"gopkg.in/macaron.v1"
 )
 
 // AssignUser to context

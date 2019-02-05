@@ -6,9 +6,9 @@ import (
 
 // Counter struct
 type Counter struct {
-	ID		int64	`xorm:"pk autoincr"`
-	Name	string	`xorm:"UNIQUE NOT NULL"`
-	Count	int64
+	ID    int64  `xorm:"pk autoincr"`
+	Name  string `xorm:"UNIQUE NOT NULL"`
+	Count int64
 }
 
 // Don't change them !
