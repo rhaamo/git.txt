@@ -260,6 +260,8 @@ func View(ctx *context.Context) {
 	ctx.Data["expiry"] = ctx.Gitxt.Gitxt.ExpiryHours
 	ctx.Data["expiryOn"] = ctx.Gitxt.Gitxt.Expiry
 	ctx.Data["createdOn"] = ctx.Gitxt.Gitxt.Created
+	ctx.Data["updated"] = (ctx.Gitxt.Gitxt.UpdatedUnix > ctx.Gitxt.Gitxt.CreatedUnix)
+	ctx.Data["updatedOn"] = ctx.Gitxt.Gitxt.Updated
 
 	// Get the files from git
 	var repoSpec = "HEAD"

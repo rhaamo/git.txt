@@ -6,7 +6,6 @@
 ** TODO xorm update, breaking changes
 *** migrate to gorm ?
 
-** TODO Add edit time on view gist
 ** TODO Add line-break option
 ** TODO Add more checks for <nil> fields wrongly used, like issue with non existant file
 ** TODO Add pictures from git with zz_.png; Edit web interface, and add file; wrong duplicate !!
