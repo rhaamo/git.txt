@@ -23,7 +23,6 @@ It's a Pastebin where all pastes are backed in is own Git repository.
 - Binary or over-size files are excluded from Edit form in Web-UI, preserving them in the commit (they still can be deleted)
 
 # Planned Feature List
-- Pull or Push over SSH for user Gitxts
 - Display other rich texts
 - API for third party tools
 - More tests coverage
