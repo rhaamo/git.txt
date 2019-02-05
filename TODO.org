@@ -8,7 +8,7 @@
 
 ** TODO Add line-break option
 ** TODO Add more checks for <nil> fields wrongly used, like issue with non existant file
-** TODO Add pictures from git with zz_.png; Edit web interface, and add file; wrong duplicate !!
+** TODO If a binary file, or huge one is added from git, we get weird submit results and can't update from interface
 
 ** DONE Non existant file in git for raw file: git_object_lookup_prefix: Assertion `repo && object_out && id' failed.
 ** DONE Can't add files with filename "/some/thing/foo.bar"

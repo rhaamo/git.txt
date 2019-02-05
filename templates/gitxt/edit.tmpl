@@ -32,6 +32,23 @@
                     </div>
                 </div>
 
+                <div class="form placeholders">
+                    <div class="form_INDEX gitxt_new_file" data-id="INDEX">
+                        <div class="filename">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-file-code-o" aria-hidden="true"></i></div>
+                                <input type="text" name="files_filename" id="file_INDEX_filename" class="form-control" value="" placeholder='{{$.i18n.Tr "gitxt.file_filename_placeholder"}}'>
+                                <div class="input-group-addon btn btn-delete-file"><i class="fa fa-remove" aria-hidden="true"></i></div>
+                            </div>
+                        </div>
+
+                        <div class="content form-group">
+                            <textarea rows="15" type="text" name="files_content" id="file_INDEX_content" class="form-control" placeholder='{{$.i18n.Tr "gitxt.file_content_placeholder"}}'></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="files">
                     {{range $index, $value := .FilesContent}}
                         <div class="form_{{$index}} gitxt_new_file" data-id="{{$index}}">
